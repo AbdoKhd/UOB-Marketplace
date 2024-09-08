@@ -1,0 +1,38 @@
+.footer{
+  padding: 50px 50px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.footer-left{
+  flex-basis: 40%;
+  text-align: center;
+}
+
+.footer-left .logo{
+  height: 70px;
+  width: auto;
+  margin-bottom: 30px;
+}
+
+.footer-left p{
+  font-size: 20px;
+}
+
+.footer-right{
+  flex-basis: 60%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.footer-right .col{
+  flex-basis: 30%;
+  text-align: center;
+}
+
+.footer-right p{
+  margin: 10px 0;
+}

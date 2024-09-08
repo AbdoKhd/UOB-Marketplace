@@ -1,0 +1,32 @@
+.ratings{
+  background: rgb(43, 89, 227);
+  height: 500px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 50px;
+}
+
+.ratings-left {
+  display: flex;
+  align-items: center; /* Center vertically */
+  justify-content: center; /* Center horizontally */
+  text-align: center; /* Ensure text alignment is centered */
+  color: white;
+  height: 100%;
+}
+
+.ratings-right {
+  max-width: 950px; /* Limit the width of the slider */
+}
+
+.slick-slide > div{
+  margin: 0 10px;
+}
+
+.ratings h1{
+  font-size: 40px;
+}
+
+

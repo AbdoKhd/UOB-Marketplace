@@ -1,0 +1,23 @@
+.listings{
+  padding-top: 70px;
+}
+
+.divider {
+  height: 1px;
+  background-color: rgb(216, 216, 216);
+  width: 100%;
+}
+
+.filter-and-matrix{
+  margin-top: 50px;
+  display: flex;
+  width: 100%;
+}
+
+.filter-container{
+  flex-basis: 20%;
+}
+
+.matrix-container{
+  flex-basis: 80%;
+}

@@ -1,0 +1,33 @@
+.rating {
+  height: 300px;
+  padding: 20px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.stars {
+  margin-bottom: 10px;
+}
+
+.star {
+  font-size: 24px;
+  color: gray;
+  margin: 0 5px;
+}
+
+.star.filled {
+  color: orange;
+}
+
+.rating h3 {
+  margin: 10px 0;
+  font-size: 18px;
+}
+
+.rating p {
+  font-size: 16px;
+  color: #555;
+}
+

@@ -1,0 +1,61 @@
+.search-form{
+  background: rgb(43, 89, 227);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 0;
+  padding-left: 25px;
+}
+
+.search-form-left{
+  flex-basis: 80%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.search-form-right{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-basis: 20%;
+}
+.search-input {
+  width: 70%;
+  padding: 10px;
+  border-radius: 20px;
+  margin-right: 15px;
+  border: none;
+  outline: none;
+}
+
+.search-btn{
+  background: #51B747;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.search-btn:active {
+  transform: scale(0.92); /* Shrinks the button to 95% of its size */
+  transition: transform 0.05s ease; /* Adds a smooth transition effect */
+}
+
+.search-icon{
+  color: white;
+  font-size: 25px;
+}
+
+.search-form-right .icon{
+  color: white;
+  font-size: 20px;
+  margin: 0 20px;
+  transition: transform 0.2s ease;
+}
+
+.search-form-right .icon:hover{
+  transform: scale(1.1);
+}
+
