@@ -16,9 +16,6 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/listings" element={<ListingsPage />} />
       </Routes>
-
-
-      
     </>
   )
 }
