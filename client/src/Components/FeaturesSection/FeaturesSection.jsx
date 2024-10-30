@@ -10,7 +10,7 @@ const FeaturesSection = () => {
       <div className='feature'>
         <FaLock className='icon'/>
         <h2>Secure</h2>
-        <p>.edu authentication and buyer protection on purchases.</p>
+        <p>End to end encrypted messaging.</p>
       </div>
       <div className='feature'>
         <BsFillLightningChargeFill className='icon'/>
@@ -20,7 +20,7 @@ const FeaturesSection = () => {
       <div className='feature'>
         <FaUserCheck className='icon'/>
         <h2>Verified Students</h2>
-        <p>Trade with other students, not strangers</p>
+        <p>Trade with other students, not strangers.</p>
       </div>
       <div className='feature'>
         <FaCartShopping alt="" className='icon'/>

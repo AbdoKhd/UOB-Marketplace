@@ -26,7 +26,7 @@ const FooterSection = () => {
         </div>
         <div className='col'>
           <h2>Contact Us</h2>
-          <p>Abdo.khd2002@gmail.com</p>
+          <p>abdrahman.khodr@std.balamand.edu.lb</p>
         </div>
       </div>
     </div>

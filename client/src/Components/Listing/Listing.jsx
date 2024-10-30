@@ -8,7 +8,7 @@ import ps from '../../Assets/ps5.jpg'
 
 const Listing = () => {
 
-  const [isLiked, setIsLiked] = useState(false)
+  const [isLiked, setIsLiked] = useState(false);
 
   const toggleLike = () => {
     setIsLiked(!isLiked);
@@ -34,3 +34,4 @@ const Listing = () => {
 }
 
 export default Listing
+

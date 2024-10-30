@@ -1,15 +1,24 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { useAuth } from '../../Components/AuthContext'
 import React from 'react'
 import './NavBar.css'
 import { NavLink, useLocation } from 'react-router-dom';
-import logo from '../../Assets/UOB-logo.png'
+import logo from '../../Assets/balamad abed_UOB Marketplace 5.png'
+import { HiOutlineMenuAlt2 } from "react-icons/hi";
 
 
 const NavBar = () => {
 
   const [darkNavbar, setDarkNavBar] = useState(false)
   const location = useLocation();
+
+  const { isAuthenticated } = useAuth();
+
+  const[isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const toggleMenu = () => {
+    setIsMenuOpen((prev) => !prev);
+  };
 
   useEffect(() => {
     // If we're on the homepage, add scroll event listener
@@ -31,15 +40,26 @@ const NavBar = () => {
   }, [location.pathname]);
 
   return (
-    <nav className={`nav ${darkNavbar? 'dark-nav' : ''}`}>
+    <nav className={`nav ${darkNavbar ? 'dark-nav' : ''}`}>
       <NavLink to='/' className='logo'>
-        <img src={logo} className='logo-img' />
+        <img src={logo} className='logo-img' alt='Logo' />
       </NavLink>
-      <ul className='list'>
-          <li> <NavLink to='/listings' activeClassName='active'>Listings</NavLink></li>
-          <li> <NavLink to='/login' activeClassName='active'>Login</NavLink></li>
-          <li> <NavLink to='/register' activeClassName='active'>Sign up</NavLink></li>
+      <ul style={{ right: isMenuOpen ? '0' : '-200px', transition: 'right 0.5s ease'}}>
+        <li> <NavLink to='/listings' activeClassName='active'>Listings</NavLink></li>
+        
+        {isAuthenticated ? (
+          <>
+            <li> <NavLink to='/sell' activeClassName='active'>Sell</NavLink></li>
+            <li> <NavLink to='/profile' activeClassName='active'>Profile</NavLink></li>
+          </>
+        ) : (
+          <>
+            <li> <NavLink to='/login' activeClassName='active'>Login</NavLink></li>
+            <li> <NavLink to='/register' activeClassName='active'>Sign up</NavLink></li>
+          </>
+        )}
       </ul>
+      <HiOutlineMenuAlt2 className='menu-icon' onClick={toggleMenu} />
     </nav>
   )
 }

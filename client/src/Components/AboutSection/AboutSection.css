@@ -38,3 +38,16 @@
 .about p{
   margin-bottom: 20px;
 }
+
+/* ------ media query ------ */
+
+@media (max-width: 800px){
+  .about{
+    flex-direction: column-reverse;
+  }
+
+  .about-img{
+    max-width: 400px;
+  }
+
+}

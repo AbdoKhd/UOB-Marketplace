@@ -5,13 +5,15 @@ import './LoginForm.css';
 import axios from 'axios';
 import { FaUser, FaLock } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
-import NavBar from '../../Components/NavBar/NavBar';
+import { useAuth } from '../../Components/AuthContext';
 
 const LoginForm = () => {
 
   const[username, setUsername] = useState("");
   const[password, setPassword] = useState("");
   const navigate = useNavigate();
+
+  const { login } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -24,7 +26,8 @@ const LoginForm = () => {
       });
 
       if(response.status === 200){
-        navigate('/home')
+        login();
+        navigate('/');
       }
 
     } catch (error) {

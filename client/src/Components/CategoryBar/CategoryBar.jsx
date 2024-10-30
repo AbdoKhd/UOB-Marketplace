@@ -11,6 +11,7 @@ const CategoryBar = () => {
       <NavLink className='category-btn' to='#' activeClassName="activee">Clothes</NavLink>
       <NavLink className='category-btn' to='#' activeClassName="activee">Directions</NavLink>
       <NavLink className='category-btn' to='#' activeClassName="activee">Tutoring</NavLink>
+      <NavLink className='category-btn' to='#' activeClassName="activee">Events</NavLink>
     </div>
   )
 }

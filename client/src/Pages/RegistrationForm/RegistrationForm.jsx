@@ -1,12 +1,12 @@
 
-import { useState, useEffect } from 'react';
+import { useState} from 'react';
 import axios from 'axios';
 import React from 'react'
 import '../LoginForm/LoginForm.css'
 import './RegistrationForm.css';
 import { FaUser, FaLock, FaEnvelope } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
-import NavBar from '../../Components/NavBar/NavBar';
+import { useAuth } from '../../Components/AuthContext';
 
 const RegistrationForm = () => {
 
@@ -14,6 +14,8 @@ const RegistrationForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+
+  const { login } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -27,7 +29,8 @@ const RegistrationForm = () => {
       });
 
       if(response.status === 200){
-        navigate('/home')
+        login();
+        navigate('/');
       }
 
 

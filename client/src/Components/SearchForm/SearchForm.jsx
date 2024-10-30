@@ -10,7 +10,7 @@ const SearchForm = () => {
     <div className='search-form'>
       <div className='search-form-left'>
         <input type="text" placeholder="Search for laptops, books, notes, previous exams, clothes ..." className='search-input'></input>
-        <button className='btn search-btn'>
+        <button className='search-btn'>
           <IoIosSearch className='search-icon'/>
         </button>
         
