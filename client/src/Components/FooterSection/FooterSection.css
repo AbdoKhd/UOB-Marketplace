@@ -36,6 +36,7 @@
 }
 
 .footer-right p{
+  cursor: pointer;
   margin: 10px 0;
 }
 

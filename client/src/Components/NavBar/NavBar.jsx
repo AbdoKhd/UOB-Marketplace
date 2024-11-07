@@ -3,7 +3,7 @@ import { useAuth } from '../../Components/AuthContext'
 import React from 'react'
 import './NavBar.css'
 import { NavLink, useLocation } from 'react-router-dom';
-import logo from '../../Assets/balamad abed_UOB Marketplace 5.png'
+import logo from '../../Assets/balamad abed_UOB Marketplace 3.png'
 import { HiOutlineMenuAlt2 } from "react-icons/hi";
 
 
@@ -22,7 +22,7 @@ const NavBar = () => {
 
   useEffect(() => {
     // If we're on the homepage, add scroll event listener
-    if (location.pathname === '/') {
+    if (location.pathname === '/' || location.pathname === '/login' || location.pathname === '/register') {
       const handleScroll = () => {
         window.scrollY > 30 ? setDarkNavBar(true) : setDarkNavBar(false);
       };

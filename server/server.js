@@ -11,8 +11,15 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
+//User Routes
 const userRoutes = require('./routes/users');
 app.use('/api/users', userRoutes);
+
+
+//Listing Routes
+console.log("reached backend")
+const listingRoutes = require('./routes/listings');
+app.use('/api/listings', listingRoutes);
 
 
 // Connect to MongoDB and start the server

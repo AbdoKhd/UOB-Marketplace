@@ -1,0 +1,11 @@
+.profile-page{
+  padding: 70px;
+}
+
+.profile-container{
+  width: 100%;
+  margin-bottom: 50px;
+  padding: 10px;
+  box-shadow: 0 0 5px rgb(210, 210, 210);
+  border-radius: 10px;
+}

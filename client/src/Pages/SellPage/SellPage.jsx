@@ -1,8 +1,15 @@
 import React, {useState, useRef} from 'react'
 import NavBar from '../../Components/NavBar/NavBar'
 import './SellPage.css'
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../Components/AuthContext';
 
 const SellPage = () => {
+
+  const { user } = useAuth();
+
+  const navigate = useNavigate();
 
   const [images, setImages] = useState([]);
   const [isDragging, setIsDragging] = useState(false);
@@ -20,6 +27,8 @@ const SellPage = () => {
   const [price, setPrice] = useState("");
   const [isFree, setIsFree] = useState(false);
   const [priceError, setPriceError] = useState(false);
+
+  const [errorMessage, setErrorMessage] = useState("");
 
   function selectFiles(){
     fileInputRef.current.click();
@@ -117,22 +126,38 @@ const SellPage = () => {
     }
   }
 
-
-  function handleButtonClick() {
+  const handleButtonClick = async (e) => {
     if(!title || !category || (!price && !isFree)){
-      alert("Check required");
+      setErrorMessage("Check required fields");
 
       if (!title) setTitleError(true);
       if (!category) setCategoryError(true);
       if (!price && !isFree) setPriceError(true);
     }
     else{
-      // Proceed with form submission or further validation
-      console.log("These are the images: ", images);
-      console.log("This is the title: ", title);
-      console.log("This is the category: ", category);
-      console.log("This is the description: ", description);
-      console.log("This is the price: ", price);
+      // Post Listing
+
+      try {
+        // Make a POST request to the backend's register route
+        const response = await axios.post('http://localhost:5000/api/listings/postListing', {
+          title: title,
+          category: category,
+          description: description,
+          price: price,
+          user: user.id
+        });
+  
+        if(response.status === 200){
+          console.log('Listing posted successfully');
+          navigate('/listings');
+        }
+  
+  
+      } catch (error) {
+        // Handle any errors
+        console.error('There was an error posting the listing!', error);
+        setErrorMessage("Posting the listing has failed. Please try again.");
+      }
     }
   }
 
@@ -220,6 +245,9 @@ const SellPage = () => {
           </label>
         </div>
       </div>
+
+      {errorMessage && <p className="error-message">{errorMessage}</p>}
+
       <button className='post-button' onClick={handleButtonClick}>Post Item</button>
     </div>
   )

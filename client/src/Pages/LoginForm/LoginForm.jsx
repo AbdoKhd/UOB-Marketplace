@@ -2,37 +2,41 @@
 import { useState } from 'react';
 import React from 'react'
 import './LoginForm.css';
+import NavBar from '../../Components/NavBar/NavBar'
 import axios from 'axios';
-import { FaUser, FaLock } from "react-icons/fa";
+import { FaLock, FaEnvelope } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../Components/AuthContext';
 
 const LoginForm = () => {
 
-  const[username, setUsername] = useState("");
+  const[email, setEmail] = useState("");
   const[password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
   const { login } = useAuth();
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
 
     try {
       // Make a POST request to the backend's register route
       const response = await axios.post('http://localhost:5000/api/users/login', {
-        username,
+        email,
         password
       });
 
       if(response.status === 200){
-        login();
+        const userData = response.data.user; // Extract user details from the response
+        login(userData);
         navigate('/');
       }
 
     } catch (error) {
       // Handle any errors
       console.error('There was an error loging in!', error);
+      setErrorMessage('Incorrect Email or Password');
     }
 
   }
@@ -41,35 +45,35 @@ const LoginForm = () => {
 
   return (
     <div className='login-register-page'>
-      <div className='login-register-form'>
-        <div className='wrapper'>
-          <form onSubmit={handleSubmit}>
-            <h1>Login</h1>
-            <div className='input-box'>
-              <input type="text" placeholder="Username" required onChange={(e) => setUsername(e.target.value)}/>
-              <FaUser className='icon' />
-            </div>
-            <div className='input-box'>
-              <input type="password" placeholder="Password" required onChange={(e) => setPassword(e.target.value)}/>
-              <FaLock className='icon' />
-            </div>
+      <NavBar/>
+        <form className='login-register-container' onSubmit={handleSubmit}>
+          <h1>Login</h1>
 
-            <div className='remember-forget' >
-              <label>
-                <input type="checkbox"/>
-                Remember me
-              </label>
-              <a href='#'>Forgot password</a>
-            </div>
+          {errorMessage && <p className="error-message">{errorMessage}</p>}
 
-            <button type='submit'>Login</button>
+          <div className='input-box'>
+            <input type="email" placeholder="Email" required onChange={(e) => setEmail(e.target.value)}/>
+            <FaEnvelope className='icon' />
+          </div>
+          <div className='input-box'>
+            <input type="password" placeholder="Password" required onChange={(e) => setPassword(e.target.value)}/>
+            <FaLock className='icon' />
+          </div>
 
-            <div className='register-link'>
-              <p>Don't have an account? <a href='/register'>Sign up</a></p>
-            </div>
-          </form>
-        </div>
-      </div>
+          <div className='remember-forget' >
+            <label>
+              <input type="checkbox"/>
+              Remember me
+            </label>
+            <a href='#'>Forgot password</a>
+          </div>
+
+          <button type='submit'>Login</button>
+
+          <div className='register-link'>
+            <p>Don't have an account? <a href='/register'>Sign up</a></p>
+          </div>
+        </form>
     </div>
   )
 }

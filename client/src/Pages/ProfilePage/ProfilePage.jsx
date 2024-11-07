@@ -1,6 +1,8 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../Components/AuthContext';
+import './ProfilePage.css'
+import NavBar from '../../Components/NavBar/NavBar';
 
 const ProfilePage = () => {
 
@@ -15,7 +17,11 @@ const ProfilePage = () => {
 
 
   return (
-    <div className='profile'>
+    <div className='profile-page'>
+      <NavBar/>
+      <div className='profile-container'>
+
+      </div>
       <button onClick={handleLogoutButton} className='logout-btn'>LOGOUT</button>
     </div>
   )

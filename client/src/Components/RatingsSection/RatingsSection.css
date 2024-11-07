@@ -1,32 +1,76 @@
 .ratings{
   background: rgb(43, 89, 227);
-  height: 500px;
-  width: 100%;
+  padding: 50px 0; 
+}
+
+.ratings-bottom{
+  padding: 0 80px;
+  position: relative;
+  transition: 0.4s;
+}
+
+.ratings-top{
+  margin-bottom: 50px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 0 50px;
+  justify-content: center;
 }
 
-.ratings-left {
-  display: flex;
-  align-items: center; /* Center vertically */
-  justify-content: center; /* Center horizontally */
-  text-align: center; /* Ensure text alignment is centered */
+.ratings-top h1{
   color: white;
-  height: 100%;
 }
 
-.ratings-right {
-  max-width: 950px; /* Limit the width of the slider */
-}
-
-.slick-slide > div{
-  margin: 0 10px;
-}
-
-.ratings h1{
+.btn-next, .btn-back{
+  margin: 0 2%;
+  color: white;
   font-size: 40px;
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  border-radius: 50%;
+  padding: 10px;
+  cursor: pointer;
+  background-color: black;
+}
+
+.disabled {
+  color: gray;
+  background-color: #333;
+  cursor:default;
+}
+
+.btn-back{
+  right: auto;
+  left: 0;
+}
+
+.slider{
+  overflow: hidden;
+}
+
+.slider ul{
+  display: flex;
+  overflow-x: hidden;
+  transition: 0.5s;
+}
+
+.slider ul li{
+  list-style: none;
+  width: 50%;
+  padding: 0 20px;
+}
+
+/* ------ media query ------ */
+
+@media (max-width: 670px){
+
+}
+
+@media (max-width: 420px){
+  .ratings-bottom{
+    padding: 0 50px;
+  }
 }
 
 

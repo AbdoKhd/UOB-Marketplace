@@ -3,39 +3,41 @@
     background: linear-gradient(rgba(48, 48, 48, 0.5), rgba(48, 48, 48, 0.5)), url('../../Assets/balamand-background.jpg') no-repeat;
     background-size: cover;
     background-position: center;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 120px 0; /* 70px(navBar) + 50px(space needed) */
 }
 
-.login-register-form{
-    
+.login-register-container{
+    width: 100%;
+    max-width: 500px;
     display: flex;
     justify-content: center; /* Center content vertically */
     align-items: center; /* Center content horizontally */
-    min-height: 100vh;
-}
-
-.wrapper{
-    
-    width: 500px;
     background: transparent;
+    flex-direction: column;
     border: 2px solid rgb(255, 255, 255, .2);
     backdrop-filter: blur(20px);
     box-shadow: 0 0 10px rgb(0, 0, 0, 0.2);
     color: white;
     border-radius: 10px;
     padding: 30px 50px;
-
+    margin: 0 10%;
+    transition: 0.4s;
 }
 
-.wrapper h1{
+.login-register-container h1{
     font-size: 30px;
-    text-align: center;
+    margin-bottom: 30px;
 }
 
-.wrapper .input-box{
+.login-register-container .input-box{
     position: relative;
     width: 100%;
     height: 50px;
-    margin: 30px 0;
+    margin-bottom: 30px;
 }
 
 .input-box input{
@@ -48,6 +50,14 @@
     padding: 20px 45px 20px 20px;
     color: white;
     font-size: 18px;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill{
+    -webkit-text-fill-color: #F1F1F1;
+    transition: background-color 5000s ease-in-out 0s;
 }
 
 .input-box input:focus{
@@ -66,11 +76,12 @@
     font-size: 16px;
 }
 
-.wrapper .remember-forget{
+.login-register-container .remember-forget{
+    width: 100%;
     display: flex;
     justify-content: space-between;
     font-size: 14.5px;
-    margin: -15px 0 15px;
+    margin-bottom: 30px;
 }
 
 .remember-forget label input{
@@ -87,10 +98,11 @@
     text-decoration: underline;
 }
 
-.wrapper button{
+.login-register-container button{
+    color: white;
     width: 100%;
     height: 45px;
-    background: rgb(235, 235, 235);
+    background: #51B747;
     border: none;
     outline: none;
     border-radius: 40px;
@@ -100,11 +112,15 @@
     font-weight: 700;
 }
 
-.wrapper button:hover{
-    background: white;
+.remember-forget input[type="checkbox"] {
+    accent-color: rgb(43, 89, 227);
 }
 
-.wrapper .register-link{
+.login-register-container button:hover{
+    /* background: white; */
+}
+
+.login-register-container .register-link{
     font-size: 14.5px;
     text-align: center;
     margin-top: 20px;
@@ -118,5 +134,23 @@
 
 .register-link p a:hover{
     text-decoration: underline;
+}
+
+.error-message{
+    color: rgb(255, 0, 0);
+    margin-bottom: 30px;
+    font-size: 18px;
+}
+
+/* ------ media query ------ */
+
+@media (max-width: 500px){
+    .login-register-container{
+        margin: 0 5%;
+    }
+
+    .login-register-container{
+        padding: 30px 20px;
+    }
 }
 
