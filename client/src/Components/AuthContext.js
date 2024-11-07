@@ -3,20 +3,20 @@ import { createContext, useContext, useState, useEffect } from 'react';
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [user, setUser] = useState(null);
+
+  const [user, setUser] = useState(() => {
+    const storedUser = localStorage.getItem('user');
+    return storedUser ? JSON.parse(storedUser) : false;
+  });
+
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    const storedStatus = localStorage.getItem('isAuthenticated');
+    return storedStatus ? JSON.parse(storedStatus) : false;
+  });
+  
 
   // Check localStorage for auth status on load
   useEffect(() => {
-    const authStatus = localStorage.getItem('isAuthenticated');
-    const storedUser = localStorage.getItem('user');
-
-    if (authStatus) {
-      setIsAuthenticated(JSON.parse(authStatus));
-      if (storedUser) {
-        setUser(JSON.parse(storedUser));
-      }
-    }
   }, []);
 
   // Login function

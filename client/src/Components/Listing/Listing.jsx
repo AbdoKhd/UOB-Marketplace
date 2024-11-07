@@ -4,9 +4,7 @@ import './Listing.css'
 import { FaRegHeart, FaHeart} from "react-icons/fa";
 import { LuMessageSquare } from "react-icons/lu";
 
-import ps from '../../Assets/ps5.jpg'
-
-const Listing = () => {
+const Listing = ({listingId, title, category, description, price}) => {
 
   const [isLiked, setIsLiked] = useState(false);
 
@@ -16,10 +14,10 @@ const Listing = () => {
 
   return (
     <div className='listing'>
-      <img src={ps} alt="" className='image'/>
+      <img src='' alt="" className='image'/>
       <div className='text'>
-        <h3 className='text-title'>Ps5 slim</h3>
-        <p className='text-price'>$305</p>
+        <h3 className='text-title'>{title}</h3>
+        <p className='text-price'>${price}</p>
         <div className='icons'>
           {isLiked ? (
             <FaHeart className='icon' onClick={toggleLike} />

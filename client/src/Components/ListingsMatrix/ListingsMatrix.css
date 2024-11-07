@@ -2,7 +2,6 @@
   display: flex;
   flex-wrap: wrap;
   gap: 20px; /* Add space between the listings */
-  justify-content: flex-start; /* Center the grid in the container */
-  padding: 20px;
+  justify-content: center;
 }
 
