@@ -5,19 +5,42 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
 
   const [user, setUser] = useState(() => {
-    const storedUser = localStorage.getItem('user');
-    return storedUser ? JSON.parse(storedUser) : false;
+    try {
+      const storedUser = localStorage.getItem('user');
+      return storedUser ? JSON.parse(storedUser) : null;
+    } catch (error) {
+      console.error('Error parsing user data from localStorage:', error);
+      return null;
+    }
   });
 
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
-    const storedStatus = localStorage.getItem('isAuthenticated');
-    return storedStatus ? JSON.parse(storedStatus) : false;
+    try {
+      const storedStatus = localStorage.getItem('isAuthenticated');
+      return storedStatus ? JSON.parse(storedStatus) : false;
+    } catch (error) {
+      console.error('Error parsing authentication status from localStorage:', error);
+      return false;
+    }
   });
   
 
-  // Check localStorage for auth status on load
-  useEffect(() => {
-  }, []);
+  // useEffect(() => {
+  //   if (user && isAuthenticated) {
+  //     // Request to verify if the user still exists in the database
+  //     fetch(`/api/users/${user.id}`)
+  //       .then(response => {
+  //         if (!response.ok) {
+  //           throw new Error('User not found');
+  //         }
+  //         return response.json();
+  //       })
+  //       .catch(() => {
+  //         // If user doesn't exist, clear localStorage and update context
+  //         logout();
+  //       });
+  //   }
+  // }, [user, isAuthenticated]);
 
   // Login function
   const login = (userData) => {

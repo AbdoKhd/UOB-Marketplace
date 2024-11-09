@@ -12,6 +12,7 @@ import ProtectedRouteLoggedOut from './Components/ProtectedRouteLoggedOut';
 import ProtectedRouteLoggedIn from './Components/ProtectedRouteLoggedIn';
 
 function App() {
+
   return (
     <AuthProvider>
       <Routes >

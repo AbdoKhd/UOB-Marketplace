@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import http from '../../http-common';
 import Listing from '../Listing/Listing'
 import './ListingsMatrix.css'
 
@@ -11,7 +11,7 @@ const ListingsMatrix = () => {
     // Fetch listings from your backend
     const fetchListings = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/listings/getListings');
+        const response = await http.get('/api/listings/getListings');
         setListings(response.data);
       } catch (error) {
         console.error('Error fetching listings:', error);

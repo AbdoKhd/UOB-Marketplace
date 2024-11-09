@@ -18,7 +18,8 @@ const Listing = ({listingId, title, category, description, price}) => {
       <div className='text'>
         <h3 className='text-title'>{title}</h3>
         <p className='text-price'>${price}</p>
-        <div className='icons'>
+      </div>
+      <div className='icons'>
           {isLiked ? (
             <FaHeart className='icon' onClick={toggleLike} />
           ) : (
@@ -26,7 +27,6 @@ const Listing = ({listingId, title, category, description, price}) => {
           )}
           <LuMessageSquare className='icon'/>
         </div>
-      </div>
     </div>
   )
 }

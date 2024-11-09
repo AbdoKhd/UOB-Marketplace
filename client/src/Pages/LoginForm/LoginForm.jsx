@@ -3,7 +3,7 @@ import { useState } from 'react';
 import React from 'react'
 import './LoginForm.css';
 import NavBar from '../../Components/NavBar/NavBar'
-import axios from 'axios';
+import http from '../../http-common';
 import { FaLock, FaEnvelope } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../Components/AuthContext';
@@ -22,7 +22,7 @@ const LoginForm = () => {
 
     try {
       // Make a POST request to the backend's register route
-      const response = await axios.post('http://localhost:5000/api/users/login', {
+      const response = await http.post('/api/users/login', {
         email,
         password
       });

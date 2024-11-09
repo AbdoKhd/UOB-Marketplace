@@ -19,7 +19,11 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  bio: {
+  about: {
+    type: String,
+    required: false,
+  },
+  campus: {
     type: String,
     required: false,
   },

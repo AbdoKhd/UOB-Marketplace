@@ -7,7 +7,7 @@ router.post('/register', async (req, res) => {
   try {
     const newUser = new User(req.body);
     await newUser.save();
-    res.status(200).json({message: 'Registration Successful', newUser});
+    res.status(200).json({message: 'Registration Successful', user: {id: newUser.id, firstName: newUser.firstName, lastName: newUser.lastName, email: newUser.email}});
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
@@ -16,11 +16,11 @@ router.post('/register', async (req, res) => {
 // Authentication
 router.post('/login', async (req, res) => {
   try{
-    const {username, password} = req.body;
+    const {email, password} = req.body;
 
-    const user = await User.findOne({username});
+    const user = await User.findOne({email});
     if(!user){
-      return res.status(400).json({message: 'Invalid username'})
+      return res.status(400).json({message: 'Invalid email'})
     }
 
     const isMatch = await user.comparePassword(password)
@@ -28,7 +28,7 @@ router.post('/login', async (req, res) => {
       return res.status(400).json({message: 'Invalid password'})
     }
 
-    res.status(200).json({message: 'Login Successful', user: {id: user.id, name: user.username, email: user.email}})
+    res.status(200).json({message: 'Login Successful', user: {id: user.id, firstName: user.firstName, lastName: user.lastName, email: user.email}})
 
 
   }catch (error) {

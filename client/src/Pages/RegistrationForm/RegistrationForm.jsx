@@ -1,6 +1,6 @@
 
 import { useState} from 'react';
-import axios from 'axios';
+import http from '../../http-common';
 import React from 'react'
 import '../LoginForm/LoginForm.css'
 import './RegistrationForm.css';
@@ -34,7 +34,7 @@ const RegistrationForm = () => {
 
     try {
       // Make a POST request to the backend's register route
-      const response = await axios.post('http://localhost:5000/api/users/register', {
+      const response = await http.post('/api/users/register', {
         firstName,
         lastName,
         email,
@@ -42,7 +42,7 @@ const RegistrationForm = () => {
       });
 
       if(response.status === 200){
-        const userData = response.data.user; // Extract user details from the response
+        const userData = response.data.user;
         login(userData);
         navigate('/');
       }

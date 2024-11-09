@@ -1,7 +1,7 @@
 import React, {useState, useRef} from 'react'
 import NavBar from '../../Components/NavBar/NavBar'
 import './SellPage.css'
-import axios from 'axios';
+import http from '../../http-common';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../Components/AuthContext';
 
@@ -139,7 +139,7 @@ const SellPage = () => {
 
       try {
         // Make a POST request to the backend's register route
-        const response = await axios.post('http://localhost:5000/api/listings/postListing', {
+        const response = await http.post('/api/listings/postListing', {
           title: title,
           category: category,
           description: description,
@@ -148,7 +148,6 @@ const SellPage = () => {
         });
   
         if(response.status === 200){
-          console.log('Listing posted successfully');
           navigate('/listings');
         }
   
