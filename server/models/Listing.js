@@ -2,6 +2,12 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const ListingSchema = new mongoose.Schema({
+  //Fields:
+
+  imagesUrl: {
+    type: [String], // Array of strings to hold URLs
+    required: false
+  },
   title: {
     type: String,
     required: true

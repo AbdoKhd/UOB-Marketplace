@@ -10,6 +10,7 @@ import SellPage from './Pages/SellPage/SellPage';
 import ProfilePage from './Pages/ProfilePage/ProfilePage';
 import ProtectedRouteLoggedOut from './Components/ProtectedRouteLoggedOut';
 import ProtectedRouteLoggedIn from './Components/ProtectedRouteLoggedIn';
+import ListingDetailsPage from './Pages/ListingDetailsPage/ListingDetailsPage';
 
 function App() {
 
@@ -19,6 +20,7 @@ function App() {
         <Route path="/login" element={ <ProtectedRouteLoggedIn> <LoginForm /> </ProtectedRouteLoggedIn>} />
         <Route path="/register" element={ <ProtectedRouteLoggedIn> <RegistrationForm /> </ProtectedRouteLoggedIn>} />
         <Route path="/" element={<HomePage />} />
+        <Route path="/listingDetails/:listingId" element={<ListingDetailsPage/>} />
         <Route path="/listings" element={<ListingsPage />} />
         <Route path="/sell" element={ <ProtectedRouteLoggedOut> <SellPage/> </ProtectedRouteLoggedOut>} />
         <Route path="/profile" element={ <ProtectedRouteLoggedOut> <ProfilePage/> </ProtectedRouteLoggedOut>} />

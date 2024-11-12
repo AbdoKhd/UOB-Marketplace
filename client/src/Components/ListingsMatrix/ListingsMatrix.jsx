@@ -25,11 +25,9 @@ const ListingsMatrix = () => {
     <div className='listings-matrix'>
       {listings.map((listing) => (
         <Listing
-          key={listing._id} // Use unique ID from the database
-          listingId={listing.id}
+          key={listing._id}
+          listingId={listing._id}
           title={listing.title}
-          category={listing.category}
-          description={listing.description}
           price={listing.price}
         />
       ))}

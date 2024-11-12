@@ -4,7 +4,7 @@ const router = express.Router();
 
 // Post a new listing
 router.post('/postListing', async (req, res) => {
-  const { title, category, price, user } = req.body;
+  const {title, category, price, user} = req.body;
 
   // Validate required fields
   if (!title || !category || !price || !user) {
@@ -27,6 +27,22 @@ router.get('/getListings', async (req, res) => {
     res.json(listings);
   } catch (error) {
     res.status(500).json({ message: 'Failed to retrieve listings. ' + error.message});
+  }
+});
+
+// Get one listing
+router.get('/getListing/:listingId', async (req, res) => {
+  const {listingId} = req.params;
+  try {
+    const listing = await Listing.findById(listingId).populate('user');
+
+    if (!listing) {
+      return res.status(404).json({ message: 'Listing not found.'});
+    }
+
+    res.status(200).json({ message: 'Listing retrieved successfully', listing });
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to retrieve the listing. ' + error.message });
   }
 });
 

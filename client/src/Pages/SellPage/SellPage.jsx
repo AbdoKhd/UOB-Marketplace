@@ -41,10 +41,7 @@ const SellPage = () => {
     const validImages = [];
     for (let i = 0; i < files.length; i++) {
       if (files[i].type.split('/')[0] === 'image' && !images.some((e) => e.name === files[i].name)) {
-        validImages.push({
-          name: files[i].name,
-          url: URL.createObjectURL(files[i]),
-        });
+        validImages.push(files[i]);
       }
     }
   
@@ -81,12 +78,10 @@ const SellPage = () => {
     for(let i = 0; i < files.length; i++){
       if(files[i].type.split('/')[0] !== 'image') continue;
       if(!images.some((e) => e.name === files[i].name)){
+        console.log(files[i]);
         setImages((prevImages) => [
           ...prevImages,
-          {
-            name: files[i].name,
-            url: URL.createObjectURL(files[i]),
-          },
+          files[i]
         ]);
       }
     }
@@ -136,10 +131,29 @@ const SellPage = () => {
     }
     else{
       // Post Listing
-
       try {
-        // Make a POST request to the backend's register route
+        console.log('Images before upload:', images);
+
+        // Prepare FormData
+        const formData = new FormData();
+        images.forEach((file) => {
+          formData.append('images', file); // Append each file
+        });
+
+        // Send POST request with FormData
+        const imageResponse = await http.post('/api/images/upload', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        });
+        
+        const imageUrls = imageResponse.data.imageUrls;
+        console.log(imageUrls);
+
+
+        // Make a POST request to the backend's listings route
         const response = await http.post('/api/listings/postListing', {
+          imagesUrl: imageUrls,
           title: title,
           category: category,
           description: description,
@@ -185,7 +199,7 @@ const SellPage = () => {
           {images.map((images, index) => (
             <div className='image' key={index}>
               <span className='delete' onClick={() => deleteImage(index)}>&times;</span>
-              <img src={images.url} alt={images.name} />
+              <img src={URL.createObjectURL(images)} alt={images.name} />
             </div>
           ))}
         </div>
