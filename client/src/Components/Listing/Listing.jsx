@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { FaRegHeart, FaHeart} from "react-icons/fa";
 import { LuMessageSquare } from "react-icons/lu";
 
-const Listing = ({listingId, imageUrls, title, price}) => {
+const Listing = ({listingId, image, title, price}) => {
 
   const [isLiked, setIsLiked] = useState(false);
   const navigate = useNavigate();
@@ -25,7 +25,11 @@ const Listing = ({listingId, imageUrls, title, price}) => {
 
   return (
     <div className='listing' onClick={handleListingClick}>
-      <img src='' alt="" className='image'/>
+      <img 
+        src={image ? image.content : ''}
+        alt="" 
+        className='image'
+      />
       <div className='text'>
         <h3 className='text-title'>{title}</h3>
         <p className='text-price'>${price}</p>

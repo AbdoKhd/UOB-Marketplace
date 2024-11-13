@@ -134,26 +134,31 @@ const SellPage = () => {
       try {
         console.log('Images before upload:', images);
 
-        // Prepare FormData
-        const formData = new FormData();
-        images.forEach((file) => {
-          formData.append('images', file); // Append each file
-        });
-
-        // Send POST request with FormData
-        const imageResponse = await http.post('/api/images/upload', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        });
+        let imagesKey = []
+        if(images.length !== 0){
         
-        const imageUrls = imageResponse.data.imageUrls;
-        console.log(imageUrls);
+          // Prepare FormData
+          const formData = new FormData();
+          images.forEach((file) => {
+            formData.append('images', file); // Append each file
+          });
+
+          // Send POST request with FormData
+          const imageResponse = await http.post('/api/images/upload', formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          });
+          
+          imagesKey = imageResponse.data.imageKeys;
+          console.log(imagesKey);
+
+        }
 
 
         // Make a POST request to the backend's listings route
         const response = await http.post('/api/listings/postListing', {
-          imagesUrl: imageUrls,
+          imagesKey: imagesKey,
           title: title,
           category: category,
           description: description,

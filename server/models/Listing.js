@@ -4,8 +4,8 @@ const Schema = mongoose.Schema;
 const ListingSchema = new mongoose.Schema({
   //Fields:
 
-  imagesUrl: {
-    type: [String], // Array of strings to hold URLs
+  imagesKey: {
+    type: [String], // Array of strings to hold keys
     required: false
   },
   title: {

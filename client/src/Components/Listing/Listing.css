@@ -12,6 +12,14 @@
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
 }
 
+.no-image-container{
+  background-color: red;
+  height: 250px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .listing .image{
   display: block;
   object-fit: cover;
