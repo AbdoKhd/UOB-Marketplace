@@ -30,6 +30,8 @@ const SellPage = () => {
 
   const [errorMessage, setErrorMessage] = useState("");
 
+  const [postingInProgress, setPostingInProgress] = useState(false);
+
   function selectFiles(){
     fileInputRef.current.click();
   }
@@ -132,6 +134,8 @@ const SellPage = () => {
     else{
       // Post Listing
       try {
+        setPostingInProgress(true);
+        setErrorMessage("");
         console.log('Images before upload:', images);
 
         let imagesKey = []
@@ -167,12 +171,14 @@ const SellPage = () => {
         });
   
         if(response.status === 200){
+          setPostingInProgress(false);
           navigate('/listings');
         }
   
   
       } catch (error) {
         // Handle any errors
+        setPostingInProgress(false);
         console.error('There was an error posting the listing!', error);
         setErrorMessage("Posting the listing has failed. Please try again.");
       }
@@ -266,7 +272,9 @@ const SellPage = () => {
 
       {errorMessage && <p className="error-message">{errorMessage}</p>}
 
-      <button className='post-button' onClick={handleButtonClick}>Post Item</button>
+      {postingInProgress && <div className='spinner'></div>}
+
+      <button className='post-button' onClick={handleButtonClick} disabled={postingInProgress}>Post Item</button>
     </div>
   )
 }

@@ -1,7 +1,7 @@
+
 .listings-matrix {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px; /* Add space between the listings */
+  gap: 30px; /* Add space between the listings */
   justify-content: center;
 }
-

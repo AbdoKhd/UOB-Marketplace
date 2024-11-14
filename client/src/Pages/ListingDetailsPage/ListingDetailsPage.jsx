@@ -18,6 +18,28 @@ const ListingDetailsPage = () => {
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  function SampleNextArrow(props) {
+    const { className, style, onClick } = props;
+    return (
+      <div
+        className={className}
+        style={{ ...style, display: "block", background: "black" }}
+        onClick={onClick}
+      />
+    );
+  }
+  
+  function SamplePrevArrow(props) {
+    const { className, style, onClick } = props;
+    return (
+      <div
+        className={className}
+        style={{ ...style, display: "block", background: "black" }}
+        onClick={onClick}
+      />
+    );
+  }
+
   useEffect(() => {
     // Fetch listing
     const fetchListing = async () => {
@@ -47,8 +69,11 @@ const ListingDetailsPage = () => {
   // Handle loading and null checks
   if (loading) {
     return (
-      <div className='listing-details-page'>
-        <p>Loading...</p>;
+      <div>
+        <NavBar/>
+        <div className='spinner-wrapper'>
+          <div className='spinner'></div>
+        </div>
       </div>
     )
         
@@ -57,6 +82,7 @@ const ListingDetailsPage = () => {
   if (!listing) {
     return (
       <div className='listing-details-page'>
+        <NavBar/>
         <p>Listing not found</p>;
       </div>
     )
@@ -68,7 +94,8 @@ const ListingDetailsPage = () => {
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
-    arrows: true, // Ensure arrows are enabled
+    nextArrow: <SampleNextArrow className='right-arrow'/>,
+    prevArrow: <SamplePrevArrow />,
     responsive: [
       {
         breakpoint: 768,

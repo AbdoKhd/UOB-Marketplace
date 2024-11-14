@@ -28,7 +28,15 @@ const UserSchema = new mongoose.Schema({
     required: false,
   },
   profilePicture: {
-    type: String, // URL or path to the image
+    type: String, // Key to the image
+    required: false,
+  },
+  myListings: {
+    type: [String], // Listings id of the my listings
+    required: false,
+  },
+  myFavorites: {
+    type: [String], // Listings id of my favorites
     required: false,
   }
 });

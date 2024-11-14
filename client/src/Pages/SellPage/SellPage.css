@@ -215,6 +215,11 @@
   transition: transform 0.05s ease; /* Adds a smooth transition effect */
 }
 
+.post-button:disabled {
+  background-color: #ccc;
+  cursor:default;
+}
+
 .error {
   border: 2px solid rgba(255, 0, 0, 0.709);
 }

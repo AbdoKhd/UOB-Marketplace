@@ -65,6 +65,30 @@
   margin: 10px 0;
 }
 
+.spinner-wrapper{
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.spinner {
+  border: 5px solid #f3f3f3; /* Light gray */
+  border-top: 5px solid #2B59E3; /* Blue */
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: spin 1s linear infinite;
+  margin: 50px;
+  display: block;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 /* ------ media query ------ */
 
 @media (max-width: 1000px) {

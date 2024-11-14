@@ -3,39 +3,56 @@ const router = express.Router();
 const multer = require('multer');
 const multerS3 = require('multer-s3');
 const s3Client = require('../aws-config');
-const { GetObjectCommand } = require('@aws-sdk/client-s3');
+const { GetObjectCommand, PutObjectCommand } = require('@aws-sdk/client-s3');
 const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
 
-// Configure multer to use S3 for storage
-const upload = multer({
-  storage: multerS3({
-    s3: s3Client,
-    bucket: 'uob-marketplace',
-    // acl: 'public-read', // Allows public access to the files
-    metadata: function (req, file, cb) {
-      cb(null, { fieldName: file.fieldname });
-    },
-    key: function (req, file, cb) {
-      cb(null, Date.now().toString() + '-' + file.originalname); // Unique filename
-    }
-  })
-});
+const sharp = require('sharp');
+const path = require('path');
+const fs = require('fs');
 
-// Route for handling file upload
-router.post('/upload', upload.array('images', 10), (req, res) => {
+// Configure multer for temporary storage before processing with sharp
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+
+// Route for handling file upload with compression
+router.post('/upload', upload.array('images', 10), async (req, res) => {
   try {
     if (!req.files || req.files.length === 0) {
       return res.status(400).json({ message: 'No files uploaded' });
     }
 
-    const imageKeys = req.files.map(file => file.key); // Use S3 `location` for URLs
-    res.status(200).json({ message: 'Images uploaded successfully', imageKeys});
+    const compressedImageKeys = [];
+
+    for (const file of req.files) {
+      // Compress the image using sharp
+      const compressedImageBuffer = await sharp(file.buffer)
+        .rotate() // Automatically orient based on EXIF data
+        .resize(800) // Resize image to 800px width
+        .jpeg({ quality: 70 }) // Compress to JPEG with 70% quality
+        .toBuffer();
+
+      // Generate a unique filename for the compressed image
+      const fileName = `${Date.now()}-${file.originalname}`;
+
+      // Upload the compressed image to S3
+      await s3Client.send(
+        new PutObjectCommand({
+          Bucket: 'uob-marketplace',
+          Key: fileName,
+          Body: compressedImageBuffer,
+          ContentType: 'image/jpeg', // Ensure correct content type
+        })
+      );
+
+      compressedImageKeys.push(fileName);
+    }
+
+    res.status(200).json({ message: 'Images compressed and uploaded successfully', imageKeys: compressedImageKeys });
   } catch (error) {
-    console.error('Error during image upload:', error);
+    console.error('Error during image compression and upload:', error);
     res.status(500).json({ message: 'Failed to upload images', error: error.message });
   }
 });
-
 
 // Route to get multiple images from S3 bucket
 router.post('/getImages', async (req, res) => {
