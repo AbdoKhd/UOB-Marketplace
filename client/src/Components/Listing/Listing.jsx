@@ -2,17 +2,43 @@ import React, { useState } from 'react'
 import './Listing.css'
 import { useNavigate } from 'react-router-dom';
 
-import { FaRegHeart, FaHeart} from "react-icons/fa";
+import http from '../../http-common';
+import { useAuth } from '../../Components/AuthContext';
+
+import { FaRegHeart, FaHeart, FaSpinner} from "react-icons/fa";
 import { LuMessageSquare } from "react-icons/lu";
 
-const Listing = ({listingId, image, title, price}) => {
+const Listing = ({listingId, image, title, price, isInFavorites}) => {
 
-  const [isLiked, setIsLiked] = useState(false);
+  const { user } = useAuth();
+  const [isLiked, setIsLiked] = useState(isInFavorites);
   const navigate = useNavigate();
+  const [editingFavorites, setEditingFavorites] = useState(false);
 
-  const handleAddToFavorite = (event) => {
+  const handleAddToFavorite = async (event) => {
     event.stopPropagation();
-    setIsLiked(!isLiked);
+    try{
+      if(!isLiked){
+        // Add to favorites
+        setEditingFavorites(true);
+        const addListingToUserFavorites = await http.post(`/api/users/addListingToUser/myFavorites/${user.id}`, {
+          listingId: listingId
+        });
+        setEditingFavorites(false);
+        setIsLiked(true);
+      }
+      else{
+        // Remove from favorites
+        setEditingFavorites(true);
+        const removeListingFromUserFavorites = await http.post(`/api/users/removeListingFromUser/myFavorites/${user.id}`, {
+          listingId: listingId
+        });
+        setEditingFavorites(false);
+        setIsLiked(false);
+      }
+    }catch(error){
+      console.error("Error updating favorites:", error);
+    }
   };
 
   const handleMessageSeller = (event) => {
@@ -35,13 +61,15 @@ const Listing = ({listingId, image, title, price}) => {
         <p className='text-price'>${price}</p>
       </div>
       <div className='icons'>
-          {isLiked ? (
-            <FaHeart className='icon' onClick={handleAddToFavorite} />
-          ) : (
-            <FaRegHeart className='icon' onClick={handleAddToFavorite} />
-          )}
-          <LuMessageSquare className='icon' onClick={handleMessageSeller}/>
-        </div>
+        {editingFavorites ? (
+          <FaSpinner className='icon spinner-favorite' /> // Spinner icon with a class for animation
+        ) : isLiked ? (
+          <FaHeart className='icon' onClick={handleAddToFavorite} />
+        ) : (
+          <FaRegHeart className='icon' onClick={handleAddToFavorite} />
+        )}
+        <LuMessageSquare className='icon' onClick={handleMessageSeller} />
+      </div>
     </div>
   )
 }

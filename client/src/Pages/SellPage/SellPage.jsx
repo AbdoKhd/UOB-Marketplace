@@ -123,6 +123,7 @@ const SellPage = () => {
     }
   }
 
+  //Post button
   const handleButtonClick = async (e) => {
     if(!title || !category || (!price && !isFree)){
       setErrorMessage("Check required fields");
@@ -169,12 +170,17 @@ const SellPage = () => {
           price: price,
           user: user.id
         });
+
+        console.log("this is the id of the posted listing: ", response.data.newListing._id);
+
+        const addListingToUserMyListings = await http.post(`/api/users/addListingToUser/myListings/${user.id}`, {
+          listingId: response.data.newListing._id
+        });
   
         if(response.status === 200){
           setPostingInProgress(false);
           navigate('/listings');
         }
-  
   
       } catch (error) {
         // Handle any errors
