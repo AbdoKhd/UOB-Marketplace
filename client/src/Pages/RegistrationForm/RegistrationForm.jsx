@@ -9,6 +9,8 @@ import { FaUser, FaLock, FaEnvelope } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../Components/AuthContext';
 
+import ScrollToTop from '../../Components/ScrollToTop/ScrollToTop';
+
 const RegistrationForm = () => {
 
   const [firstName, setFirstName] = useState("");
@@ -57,6 +59,7 @@ const RegistrationForm = () => {
 
   return (
     <div className='login-register-page'>
+      <ScrollToTop/>
       <NavBar/>
       <form className='login-register-container' onSubmit={handleSubmit}>
         <h1>Register</h1>

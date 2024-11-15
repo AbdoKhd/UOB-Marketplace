@@ -5,6 +5,8 @@ import './ProfilePage.css'
 import NavBar from '../../Components/NavBar/NavBar';
 import profilePic from '../../Assets/default-profile-pic.png'
 
+import ScrollToTop from '../../Components/ScrollToTop/ScrollToTop';
+
 const ProfilePage = () => {
 
   const navigate = useNavigate();
@@ -28,6 +30,7 @@ const ProfilePage = () => {
 
   return (
     <div className='profile-page'>
+      <ScrollToTop/>
       <NavBar/>
       <div className='profile-container'>
         <div className='profile-pic'>
@@ -60,7 +63,7 @@ const ProfilePage = () => {
           </div>
         </div>
       </>
-    )}
+      )}
     </div>
   )
 }

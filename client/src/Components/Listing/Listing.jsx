@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import './Listing.css'
 import { useNavigate } from 'react-router-dom';
 
@@ -7,6 +7,8 @@ import { useAuth } from '../../Components/AuthContext';
 
 import { FaRegHeart, FaHeart, FaSpinner} from "react-icons/fa";
 import { LuMessageSquare } from "react-icons/lu";
+
+import noImages from '../../Assets/no-image.jpg'
 
 const Listing = ({listingId, image, title, price, isInFavorites}) => {
 
@@ -52,7 +54,7 @@ const Listing = ({listingId, image, title, price, isInFavorites}) => {
   return (
     <div className='listing' onClick={handleListingClick}>
       <img 
-        src={image ? image.content : ''}
+        src={image ? image.content : noImages}
         alt="" 
         className='image'
       />

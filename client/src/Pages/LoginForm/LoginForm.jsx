@@ -8,6 +8,8 @@ import { FaLock, FaEnvelope } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../Components/AuthContext';
 
+import ScrollToTop from '../../Components/ScrollToTop/ScrollToTop';
+
 const LoginForm = () => {
 
   const[email, setEmail] = useState("");
@@ -45,6 +47,7 @@ const LoginForm = () => {
 
   return (
     <div className='login-register-page'>
+      <ScrollToTop/>
       <NavBar/>
         <form className='login-register-container' onSubmit={handleSubmit}>
           <h1>Login</h1>

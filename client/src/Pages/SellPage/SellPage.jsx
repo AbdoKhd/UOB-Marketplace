@@ -5,6 +5,8 @@ import http from '../../http-common';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../Components/AuthContext';
 
+import ScrollToTop from '../../Components/ScrollToTop/ScrollToTop';
+
 const SellPage = () => {
 
   const { user } = useAuth();
@@ -179,7 +181,7 @@ const SellPage = () => {
   
         if(response.status === 200){
           setPostingInProgress(false);
-          navigate('/listings');
+          navigate('/listings', { state: { notification: 'Listing posted successfully!' } });
         }
   
       } catch (error) {
@@ -193,6 +195,7 @@ const SellPage = () => {
 
   return (
     <div className='sell-page'>
+      <ScrollToTop/>
       <NavBar/>
       <h2>Complete your listing</h2>
       <div className='listing-container'>

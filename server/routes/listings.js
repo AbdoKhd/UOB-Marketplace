@@ -20,6 +20,23 @@ router.post('/postListing', async (req, res) => {
   }
 });
 
+// Delete a listing
+router.post('/deleteListing/:listingId', async (req, res) => {
+  const {listingId} = req.params;
+
+  try {
+    
+    const deletedListing = await Listing.findByIdAndDelete(listingId);
+
+    if (!deletedListing) {
+      return res.status(404).json({ message: 'Listing not found' });
+    }
+    res.status(200).json({message: 'Listing deleted Successful', deletedListing});
+  } catch (error) {
+    res.status(400).json({ message: 'Failed to delete listing. ' + error.message});
+  }
+});
+
 // Get all listings
 router.get('/getListings', async (req, res) => {
   try {

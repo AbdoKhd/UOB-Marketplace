@@ -9,9 +9,12 @@ import RatingsSection from '../../Components/RatingsSection/RatingsSection';
 import Title from '../../Components/Title/Title';
 import './HomePage.css';
 
+import ScrollToTop from '../../Components/ScrollToTop/ScrollToTop';
+
 const HomePage = () => {
   return (
     <div>
+      <ScrollToTop/>
       <NavBar/>
       <Hero/>
       <div className='container'>
