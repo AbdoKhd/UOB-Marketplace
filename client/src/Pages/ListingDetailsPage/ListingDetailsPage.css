@@ -66,7 +66,7 @@
 }
 
 .other{
-  padding: 100px 50px;
+  margin-top: 80px;
 }
 
 .my-listing{
@@ -74,9 +74,63 @@
   align-items: center;
   justify-content: center;
   gap: 30%;
+  padding-bottom: 50px;
+}
+
+.not-my-listing{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.about-seller-container{
+  margin: 80px 0;
+  width: 100%;
+  padding: 10px 20px;
+  box-shadow: 0 0 5px rgb(210, 210, 210);
+  border-radius: 10px;
+}
+
+.asc-top{
+  display: flex;
+  align-items: center;
+}
+
+.asc-top button{
+  margin-left: auto;
+}
+
+.asc-bottom{
+  margin-top: 30px;
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+
+.message-seller-btn{
+  margin-left: auto;
+  padding: 10px 20px;
+  background-color: #51B747;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
 }
 
 .add-to-favorites-btn{
+  padding: 10px 20px;
+  border-width: 2px;
+  border-color: #2B59E3;
+  background-color: transparent;
+  color: black;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.remove-from-favorites-btn{
   padding: 10px 20px;
   background-color: #2B59E3;
   color: white;
@@ -138,5 +192,16 @@
 
   .listing-info {
     width: 100%;
+  }
+
+  .other{
+    margin-top: 50px;
+  }
+}
+
+@media (max-width: 490px) {
+  .asc-bottom{
+    justify-content: center;
+    flex-direction: column;
   }
 }

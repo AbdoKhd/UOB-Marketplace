@@ -36,6 +36,27 @@ router.post('/login', async (req, res) => {
   }
 });
 
+//Route to get a user
+router.get('/getUser/:userId', async (req, res) =>{
+
+  const {userId} = req.params;
+
+  try {
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: `User not found` });
+    }
+
+    res.status(200).json({message: `Fetched user successfully`, user: {id: user.id, firstName: user.firstName, 
+      lastName: user.lastName, email: user.email, about: user.about, campus: user.campus, profilePicture: user.profilePicture, 
+      myListings: user.myListings, myFavorites: user.myFavorites}});
+
+  } catch (error) {
+    res.status(500).json({ message: `An error occurred while fetching the user`, error });
+  }
+})
+
 //Adding the listingId to the user schema (for myListings).
 router.post('/addListingToUser/myListings/:userId', async (req, res) => {
   const {userId} = req.params;

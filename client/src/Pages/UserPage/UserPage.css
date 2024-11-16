@@ -1,0 +1,20 @@
+.user-page{
+  padding: 0 70px;
+  padding-top: 100px;
+  padding-bottom: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.user-listings-container{
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 50px;
+  padding: 30px;
+  box-shadow: 0 0 5px rgb(210, 210, 210);
+  border-radius: 10px;
+  transition: 0.4s ease;
+}

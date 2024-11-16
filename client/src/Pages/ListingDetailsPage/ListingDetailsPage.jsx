@@ -7,8 +7,11 @@ import NavBar from '../../Components/NavBar/NavBar'
 import http from '../../http-common';
 import { useAuth } from '../../Components/AuthContext';
 
+import profilePic from '../../Assets/default-profile-pic.png'
+
 // Spinner
 import {FaSpinner} from "react-icons/fa";
+import { FaRegMessage } from "react-icons/fa6";
 
 // Slider
 import Slider from 'react-slick';
@@ -44,6 +47,10 @@ const ListingDetailsPage = () => {
     setShowDeletePopup(true);
   };
 
+  const goToUser = () =>{
+    navigate(`/user/${listingUserId}`)
+  }
+
   const handleBtnFavorite = async (event) =>{
     try{
       if(!isLiked){
@@ -74,6 +81,8 @@ const ListingDetailsPage = () => {
     try{
       /* IMPORTANT !!!
         Make sure to delete the listing from the user's favorites if it is in the favorites
+
+        AND delete the images of the listings
       */
       const deleteListingResponse = await http.post(`/api/listings/deleteListing/${listingId}`);
 
@@ -83,6 +92,18 @@ const ListingDetailsPage = () => {
       console.error("Error deleting listing:", error);
     }
   }
+
+  // Some media query here--------
+  const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 490);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsSmallScreen(window.innerWidth < 490);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+  // -----------------------------
 
   useEffect(() => {
 
@@ -107,7 +128,7 @@ const ListingDetailsPage = () => {
         const fetchedListing = response.data.listing;
         setListing(response.data.listing);
 
-        //console.log("this listing is posted by: ", response.data.listing.user);
+        // console.log("this listing is posted by: ", response.data.listing.user);
         setListingUserId(response.data.listing.user._id);
 
         if (fetchedListing.imagesKey && fetchedListing.imagesKey.length > 0) {
@@ -210,7 +231,7 @@ const ListingDetailsPage = () => {
             {editingFavorites ?
             <FaSpinner className='icon spinner-favorite' />
             : isLiked ? 
-              <button className='add-to-favorites-btn' onClick={handleBtnFavorite}>
+              <button className='remove-from-favorites-btn' onClick={handleBtnFavorite}>
                 Remove from favorites
               </button>
             : <button className='add-to-favorites-btn' onClick={handleBtnFavorite}>Add to favorites</button>}
@@ -218,7 +239,29 @@ const ListingDetailsPage = () => {
           </div>
         ):(
           <div className='not-my-listing'>
-            <p>User info here</p>
+            {editingFavorites ?
+            <FaSpinner className='icon spinner-favorite' />
+            : isLiked ? 
+              <button className='remove-from-favorites-btn' onClick={handleBtnFavorite}>
+                Remove from favorites
+              </button>
+            : <button className='add-to-favorites-btn' onClick={handleBtnFavorite}>Add to favorites</button>}
+            <div className='about-seller-container'>
+              <div className='asc-top'>
+                <h3>About the seller</h3>
+                <button className='message-seller-btn'>{isSmallScreen ? <FaRegMessage style={{display : 'flex'}}/> : 'Message the seller'}</button>
+              </div>
+              <div className='asc-bottom'>
+                <div className='profile-pic' onClick={goToUser} style={{cursor: 'pointer'}}>
+                  <img src={profilePic} alt='Profile' />
+                </div>
+                <div className='profile-info'>
+                  <h2>{listing.user.firstName} {listing.user.lastName}</h2>
+                  <p>{listing.user.email}</p>
+                  <p>Campus: AL Kurah </p>
+                </div>
+              </div>
+            </div>
           </div>
         )}
       </div>
