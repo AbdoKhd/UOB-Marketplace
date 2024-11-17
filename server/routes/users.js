@@ -7,7 +7,7 @@ router.post('/register', async (req, res) => {
   try {
     const newUser = new User(req.body);
     await newUser.save();
-    res.status(200).json({message: 'Registration Successful', user: {id: newUser.id, firstName: newUser.firstName, lastName: newUser.lastName, email: newUser.email}});
+    res.status(200).json({message: 'Registration Successful', loggedInUserId: newUser.id });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
@@ -28,7 +28,7 @@ router.post('/login', async (req, res) => {
       return res.status(400).json({message: 'Invalid password'})
     }
 
-    res.status(200).json({message: 'Login Successful', user: {id: user.id, firstName: user.firstName, lastName: user.lastName, email: user.email}})
+    res.status(200).json({message: 'Login Successful', loggedInUserId: user.id});
 
 
   }catch (error) {

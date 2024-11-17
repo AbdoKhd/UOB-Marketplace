@@ -22,7 +22,7 @@ import ScrollToTop from '../../Components/ScrollToTop/ScrollToTop';
 
 const ListingDetailsPage = () => {
 
-  const { user } = useAuth();
+  const { loggedInUserId } = useAuth();
   const navigate = useNavigate();
   const {listingId}  = useParams();
   const [listing, setListing] = useState(null);
@@ -56,7 +56,7 @@ const ListingDetailsPage = () => {
       if(!isLiked){
         // Add to favorites
         setEditingFavorites(true);
-        const addListingToUserFavorites = await http.post(`/api/users/addListingToUser/myFavorites/${user.id}`, {
+        const addListingToUserFavorites = await http.post(`/api/users/addListingToUser/myFavorites/${loggedInUserId}`, {
           listingId: listingId
         });
         setEditingFavorites(false);
@@ -65,7 +65,7 @@ const ListingDetailsPage = () => {
       else{
         // Remove from favorites
         setEditingFavorites(true);
-        const removeListingFromUserFavorites = await http.post(`/api/users/removeListingFromUser/myFavorites/${user.id}`, {
+        const removeListingFromUserFavorites = await http.post(`/api/users/removeListingFromUser/myFavorites/${loggedInUserId}`, {
           listingId: listingId
         });
         setEditingFavorites(false);
@@ -110,7 +110,7 @@ const ListingDetailsPage = () => {
     // Fetch user's favorites
     const fetchUserFavorites = async () => {
       try {
-        const favoritesResponse = await http.get(`/api/users/getUserFavorites/${user.id}`)
+        const favoritesResponse = await http.get(`/api/users/getUserFavorites/${loggedInUserId}`)
 
         if(favoritesResponse.data.favorites.includes(listingId)){
           setIsLiked(true);
@@ -226,7 +226,7 @@ const ListingDetailsPage = () => {
         </div>
       </div>
       <div className='other'>
-        {listingUserId === user.id ? (
+        {listingUserId === loggedInUserId ? (
           <div className='my-listing'>
             {editingFavorites ?
             <FaSpinner className='icon spinner-favorite' />

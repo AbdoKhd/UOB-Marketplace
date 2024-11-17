@@ -12,16 +12,25 @@ import ScrollToTop from '../../Components/ScrollToTop/ScrollToTop';
 const UserPage = () => {
 
   const {userId}  = useParams(); // The user we're viewing
-  const { user } = useAuth(); // The logged in user
+  const { loggedInUserId } = useAuth(); // The logged in user
   // If these two are the same then redirect to profile page.
 
   const navigate = useNavigate();
   const [fetchedUser, setFetchedUser] = useState();
   const [loading, setLoading] = useState(true);
 
+  const handleSeeUserListings = () =>{
+    navigate('/otherListings', {
+      state: {
+        pageTitle: `${fetchedUser.firstName}'s listings`,
+        userId: userId,
+      },
+    })
+  }
+
   useEffect( () =>{
 
-    if(user.id === userId){
+    if(loggedInUserId === userId){
       navigate('/profile');
     }
     else{
@@ -40,7 +49,7 @@ const UserPage = () => {
 
       fetchUser();
     }
-  }, [userId, user.id, navigate])
+  }, [userId, loggedInUserId, navigate])
 
   // Handle loading and null checks
   if (loading) {
@@ -82,14 +91,13 @@ const UserPage = () => {
       </div>
       <div className='about-container'>
         <div className='about-info'>
-          <h2>About</h2>
-          <p>{fetchedUser.about}</p>
+          <h3>About</h3>
+          <p>Currently pursuing a Bachelor of Science in Computer Science. I'm passionate about transforming innovative ideas into efficient, user-friendly software.</p>
         </div>
       </div>
-      <div className='user-listings-container'>
-        <h2>{fetchedUser.firstName}'s listings</h2>
-        <div className='user-listings'>
-        </div>
+      <div className='my-listings-container'>
+        <h3>{fetchedUser.firstName}'s listings</h3>
+        <button className='edit-btn' onClick={handleSeeUserListings}> See </button>
       </div>
     </div>
   )

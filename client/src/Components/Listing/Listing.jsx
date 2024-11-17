@@ -12,7 +12,7 @@ import noImages from '../../Assets/no-image.jpg'
 
 const Listing = ({listingId, image, title, price, isInFavorites}) => {
 
-  const { user } = useAuth();
+  const { loggedInUserId } = useAuth();
   const [isLiked, setIsLiked] = useState(isInFavorites);
   const navigate = useNavigate();
   const [editingFavorites, setEditingFavorites] = useState(false);
@@ -23,7 +23,7 @@ const Listing = ({listingId, image, title, price, isInFavorites}) => {
       if(!isLiked){
         // Add to favorites
         setEditingFavorites(true);
-        const addListingToUserFavorites = await http.post(`/api/users/addListingToUser/myFavorites/${user.id}`, {
+        const addListingToUserFavorites = await http.post(`/api/users/addListingToUser/myFavorites/${loggedInUserId}`, {
           listingId: listingId
         });
         setEditingFavorites(false);
@@ -32,7 +32,7 @@ const Listing = ({listingId, image, title, price, isInFavorites}) => {
       else{
         // Remove from favorites
         setEditingFavorites(true);
-        const removeListingFromUserFavorites = await http.post(`/api/users/removeListingFromUser/myFavorites/${user.id}`, {
+        const removeListingFromUserFavorites = await http.post(`/api/users/removeListingFromUser/myFavorites/${loggedInUserId}`, {
           listingId: listingId
         });
         setEditingFavorites(false);

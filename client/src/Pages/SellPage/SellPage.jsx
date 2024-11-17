@@ -9,7 +9,7 @@ import ScrollToTop from '../../Components/ScrollToTop/ScrollToTop';
 
 const SellPage = () => {
 
-  const { user } = useAuth();
+  const { loggedInUserId } = useAuth();
 
   const navigate = useNavigate();
 
@@ -158,7 +158,7 @@ const SellPage = () => {
           });
           
           imagesKey = imageResponse.data.imageKeys;
-          console.log(imagesKey);
+          console.log("images keys: ", imagesKey);
 
         }
 
@@ -170,12 +170,12 @@ const SellPage = () => {
           category: category,
           description: description,
           price: price,
-          user: user.id
+          user: loggedInUserId
         });
 
         console.log("this is the id of the posted listing: ", response.data.newListing._id);
 
-        const addListingToUserMyListings = await http.post(`/api/users/addListingToUser/myListings/${user.id}`, {
+        const addListingToUserMyListings = await http.post(`/api/users/addListingToUser/myListings/${loggedInUserId}`, {
           listingId: response.data.newListing._id
         });
   

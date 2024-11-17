@@ -4,9 +4,9 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
 
-  const [user, setUser] = useState(() => {
+  const [loggedInUserId, setLoggedInUserId] = useState(() => {
     try {
-      const storedUser = localStorage.getItem('user');
+      const storedUser = localStorage.getItem('loggedInUserId');
       return storedUser ? JSON.parse(storedUser) : null;
     } catch (error) {
       console.error('Error parsing user data from localStorage:', error);
@@ -24,7 +24,7 @@ export const AuthProvider = ({ children }) => {
     }
   });
   
-
+// I deleted the user in mongodb atlas but local storage still has the user saved.
   // useEffect(() => {
   //   if (user && isAuthenticated) {
   //     // Request to verify if the user still exists in the database
@@ -43,23 +43,23 @@ export const AuthProvider = ({ children }) => {
   // }, [user, isAuthenticated]);
 
   // Login function
-  const login = (userData) => {
+  const login = (userId) => {
     setIsAuthenticated(true);
-    setUser(userData);
+    setLoggedInUserId(userId);
     localStorage.setItem('isAuthenticated', true); // Store in localStorage
-    localStorage.setItem('user', JSON.stringify(userData));
+    localStorage.setItem('loggedInUserId', JSON.stringify(userId));
   };
 
   // Logout function
   const logout = () => {
     setIsAuthenticated(false);
-    setUser(null);
+    setLoggedInUserId(null);
     localStorage.removeItem('isAuthenticated');
-    localStorage.removeItem('user');
+    localStorage.removeItem('loggedInUserId');
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, user, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, loggedInUserId, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

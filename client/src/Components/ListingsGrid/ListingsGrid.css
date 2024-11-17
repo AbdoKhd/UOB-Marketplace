@@ -1,0 +1,6 @@
+.listings-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px; /* Add space between the listings */
+  justify-content: center;
+}

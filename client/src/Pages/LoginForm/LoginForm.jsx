@@ -30,8 +30,9 @@ const LoginForm = () => {
       });
 
       if(response.status === 200){
-        const userData = response.data.user; // Extract user details from the response
-        login(userData);
+        const loggedInUserId = response.data.loggedInUserId; // Extract userId from the response
+        console.log("logged in userId: ", response.data.loggedInUserId);
+        login(loggedInUserId);
         navigate('/');
       }
 

@@ -1,20 +1,30 @@
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import NavBar from '../../Components/NavBar/NavBar'
 import './ListingsPage.css'
 import SearchForm from '../../Components/SearchForm/SearchForm'
 import CategoryBar from '../../Components/CategoryBar/CategoryBar'
-import ListingsMatrix from '../../Components/ListingsMatrix/ListingsMatrix'
+import { useAuth } from '../../Components/AuthContext';
+import http from '../../http-common';
 
 // React Toastify
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import ScrollToTop from '../../Components/ScrollToTop/ScrollToTop';
+import ListingsGrid from '../../Components/ListingsGrid/ListingsGrid';
 
 const ListingsPage = () => {
+
+  const { loggedInUserId } = useAuth();
+
+  const [loading, setLoading] = useState(true);
+
   const location = useLocation();
   const navigate = useNavigate();
+
+  const [listings, setListings] = useState([]);
+  const [myFavorites, setMyFavorites] = useState([]);
 
   useEffect(() => {
     if (location.state?.notification) {
@@ -25,6 +35,60 @@ const ListingsPage = () => {
       navigate(location.pathname, { replace: true, state: {} });
     }
   }, [location.state]);
+
+  useEffect(() => {
+
+    // Fetching the logged in user to use my favorites
+    const fetchLoggedInUser = async () =>{
+      try{
+        const userResponse = await http.get(`/api/users/getUser/${loggedInUserId}`);
+        setMyFavorites(userResponse.data.user.myFavorites);
+
+      }catch(error){
+        console.error('Error fetching the logged in user:', error);
+      }
+    }
+
+    // Fetch all listings
+    const fetchAllListings = async() =>{
+      try {
+        const response = await http.get('/api/listings/getAllListings');
+        const listingsArray = response.data;
+        console.log("fetched all listings: ", listingsArray)
+        setListings(listingsArray);
+        setLoading(false);
+
+      } catch (error) {
+        console.error('Error fetching all listings:', error);
+      }
+    }
+
+    fetchLoggedInUser();
+    fetchAllListings();
+  }, []);
+
+  // Handle loading and null checks
+  if (loading) {
+    return (
+      <div>
+        <NavBar/>
+        <div className='spinner-wrapper'>
+          <div className='spinner'></div>
+        </div>
+      </div>
+    )  
+  }
+
+  if (!listings) {
+    return (
+      <div>
+        <NavBar/>
+        <div className='spinner-wrapper'>
+          <p>No listings found!</p>;
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className='listings'>
@@ -49,7 +113,7 @@ const ListingsPage = () => {
 
         </div>
         <div className='matrix-container'>
-          <ListingsMatrix/>
+          <ListingsGrid listings={listings} myFavorites={myFavorites}/>
         </div>
       </div>
     </div>

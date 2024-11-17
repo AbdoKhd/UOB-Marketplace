@@ -38,12 +38,26 @@ router.post('/deleteListing/:listingId', async (req, res) => {
 });
 
 // Get all listings
-router.get('/getListings', async (req, res) => {
+router.get('/getAllListings', async (req, res) => {
   try {
     const listings = await Listing.find().populate('user');
     res.json(listings);
   } catch (error) {
     res.status(500).json({ message: 'Failed to retrieve listings. ' + error.message});
+  }
+});
+
+// Route to get listings by an array of IDs
+router.post('/getListingsByIds', async (req, res) => {
+  const { listingsId } = req.body; // Expect an array of IDs
+
+  try {
+    // Find listings that match the IDs in the array
+    const listings = await Listing.find({ _id: { $in: listingsId } });
+    res.status(200).json({message: 'Listings fetched Successfully', listings });
+  } catch (error) {
+    console.error('Error fetching listings:', error);
+    res.status(500).json({ error: 'An error occurred while fetching listings' });
   }
 });
 

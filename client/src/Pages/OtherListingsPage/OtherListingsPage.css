@@ -1,0 +1,12 @@
+.other-listings-page{
+  display: flex;
+  flex-direction: column;
+  padding: 100px 50px;
+}
+
+.title-container{
+  margin-bottom: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

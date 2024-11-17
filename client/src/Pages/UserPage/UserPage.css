@@ -6,15 +6,14 @@
   align-items: center;
   justify-content: center;
   flex-direction: column;
+  transition: 0.4s ease;
 }
 
-.user-listings-container{
-  display: flex;
-  align-items: center;
-  width: 100%;
-  margin-bottom: 50px;
-  padding: 30px;
-  box-shadow: 0 0 5px rgb(210, 210, 210);
-  border-radius: 10px;
-  transition: 0.4s ease;
+/* ------ media query ------ */
+
+@media (max-width: 650px){
+  .user-page{
+    padding-left: 30px;
+    padding-right: 30px;
+  }
 }

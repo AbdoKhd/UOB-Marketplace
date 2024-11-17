@@ -44,8 +44,8 @@ const RegistrationForm = () => {
       });
 
       if(response.status === 200){
-        const userData = response.data.user;
-        login(userData);
+        const loggedInUserId = response.data.loggedInUserId;
+        login(loggedInUserId);
         navigate('/');
       }
 

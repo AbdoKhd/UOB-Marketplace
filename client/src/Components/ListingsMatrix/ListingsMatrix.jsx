@@ -27,7 +27,7 @@ const ListingsMatrix = () => {
     // Fetch listings from your backend
     const fetchListings = async () => {
       try {
-        const response = await http.get('/api/listings/getListings');
+        const response = await http.get('/api/listings/getAllListings');
         const listingsArray = response.data;
         setListings(listingsArray);
 

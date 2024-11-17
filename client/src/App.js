@@ -12,6 +12,7 @@ import ProtectedRouteLoggedOut from './Components/ProtectedRouteLoggedOut';
 import ProtectedRouteLoggedIn from './Components/ProtectedRouteLoggedIn';
 import ListingDetailsPage from './Pages/ListingDetailsPage/ListingDetailsPage';
 import UserPage from './Pages/UserPage/UserPage';
+import OtherListingsPage from './Pages/OtherListingsPage/OtherListingsPage';
 
 function App() {
 
@@ -26,6 +27,7 @@ function App() {
         <Route path="/sell" element={ <ProtectedRouteLoggedOut> <SellPage/> </ProtectedRouteLoggedOut>} />
         <Route path="/profile" element={ <ProtectedRouteLoggedOut> <ProfilePage/> </ProtectedRouteLoggedOut>} />
         <Route path="/user/:userId" element={ <UserPage/>} />
+        <Route path="/otherListings" element={ <OtherListingsPage/>} />
       </Routes>
     </AuthProvider>
   )
