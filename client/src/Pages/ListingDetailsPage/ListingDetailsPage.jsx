@@ -52,6 +52,9 @@ const ListingDetailsPage = () => {
   }
 
   const handleBtnFavorite = async (event) =>{
+    if(!loggedInUserId){
+      return null;
+    }
     try{
       if(!isLiked){
         // Add to favorites
@@ -79,11 +82,6 @@ const ListingDetailsPage = () => {
   // Delete the listing
   const handleDeleteListing = async (event) =>{
     try{
-      /* IMPORTANT !!!
-        Make sure to delete the listing from the user's favorites if it is in the favorites
-
-        AND delete the images of the listings
-      */
       const deleteListingResponse = await http.post(`/api/listings/deleteListing/${listingId}`);
 
       navigate('/listings', { state: { notification: 'Listing deleted successfully!' } });
@@ -109,6 +107,9 @@ const ListingDetailsPage = () => {
 
     // Fetch user's favorites
     const fetchUserFavorites = async () => {
+      if(!loggedInUserId){
+        return null;
+      }
       try {
         const favoritesResponse = await http.get(`/api/users/getUserFavorites/${loggedInUserId}`)
 

@@ -5,8 +5,6 @@ import './ListingsGrid.css'
 
 const ListingsGrid = ({listings, myFavorites}) => {
 
-  console.log("grid listings: ", listings);
-
   const [firstImages, setFirstImages] = useState([]);
 
   useEffect(() => {

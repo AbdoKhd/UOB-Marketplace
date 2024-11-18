@@ -139,7 +139,6 @@ const SellPage = () => {
       try {
         setPostingInProgress(true);
         setErrorMessage("");
-        console.log('Images before upload:', images);
 
         let imagesKey = []
         if(images.length !== 0){
@@ -158,7 +157,6 @@ const SellPage = () => {
           });
           
           imagesKey = imageResponse.data.imageKeys;
-          console.log("images keys: ", imagesKey);
 
         }
 
@@ -172,8 +170,6 @@ const SellPage = () => {
           price: price,
           user: loggedInUserId
         });
-
-        console.log("this is the id of the posted listing: ", response.data.newListing._id);
 
         const addListingToUserMyListings = await http.post(`/api/users/addListingToUser/myListings/${loggedInUserId}`, {
           listingId: response.data.newListing._id

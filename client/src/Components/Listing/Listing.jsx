@@ -19,6 +19,9 @@ const Listing = ({listingId, image, title, price, isInFavorites}) => {
 
   const handleAddToFavorite = async (event) => {
     event.stopPropagation();
+    if(!loggedInUserId){
+      return null;
+    }
     try{
       if(!isLiked){
         // Add to favorites

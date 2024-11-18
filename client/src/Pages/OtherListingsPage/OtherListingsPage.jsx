@@ -18,9 +18,6 @@ const OtherListingsPage = () => {
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  console.log('Page Title:', pageTitle);
-  console.log('User id:', userId);
-
   useEffect(() => {
 
     // Fetching the user that we want to see the listings of
@@ -36,6 +33,9 @@ const OtherListingsPage = () => {
 
     // Fetching the logged in user to use my favorites
     const fetchLoggedInUser = async () =>{
+      if(!loggedInUserId){
+        return null;
+      }
       try{
         const userResponse = await http.get(`/api/users/getUser/${loggedInUserId}`);
         setMyFavorites(userResponse.data.user.myFavorites);
@@ -86,12 +86,12 @@ const OtherListingsPage = () => {
     )  
   }
 
-  if (!listings) {
+  if (!listings || listings.length === 0) {
     return (
       <div>
         <NavBar/>
         <div className='spinner-wrapper'>
-          <p>Listings not Found</p>;
+          <p>No listings found!</p>
         </div>
       </div>
     )

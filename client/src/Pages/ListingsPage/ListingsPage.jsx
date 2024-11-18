@@ -27,19 +27,25 @@ const ListingsPage = () => {
   const [myFavorites, setMyFavorites] = useState([]);
 
   useEffect(() => {
-    if (location.state?.notification) {
 
-      toast.success(location.state.notification);
+    if (!loading && location.state?.notification) {
 
-      // Clear the state after showing the notification
-      navigate(location.pathname, { replace: true, state: {} });
+      setTimeout(() => {
+        toast.success(location.state.notification);
+  
+        // Clear the state after showing the notification
+        navigate(location.pathname, { replace: true, state: {} });
+      }, 100);
     }
-  }, [location.state]);
+  }, [loading, location.state]);
 
   useEffect(() => {
 
     // Fetching the logged in user to use my favorites
     const fetchLoggedInUser = async () =>{
+      if(!loggedInUserId){
+        return null;
+      }
       try{
         const userResponse = await http.get(`/api/users/getUser/${loggedInUserId}`);
         setMyFavorites(userResponse.data.user.myFavorites);
@@ -54,7 +60,7 @@ const ListingsPage = () => {
       try {
         const response = await http.get('/api/listings/getAllListings');
         const listingsArray = response.data;
-        console.log("fetched all listings: ", listingsArray)
+
         setListings(listingsArray);
         setLoading(false);
 
@@ -65,12 +71,12 @@ const ListingsPage = () => {
 
     fetchLoggedInUser();
     fetchAllListings();
-  }, []);
+  }, [loggedInUserId]);
 
   // Handle loading and null checks
   if (loading) {
     return (
-      <div>
+      <div className='listings'>
         <NavBar/>
         <div className='spinner-wrapper'>
           <div className='spinner'></div>
@@ -79,12 +85,12 @@ const ListingsPage = () => {
     )  
   }
 
-  if (!listings) {
+  if (listings.length === 0 || !listings) {
     return (
       <div>
         <NavBar/>
         <div className='spinner-wrapper'>
-          <p>No listings found!</p>;
+          <p>No listings found!</p>
         </div>
       </div>
     )

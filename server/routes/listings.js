@@ -1,6 +1,8 @@
 const express = require('express');
 const Listing = require('../models/Listing');
+const User = require('../models/User');
 const router = express.Router();
+const axios = require('axios');
 
 // Post a new listing
 router.post('/postListing', async (req, res) => {
@@ -26,12 +28,43 @@ router.post('/deleteListing/:listingId', async (req, res) => {
 
   try {
     
-    const deletedListing = await Listing.findByIdAndDelete(listingId);
+    // Find the listing to delete
+    const listing = await Listing.findById(listingId);
 
-    if (!deletedListing) {
+    if(!listing) {
       return res.status(404).json({ message: 'Listing not found' });
     }
-    res.status(200).json({message: 'Listing deleted Successful', deletedListing});
+
+    // Remove the listing from all users' favorites
+    await User.updateMany(
+      { myFavorites: listingId },
+      { $pull: { myFavorites: listingId } }
+    )
+
+    // Delete associated images
+    if (listing.imagesKey && listing.imagesKey.length > 0) {
+      try {
+        const response = await axios.post('http://192.168.0.104:5000/api/images/deleteImages', {
+          imagesKey: listing.imagesKey
+        });
+      } catch (imageError) {
+        console.error('Error deleting images:', imageError.response ? imageError.response.data : imageError.message);
+        // Optionally, you can handle the deletion failure without stopping the listing deletion process
+      }
+    }
+
+
+    // Remove the listing reference from the user's `myListings` field
+    await User.updateOne(
+      { _id: listing.user }, // `listing.user` references the creator
+      { $pull: { myListings: listingId } }
+    );
+
+    // Delete the listing itself
+    await Listing.findByIdAndDelete(listingId);
+
+    res.status(200).json({ message: 'Listing deleted successfully' });
+    
   } catch (error) {
     res.status(400).json({ message: 'Failed to delete listing. ' + error.message});
   }

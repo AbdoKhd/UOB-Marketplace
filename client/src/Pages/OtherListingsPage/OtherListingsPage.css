@@ -10,3 +10,11 @@
   align-items: center;
   justify-content: center;
 }
+
+/* ------ media query ------ */
+
+@media (max-width: 600px) {
+  .other-listings-page{
+    padding: 100px 20px;
+  }
+}
