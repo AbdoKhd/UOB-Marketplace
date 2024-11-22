@@ -2,12 +2,16 @@ import {useEffect, useState} from 'react'
 import './UserPage.css'
 import profilePic from '../../Assets/default-profile-pic.png'
 import { useAuth } from '../../Components/AuthContext';
-import http from '../../http-common';
 import { useNavigate, useParams } from 'react-router-dom';
+
+import { fetchUser } from '../../Services/userService';
+import { getImages } from '../../Services/imageService';
 
 import NavBar from '../../Components/NavBar/NavBar';
 
 import ScrollToTop from '../../Components/ScrollToTop/ScrollToTop';
+
+import { FaArrowRightLong} from "react-icons/fa6";
 
 const UserPage = () => {
 
@@ -18,6 +22,8 @@ const UserPage = () => {
   const navigate = useNavigate();
   const [fetchedUser, setFetchedUser] = useState();
   const [loading, setLoading] = useState(true);
+
+  const [profilePicture, setProfilePicture] = useState();
 
   const handleSeeUserListings = () =>{
     navigate('/otherListings', {
@@ -35,11 +41,21 @@ const UserPage = () => {
     }
     else{
       // Fetch user
-      const fetchUser = async () => {
+      const getUser = async () => {
         try {
-          const userResponse = await http.get(`/api/users/getUser/${userId}`);
+          const userResponse = await fetchUser(userId);
 
-          setFetchedUser(userResponse.data.user);
+          setFetchedUser(userResponse);
+
+          const profilePicKey = userResponse.profilePictureKey;
+
+          if(profilePicKey){
+            const imagePromises = await getImages(profilePicKey)
+
+            const resolvedImages = imagePromises;
+            setProfilePicture(resolvedImages.images[0]);
+          }
+
           setLoading(false);
 
         } catch (error) {
@@ -47,7 +63,7 @@ const UserPage = () => {
         }
       };
 
-      fetchUser();
+      getUser();
     }
   }, [userId, loggedInUserId, navigate])
 
@@ -81,23 +97,23 @@ const UserPage = () => {
       <h2>{fetchedUser.firstName}'s profile</h2>
       <div className='profile-container'>
         <div className='profile-pic'>
-          <img src={profilePic} alt='Profile' />
+          <img src={profilePicture? profilePicture.content: profilePic}  alt='Profile' />
         </div>
         <div className='profile-info'>
           <h2>{fetchedUser.firstName} {fetchedUser.lastName}</h2>
           <p>{fetchedUser.email}</p>
-          <p>Campus: AL Kurah </p>
+          <p>Campus: {fetchedUser.campus} </p>
         </div>
       </div>
       <div className='about-container'>
-        <div className='about-info'>
+        <div className='about-info' style={{marginRight: "auto"}}>
           <h3>About</h3>
-          <p>Currently pursuing a Bachelor of Science in Computer Science. I'm passionate about transforming innovative ideas into efficient, user-friendly software.</p>
+          <p>{fetchedUser.about}</p>
         </div>
       </div>
       <div className='my-listings-container'>
         <h3>{fetchedUser.firstName}'s listings</h3>
-        <button className='edit-btn' onClick={handleSeeUserListings}> See </button>
+        <button className='edit-btn' onClick={handleSeeUserListings}> See <FaArrowRightLong/></button>
       </div>
     </div>
   )

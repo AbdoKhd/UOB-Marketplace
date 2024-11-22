@@ -49,7 +49,7 @@ router.get('/getUser/:userId', async (req, res) =>{
     }
 
     res.status(200).json({message: `Fetched user successfully`, user: {id: user.id, firstName: user.firstName, 
-      lastName: user.lastName, email: user.email, about: user.about, campus: user.campus, profilePicture: user.profilePicture, 
+      lastName: user.lastName, email: user.email, about: user.about, campus: user.campus, profilePictureKey: user.profilePictureKey, 
       myListings: user.myListings, myFavorites: user.myFavorites}});
 
   } catch (error) {
@@ -57,30 +57,80 @@ router.get('/getUser/:userId', async (req, res) =>{
   }
 })
 
-//Adding the listingId to the user schema (for myListings).
-router.post('/addListingToUser/myListings/:userId', async (req, res) => {
-  const {userId} = req.params;
-  const {listingId} = req.body;
-  try{
-    const user = await User.findByIdAndUpdate(
+// Route to edit a user
+router.put('/editUser/:userId', async (req, res) => {
+  const { userId } = req.params;
+  const { profilePictureKey, firstName, lastName, campus } = req.body;
+
+  try {
+
+    // Find the user by ID and update the fields
+    const updatedUser = await User.findByIdAndUpdate(
       userId,
-      { $push: { myListings: listingId } },
-      { new: true }
+      { firstName, lastName, campus, profilePictureKey },
+      { new: true, runValidators: true }
     );
 
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+    if (!updatedUser) {
+      return res.status(404).json({ message: `User not found` });
     }
 
-    res.status(200).json({ message: 'Listing added to user (myListings)', user });
-
-  }catch(error){
-    console.error('Error updating user myListings:', error);
-    res.status(500).json({ message: 'Failed to update user', error });
+    res.status(200).json({
+      message: `User updated successfully`,
+      user: {
+        id: updatedUser.id,
+        firstName: updatedUser.firstName,
+        lastName: updatedUser.lastName,
+        email: updatedUser.email,
+        about: updatedUser.about,
+        campus: updatedUser.campus,
+        profilePictureKey: updatedUser.profilePictureKey,
+        myListings: updatedUser.myListings,
+        myFavorites: updatedUser.myFavorites,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({ message: `An error occurred while updating the user`, error });
   }
-})
+});
 
-//Adding the listingId to the user schema (for myFavorites).
+// Route to edit the user's 'about' field
+router.put('/editUserAbout/:userId', async (req, res) => {
+  const { userId } = req.params;
+  const { about } = req.body;
+
+  try {
+    // Find the user by ID and update the 'about' field
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { about },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: `User not found` });
+    }
+
+    res.status(200).json({
+      message: `User 'about' field updated successfully`,
+      user: {
+        id: updatedUser.id,
+        firstName: updatedUser.firstName,
+        lastName: updatedUser.lastName,
+        email: updatedUser.email,
+        about: updatedUser.about,
+        campus: updatedUser.campus,
+        profilePictureKey: updatedUser.profilePictureKey,
+        myListings: updatedUser.myListings,
+        myFavorites: updatedUser.myFavorites,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({ message: `An error occurred while updating the 'about' field`, error });
+  }
+});
+
+//Add the listingId to the user schema (for myFavorites).
 router.post('/addListingToUser/myFavorites/:userId', async (req, res) => {
   const {userId} = req.params;
   const {listingId} = req.body;
@@ -127,27 +177,8 @@ router.post('/removeListingFromUser/myFavorites/:userId', async (req, res) => {
   }
 });
 
-//Route to get the users's favorites
-router.get('/getUserFavorites/:userId', async (req, res) =>{
-
-  const {userId} = req.params;
-
-  try {
-    const user = await User.findById(userId, 'myFavorites');
-
-    if (!user) {
-      return res.status(404).json({ message: `User not found` });
-    }
-
-    res.status(200).json({message: `Fetched user's favorites successfully`,favorites: user.myFavorites});
-
-  } catch (error) {
-    res.status(500).json({ message: `An error occurred while fetching the user's favorites`, error });
-  }
-})
-
 // Get all users
-router.get('/', async (req, res) => {
+router.get('/getAllUsers', async (req, res) => {
   try {
     const users = await User.find();
     res.json(users);

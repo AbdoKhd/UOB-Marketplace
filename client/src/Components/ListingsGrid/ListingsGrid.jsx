@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import http from '../../http-common';
 import Listing from '../Listing/Listing'
 import './ListingsGrid.css'
+import { getImages } from '../../Services/imageService';
 
 const ListingsGrid = ({listings, myFavorites}) => {
 
@@ -14,10 +14,8 @@ const ListingsGrid = ({listings, myFavorites}) => {
       try {
         const imagePromises = listings.map( async (listing) =>{
           if (listing.imagesKey && listing.imagesKey.length > 0) {
-            const firstImageResponse = await http.post('/api/images/getImages', {
-              imagesKey: listing.imagesKey[0],
-            });
-            return firstImageResponse.data.images[0];
+            const firstImageResponse = await getImages(listing.imagesKey[0]);
+            return firstImageResponse.images[0];
           } else {
             return null; // Handle listings with no images
           }

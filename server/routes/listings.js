@@ -16,6 +16,18 @@ router.post('/postListing', async (req, res) => {
   try {
     const newListing = new Listing(req.body);
     await newListing.save();
+
+    // Add the listing id to the user's `myListings`
+    const userUpdateResult = await User.findByIdAndUpdate(
+      user,
+      { $push: { myListings: newListing._id } }, // Add the listing ID to `myListings`
+      { new: true } // Return the updated document
+    );
+
+    if (!userUpdateResult) {
+      return res.status(404).json({ message: 'User not found. Failed to update user listings.' });
+    }
+
     res.status(200).json({message: 'Listing Posted Successful', newListing});
   } catch (error) {
     res.status(400).json({ message: 'Failed to post listing. ' + error.message});

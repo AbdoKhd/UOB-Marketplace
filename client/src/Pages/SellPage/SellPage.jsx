@@ -1,9 +1,10 @@
 import React, {useState, useRef} from 'react'
 import NavBar from '../../Components/NavBar/NavBar'
 import './SellPage.css'
-import http from '../../http-common';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../Components/AuthContext';
+import { uploadImages } from '../../Services/imageService';
+import { postListing } from '../../Services/listingService';
 
 import ScrollToTop from '../../Components/ScrollToTop/ScrollToTop';
 
@@ -140,6 +141,8 @@ const SellPage = () => {
         setPostingInProgress(true);
         setErrorMessage("");
 
+        console.log("images before upload: ", images);
+
         let imagesKey = []
         if(images.length !== 0){
         
@@ -149,32 +152,17 @@ const SellPage = () => {
             formData.append('images', file); // Append each file
           });
 
-          // Send POST request with FormData
-          const imageResponse = await http.post('/api/images/upload', formData, {
-            headers: {
-              'Content-Type': 'multipart/form-data'
-            }
-          });
+          // Upload the images
+          const imageResponse = await uploadImages(formData);
           
-          imagesKey = imageResponse.data.imageKeys;
+          imagesKey = imageResponse.imageKeys;
 
         }
 
+        // Post the listing to the database
+        const response = await postListing(imagesKey, title, category, description, price, loggedInUserId);
+        
 
-        // Make a POST request to the backend's listings route
-        const response = await http.post('/api/listings/postListing', {
-          imagesKey: imagesKey,
-          title: title,
-          category: category,
-          description: description,
-          price: price,
-          user: loggedInUserId
-        });
-
-        const addListingToUserMyListings = await http.post(`/api/users/addListingToUser/myListings/${loggedInUserId}`, {
-          listingId: response.data.newListing._id
-        });
-  
         if(response.status === 200){
           setPostingInProgress(false);
           navigate('/listings', { state: { notification: 'Listing posted successfully!' } });

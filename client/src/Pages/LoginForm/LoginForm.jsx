@@ -3,10 +3,10 @@ import { useState } from 'react';
 import React from 'react'
 import './LoginForm.css';
 import NavBar from '../../Components/NavBar/NavBar'
-import http from '../../http-common';
 import { FaLock, FaEnvelope } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../Components/AuthContext';
+import { signIn } from '../../Services/userService';
 
 import ScrollToTop from '../../Components/ScrollToTop/ScrollToTop';
 
@@ -24,16 +24,12 @@ const LoginForm = () => {
 
     try {
       // Make a POST request to the backend's register route
-      const response = await http.post('/api/users/login', {
-        email,
-        password
-      });
+      const response = await signIn(email, password);
 
       if(response.status === 200){
-        const loggedInUserId = response.data.loggedInUserId; // Extract userId from the response
-        console.log("logged in userId: ", response.data.loggedInUserId);
+        const loggedInUserId = response.data.loggedInUserId;
         login(loggedInUserId);
-        navigate('/');
+        navigate('/listings');
       }
 
     } catch (error) {
@@ -43,8 +39,6 @@ const LoginForm = () => {
     }
 
   }
-
-
 
   return (
     <div className='login-register-page'>

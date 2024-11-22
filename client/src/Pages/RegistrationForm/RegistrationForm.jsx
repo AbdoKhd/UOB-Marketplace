@@ -1,6 +1,5 @@
 
 import { useState} from 'react';
-import http from '../../http-common';
 import React from 'react'
 import '../LoginForm/LoginForm.css'
 import './RegistrationForm.css';
@@ -8,6 +7,7 @@ import NavBar from '../../Components/NavBar/NavBar'
 import { FaUser, FaLock, FaEnvelope } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../Components/AuthContext';
+import { signUp } from '../../Services/userService';
 
 import ScrollToTop from '../../Components/ScrollToTop/ScrollToTop';
 
@@ -36,17 +36,12 @@ const RegistrationForm = () => {
 
     try {
       // Make a POST request to the backend's register route
-      const response = await http.post('/api/users/register', {
-        firstName,
-        lastName,
-        email,
-        password
-      });
+      const response = await signUp(firstName, lastName, email, password);
 
       if(response.status === 200){
         const loggedInUserId = response.data.loggedInUserId;
         login(loggedInUserId);
-        navigate('/');
+        navigate('/listings');
       }
 
 

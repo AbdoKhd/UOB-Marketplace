@@ -17,6 +17,7 @@ const upload = multer({ storage: storage });
 // Route for handling file upload with compression
 router.post('/upload', upload.array('images', 10), async (req, res) => {
   try {
+
     if (!req.files || req.files.length === 0) {
       return res.status(400).json({ message: 'No files uploaded' });
     }

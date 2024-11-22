@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import './ListingDetailsPage.css'
 import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
-import pic from '../../Assets/ps5.jpg'
 import NavBar from '../../Components/NavBar/NavBar'
-import http from '../../http-common';
 import { useAuth } from '../../Components/AuthContext';
+
+import { addToFavorites, removeFromFavorites, fetchUser } from '../../Services/userService';
+import { deleteListing, fetchListing } from '../../Services/listingService';
+import { getImages } from '../../Services/imageService';
 
 import profilePic from '../../Assets/default-profile-pic.png'
 
@@ -35,6 +37,8 @@ const ListingDetailsPage = () => {
   const [isLiked, setIsLiked] = useState(false);
   const [editingFavorites, setEditingFavorites] = useState(false);
 
+  const [profilePicture, setProfilePicture] = useState();
+
   const confirmDelete = () => {
     handleDeleteListing();
   };
@@ -59,18 +63,14 @@ const ListingDetailsPage = () => {
       if(!isLiked){
         // Add to favorites
         setEditingFavorites(true);
-        const addListingToUserFavorites = await http.post(`/api/users/addListingToUser/myFavorites/${loggedInUserId}`, {
-          listingId: listingId
-        });
+        const addListingToUserFavorites = await addToFavorites(loggedInUserId, listingId);
         setEditingFavorites(false);
         setIsLiked(true);
       }
       else{
         // Remove from favorites
         setEditingFavorites(true);
-        const removeListingFromUserFavorites = await http.post(`/api/users/removeListingFromUser/myFavorites/${loggedInUserId}`, {
-          listingId: listingId
-        });
+        const removeListingFromUserFavorites = await removeFromFavorites(loggedInUserId, listingId);
         setEditingFavorites(false);
         setIsLiked(false);
       }
@@ -82,7 +82,7 @@ const ListingDetailsPage = () => {
   // Delete the listing
   const handleDeleteListing = async (event) =>{
     try{
-      const deleteListingResponse = await http.post(`/api/listings/deleteListing/${listingId}`);
+      const deleteListingResponse = await deleteListing(listingId);
 
       navigate('/listings', { state: { notification: 'Listing deleted successfully!' } });
 
@@ -111,9 +111,9 @@ const ListingDetailsPage = () => {
         return null;
       }
       try {
-        const favoritesResponse = await http.get(`/api/users/getUserFavorites/${loggedInUserId}`)
+        const user = await fetchUser(loggedInUserId);
 
-        if(favoritesResponse.data.favorites.includes(listingId)){
+        if(user.myFavorites.includes(listingId)){
           setIsLiked(true);
         }
 
@@ -123,20 +123,30 @@ const ListingDetailsPage = () => {
     };
   
     // Fetch listing
-    const fetchListing = async () => {
+    const getListing = async () => {
       try {
-        const response = await http.get(`/api/listings/getListing/${listingId}`);
-        const fetchedListing = response.data.listing;
-        setListing(response.data.listing);
+        const fetchedListing = await fetchListing(listingId);
 
-        // console.log("this listing is posted by: ", response.data.listing.user);
-        setListingUserId(response.data.listing.user._id);
+        setListing(fetchedListing.listing);
 
-        if (fetchedListing.imagesKey && fetchedListing.imagesKey.length > 0) {
-          const imageResponse = await http.post('/api/images/getImages', {
-            imagesKey: fetchedListing.imagesKey,
-          });
-          setImages(imageResponse.data.images);
+        const listing = fetchedListing.listing;
+
+        setListingUserId(listing.user._id);
+
+        const user = listing.user;
+
+        const profilePicKey = user.profilePictureKey;
+
+        if(profilePicKey){
+          const imagePromises = await getImages(profilePicKey);
+
+          const resolvedImages = imagePromises;
+          setProfilePicture(resolvedImages.images[0]);
+        }
+
+        if (listing.imagesKey && listing.imagesKey.length > 0) {
+          const imageResponse = await getImages(listing.imagesKey);
+          setImages(imageResponse.images);
         }
 
         setLoading(false);
@@ -148,7 +158,7 @@ const ListingDetailsPage = () => {
     };
 
     fetchUserFavorites();
-    fetchListing();
+    getListing();
   }, [listingId]);
 
   // Handle loading and null checks
@@ -254,12 +264,12 @@ const ListingDetailsPage = () => {
               </div>
               <div className='asc-bottom'>
                 <div className='profile-pic' onClick={goToUser} style={{cursor: 'pointer'}}>
-                  <img src={profilePic} alt='Profile' />
+                  <img src={profilePicture? profilePicture.content: profilePic} alt='Profile' />
                 </div>
                 <div className='profile-info'>
                   <h2>{listing.user.firstName} {listing.user.lastName}</h2>
                   <p>{listing.user.email}</p>
-                  <p>Campus: AL Kurah </p>
+                  <p>Campus: {listing.user.campus}</p>
                 </div>
               </div>
             </div>

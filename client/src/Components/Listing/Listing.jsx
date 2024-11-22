@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react'
 import './Listing.css'
 import { useNavigate } from 'react-router-dom';
 
-import http from '../../http-common';
 import { useAuth } from '../../Components/AuthContext';
+
+import { addToFavorites, removeFromFavorites } from '../../Services/userService';
 
 import { FaRegHeart, FaHeart, FaSpinner} from "react-icons/fa";
 import { LuMessageSquare } from "react-icons/lu";
@@ -26,18 +27,14 @@ const Listing = ({listingId, image, title, price, isInFavorites}) => {
       if(!isLiked){
         // Add to favorites
         setEditingFavorites(true);
-        const addListingToUserFavorites = await http.post(`/api/users/addListingToUser/myFavorites/${loggedInUserId}`, {
-          listingId: listingId
-        });
+        const addListingToUserFavorites = await addToFavorites(loggedInUserId, listingId);
         setEditingFavorites(false);
         setIsLiked(true);
       }
       else{
         // Remove from favorites
         setEditingFavorites(true);
-        const removeListingFromUserFavorites = await http.post(`/api/users/removeListingFromUser/myFavorites/${loggedInUserId}`, {
-          listingId: listingId
-        });
+        const removeListingFromUserFavorites = await removeFromFavorites(loggedInUserId, listingId);
         setEditingFavorites(false);
         setIsLiked(false);
       }

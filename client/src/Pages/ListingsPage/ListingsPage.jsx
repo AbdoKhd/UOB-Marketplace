@@ -5,8 +5,8 @@ import './ListingsPage.css'
 import SearchForm from '../../Components/SearchForm/SearchForm'
 import CategoryBar from '../../Components/CategoryBar/CategoryBar'
 import { useAuth } from '../../Components/AuthContext';
-import http from '../../http-common';
-
+import { fetchUser } from '../../Services/userService';
+import { fetchAllListings } from '../../Services/listingService';
 // React Toastify
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -42,26 +42,20 @@ const ListingsPage = () => {
   useEffect(() => {
 
     // Fetching the logged in user to use my favorites
-    const fetchLoggedInUser = async () =>{
-      if(!loggedInUserId){
-        return null;
+    const fetchLoggedInUser = async () => {
+      try {
+        const userData = await fetchUser(loggedInUserId);
+        setMyFavorites(userData.myFavorites);
+      } catch (error) {
+        console.error('Error fetching user data:', error);
       }
-      try{
-        const userResponse = await http.get(`/api/users/getUser/${loggedInUserId}`);
-        setMyFavorites(userResponse.data.user.myFavorites);
-
-      }catch(error){
-        console.error('Error fetching the logged in user:', error);
-      }
-    }
+    };
 
     // Fetch all listings
-    const fetchAllListings = async() =>{
+    const fetchListings = async() =>{
       try {
-        const response = await http.get('/api/listings/getAllListings');
-        const listingsArray = response.data;
-
-        setListings(listingsArray);
+        const allListings = await fetchAllListings();
+        setListings(allListings);
         setLoading(false);
 
       } catch (error) {
@@ -70,7 +64,7 @@ const ListingsPage = () => {
     }
 
     fetchLoggedInUser();
-    fetchAllListings();
+    fetchListings();
   }, [loggedInUserId]);
 
   // Handle loading and null checks

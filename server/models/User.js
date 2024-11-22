@@ -27,7 +27,7 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: false,
   },
-  profilePicture: {
+  profilePictureKey: {
     type: String, // Key to the image
     required: false,
   },
