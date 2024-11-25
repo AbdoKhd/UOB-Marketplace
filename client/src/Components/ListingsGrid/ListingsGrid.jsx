@@ -13,6 +13,7 @@ const ListingsGrid = ({listings, myFavorites}) => {
     const fetchFirstImages = async () => {
       try {
         const imagePromises = listings.map( async (listing) =>{
+          console.log("this is the user of the listing: ", listing.user);
           if (listing.imagesKey && listing.imagesKey.length > 0) {
             const firstImageResponse = await getImages(listing.imagesKey[0]);
             return firstImageResponse.images[0];
@@ -43,6 +44,7 @@ const ListingsGrid = ({listings, myFavorites}) => {
           price={listing.price}
           image={firstImages[index]}
           isInFavorites={myFavorites.includes(listing._id)}
+          userId={listing.user._id}
         />
       ))}
     </div>

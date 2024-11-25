@@ -8,6 +8,7 @@ import { useAuth } from '../../Components/AuthContext';
 import { addToFavorites, removeFromFavorites, fetchUser } from '../../Services/userService';
 import { deleteListing, fetchListing } from '../../Services/listingService';
 import { getImages } from '../../Services/imageService';
+import { createConversation } from '../../Services/messagingService';
 
 import profilePic from '../../Assets/default-profile-pic.png'
 
@@ -161,6 +162,20 @@ const ListingDetailsPage = () => {
     getListing();
   }, [listingId]);
 
+  const handleMessageSeller = async () => {
+
+    console.log("this is the user of this listing: ", listingUserId);
+
+    try{
+      // Create conversation
+      const conversation = await createConversation(loggedInUserId, listingUserId);
+      console.log("this is the conversation: ", conversation);
+      navigate(`/messages/${conversation._id}`);
+    }catch(error){
+      console.error("Error creating conversation:", error);
+    }
+  };
+
   // Handle loading and null checks
   if (loading) {
     return (
@@ -260,7 +275,7 @@ const ListingDetailsPage = () => {
             <div className='about-seller-container'>
               <div className='asc-top'>
                 <h3>About the seller</h3>
-                <button className='message-seller-btn'>{isSmallScreen ? <FaRegMessage style={{display : 'flex'}}/> : 'Message the seller'}</button>
+                <button className='message-seller-btn' onClick={handleMessageSeller}>{isSmallScreen ? <FaRegMessage style={{display : 'flex'}}/> : 'Message the seller'}</button>
               </div>
               <div className='asc-bottom'>
                 <div className='profile-pic' onClick={goToUser} style={{cursor: 'pointer'}}>

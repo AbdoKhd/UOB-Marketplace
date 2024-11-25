@@ -13,6 +13,7 @@ import ProtectedRouteLoggedIn from './Components/ProtectedRouteLoggedIn';
 import ListingDetailsPage from './Pages/ListingDetailsPage/ListingDetailsPage';
 import UserPage from './Pages/UserPage/UserPage';
 import OtherListingsPage from './Pages/OtherListingsPage/OtherListingsPage';
+import MessagesPage from './Pages/MessagesPage/MessagesPage'
 
 function App() {
 
@@ -25,6 +26,8 @@ function App() {
         <Route path="/listingDetails/:listingId" element={<ListingDetailsPage/>} />
         <Route path="/listings" element={<ListingsPage />} />
         <Route path="/sell" element={ <ProtectedRouteLoggedOut> <SellPage/> </ProtectedRouteLoggedOut>} />
+        <Route path="/messages" element={ <ProtectedRouteLoggedOut> <MessagesPage/> </ProtectedRouteLoggedOut>} />
+        <Route path="/messages/:conversationId" element={ <ProtectedRouteLoggedOut> <MessagesPage/> </ProtectedRouteLoggedOut>} />
         <Route path="/profile" element={ <ProtectedRouteLoggedOut> <ProfilePage/> </ProtectedRouteLoggedOut>} />
         <Route path="/user/:userId" element={ <UserPage/>} />
         <Route path="/otherListings" element={ <OtherListingsPage/>} />

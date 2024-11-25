@@ -5,13 +5,14 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../Components/AuthContext';
 
 import { addToFavorites, removeFromFavorites } from '../../Services/userService';
+import { createConversation } from '../../Services/messagingService'
 
 import { FaRegHeart, FaHeart, FaSpinner} from "react-icons/fa";
 import { LuMessageSquare } from "react-icons/lu";
 
 import noImages from '../../Assets/no-image.jpg'
 
-const Listing = ({listingId, image, title, price, isInFavorites}) => {
+const Listing = ({listingId, image, title, price, isInFavorites, userId}) => {
 
   const { loggedInUserId } = useAuth();
   const [isLiked, setIsLiked] = useState(isInFavorites);
@@ -43,8 +44,23 @@ const Listing = ({listingId, image, title, price, isInFavorites}) => {
     }
   };
 
-  const handleMessageSeller = (event) => {
+  const handleMessageSeller = async (event) => {
     event.stopPropagation();
+
+    console.log("this is the user of this listing: ", userId);
+    if(loggedInUserId === userId){
+      console.log("You can't message yourself");
+      return;
+    }
+
+    try{
+      // Create conversation
+      const conversation = await createConversation(loggedInUserId, userId);
+      console.log("this is the conversation: ", conversation);
+      navigate(`/messages/${conversation._id}`);
+    }catch(error){
+      console.error("Error creating conversation:", error);
+    }
   };
 
   const handleListingClick = () => {

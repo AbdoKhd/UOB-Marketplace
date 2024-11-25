@@ -50,6 +50,7 @@ const NavBar = () => {
         {isAuthenticated ? (
           <>
             <li> <NavLink to='/sell' activeClassName='active'>Sell</NavLink></li>
+            <li> <NavLink to="/messages/" activeClassName='active'>Messages</NavLink></li>
             <li> <NavLink to='/profile' activeClassName='active'>Profile</NavLink></li>
           </>
         ) : (

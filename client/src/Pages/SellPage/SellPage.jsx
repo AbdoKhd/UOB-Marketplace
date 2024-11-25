@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../Components/AuthContext';
 import { uploadImages } from '../../Services/imageService';
 import { postListing } from '../../Services/listingService';
+import { moderateImage } from '../../Services/moderationService';
 
 import ScrollToTop from '../../Components/ScrollToTop/ScrollToTop';
 
@@ -151,6 +152,16 @@ const SellPage = () => {
           images.forEach((file) => {
             formData.append('images', file); // Append each file
           });
+
+          // Image moderation
+          for (const image of images) {
+            const isAppropriate = await moderateImage(image);
+            if (!isAppropriate) {
+              setPostingInProgress(false);
+              setErrorMessage("One or more images were flagged as inappropriate. Please use appropriate images.");
+              return; // Exit if any image fails moderation
+            }
+          }
 
           // Upload the images
           const imageResponse = await uploadImages(formData);

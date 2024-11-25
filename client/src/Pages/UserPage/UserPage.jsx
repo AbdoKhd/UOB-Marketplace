@@ -6,6 +6,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 import { fetchUser } from '../../Services/userService';
 import { getImages } from '../../Services/imageService';
+import { createConversation } from '../../Services/messagingService';
 
 import NavBar from '../../Components/NavBar/NavBar';
 
@@ -65,7 +66,21 @@ const UserPage = () => {
 
       getUser();
     }
-  }, [userId, loggedInUserId, navigate])
+  }, [userId, loggedInUserId, navigate]);
+
+  const handleMessageSeller = async () => {
+
+    console.log("this is the user of this listing: ", userId);
+
+    try{
+      // Create conversation
+      const conversation = await createConversation(loggedInUserId, userId);
+      console.log("this is the conversation: ", conversation);
+      navigate(`/messages/${conversation._id}`);
+    }catch(error){
+      console.error("Error creating conversation:", error);
+    }
+  };
 
   // Handle loading and null checks
   if (loading) {
@@ -104,6 +119,7 @@ const UserPage = () => {
           <p>{fetchedUser.email}</p>
           <p>Campus: {fetchedUser.campus} </p>
         </div>
+        <button className='edit-btn' style={{backgroundColor: "#51B747"}} onClick={handleMessageSeller} > Message {fetchedUser.firstName}</button>
       </div>
       <div className='about-container'>
         <div className='about-info' style={{marginRight: "auto"}}>

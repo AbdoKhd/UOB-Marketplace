@@ -98,7 +98,7 @@ router.post('/getListingsByIds', async (req, res) => {
 
   try {
     // Find listings that match the IDs in the array
-    const listings = await Listing.find({ _id: { $in: listingsId } });
+    const listings = await Listing.find({ _id: { $in: listingsId } }).populate('user');
     res.status(200).json({message: 'Listings fetched Successfully', listings });
   } catch (error) {
     console.error('Error fetching listings:', error);

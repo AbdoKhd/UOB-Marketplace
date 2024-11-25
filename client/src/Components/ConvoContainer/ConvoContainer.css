@@ -1,0 +1,41 @@
+.convo-container {
+  display: flex;
+  align-items: center;
+  background-color: transparent;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.convo-container .info{
+  width: 100%;
+  margin-left: 20px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.info h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  white-space: nowrap; /* Prevent text wrapping */
+  overflow: hidden; /* Hide overflowing text */
+  text-overflow: ellipsis; /* Add ellipsis to the end of overflowing text */
+}
+
+.info p {
+  margin: 5px 0 0;
+  font-size: 0.9rem;
+  color: #555;
+  white-space: nowrap; /* Prevent text wrapping */
+  overflow: hidden; /* Hide overflowing text */
+  text-overflow: ellipsis; /* Add ellipsis to the end of overflowing text */
+}
+
+.convo-container:hover {
+  background-color: #dbe3ffaf;
+}
+
+.convo-container.selected {
+  background-color: #beccffaf; /* Highlight selected conversation */
+}
