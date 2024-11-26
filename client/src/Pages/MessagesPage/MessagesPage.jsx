@@ -20,6 +20,26 @@ const MessagesPage = () => {
 
   const [conversations, setConversations] = useState([]);
   const [selectedConversation, setSelectedConversation] = useState(null);
+  const [isChatsVisible, setIsChatsVisible] = useState(true);
+
+  // Some media query here--------
+  useEffect(() => {
+    const handleResize = () => {
+      const smallScreen = window.innerWidth < 600;
+
+      // Show chats if screen size is larger than 600px
+      if (!smallScreen) {
+        setIsChatsVisible(true);
+      }
+    };
+
+    // Add resize listener
+    window.addEventListener('resize', handleResize);
+
+    // Cleanup listener on component unmount
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+  // -----------------------------
 
   useEffect(() =>{
     const fetchConvos = async () =>{
@@ -60,11 +80,15 @@ const MessagesPage = () => {
     navigate(`/messages/${conversation._id}`);
   };
 
+  const toggleChatsVisibility = () => {
+    setIsChatsVisible((prevState) => !prevState);
+  };
+
   return (
     <div className='messages-page'>
       <ScrollToTop/>
       <NavBar/>
-      <div className='chats'>
+      <div className={`chats ${isChatsVisible ? 'visible' : 'hidden'}`}>
         <div className='chats-top'>
           <h2>Chats</h2>
         </div>
@@ -96,6 +120,9 @@ const MessagesPage = () => {
         </div>
       </div>
       <div className='chat'>
+        <button className="toggle-chats-btn" onClick={toggleChatsVisibility}>
+          {isChatsVisible ? 'Close Chats' : 'Open Chats'}
+        </button>
         {selectedConversation ? 
         <ChatBox conversation={selectedConversation}/>: 
         <h1>

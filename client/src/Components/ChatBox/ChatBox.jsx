@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './ChatBox.css'
 import socket from "../../socket";
+import profilePic from '../../Assets/default-profile-pic.png'
+import { useNavigate } from 'react-router-dom';
 
 
 import { useAuth } from '../../Components/AuthContext';
@@ -10,14 +12,18 @@ const ChatBox = (conversation) => {
 
   const convo = conversation.conversation;
 
-  console.log("this is the convo id in chatBox: ", convo._id);
+  console.log("this is the convo in chatBox: ", convo);
 
+  const navigate = useNavigate();
   const { loggedInUserId } = useAuth();
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const messagesEndRef = useRef(null);
 
   const otherParticipantId = convo.participants[0]._id === loggedInUserId ? convo.participants[1]._id : convo.participants[0]._id;
+  const otherParticipantName = convo.participants[0]._id === loggedInUserId ? 
+      convo.participants[1].firstName + " " + convo.participants[1].lastName :
+      convo.participants[0].firstName + " " + convo.participants[0].lastName;
 
   // Fetch messages when the conversation changes
   useEffect(() => {
@@ -81,9 +87,26 @@ const ChatBox = (conversation) => {
       console.error('Error sending message:', error);
     }
   };
+
+  // Handle key press in the input field
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      handleSendMessage();
+    }
+  };
+
+  const goToUser = () =>{
+    navigate(`/user/${otherParticipantId}`);
+  }
   
   return (
     <div className='chat-box'>
+      <div className='chat-box-top'>
+        <div className='profile-pic' style={{height: "50px", width: "50px", marginRight: "15px", cursor: "pointer"}} onClick={goToUser}>
+          <img src={profilePic} alt='Profile' />
+        </div>
+        <p>{otherParticipantName}</p>
+      </div>
       <div className="messages-container">
         {messages.map((message, index) => (
           <div
@@ -101,6 +124,7 @@ const ChatBox = (conversation) => {
           placeholder="Type a message..."
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
+          onKeyDown={handleKeyDown}
         />
         <button onClick={handleSendMessage}>Send</button>
       </div>
