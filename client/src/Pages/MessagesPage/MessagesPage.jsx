@@ -3,6 +3,7 @@ import {useState, useEffect} from 'react'
 import { useParams, useNavigate } from 'react-router-dom';
 import './MessagesPage.css'
 import { useAuth } from '../../Components/AuthContext';
+import socket from "../../socket";
 
 import { fetchConversations, fetchConversationById } from '../../Services/messagingService';
 
@@ -21,11 +22,14 @@ const MessagesPage = () => {
   const [conversations, setConversations] = useState([]);
   const [selectedConversation, setSelectedConversation] = useState(null);
   const [isChatsVisible, setIsChatsVisible] = useState(true);
+  const [loadingConvos, setLoadingConvos] = useState(true);
 
   // Some media query here--------
+  const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 600);
   useEffect(() => {
     const handleResize = () => {
       const smallScreen = window.innerWidth < 600;
+      setIsSmallScreen(smallScreen);
 
       // Show chats if screen size is larger than 600px
       if (!smallScreen) {
@@ -46,6 +50,7 @@ const MessagesPage = () => {
       try{
         const convosResponse = await fetchConversations(loggedInUserId);
         setConversations(convosResponse);
+        setLoadingConvos(false);
         console.log("this is convos response: ", convosResponse);
       }catch(error){
         console.error('Error fetching the conversations:', error);
@@ -74,6 +79,34 @@ const MessagesPage = () => {
     fetchSingleConversation();
   }, [conversationId]);
 
+  // // Real-time Conversation Updates
+  // useEffect(() => {
+  //   const handleConversationUpdate = (updatedConversation) => {
+  //     setConversations((prevConversations) => {
+  //       const existingConversationIndex = prevConversations.findIndex(
+  //         (convo) => convo._id === updatedConversation._id
+  //       );
+
+  //       if (existingConversationIndex !== -1) {
+  //         // Update the existing conversation
+  //         const updatedConversations = [...prevConversations];
+  //         updatedConversations[existingConversationIndex] = updatedConversation;
+  //         return updatedConversations;
+  //       } else {
+  //         // Add the new conversation
+  //         return [updatedConversation, ...prevConversations];
+  //       }
+  //     });
+  //   };
+
+  //   socket.on('conversationUpdated', handleConversationUpdate);
+
+  //   // Cleanup listener
+  //   return () => {
+  //     socket.off('conversationUpdated', handleConversationUpdate);
+  //   };
+  // }, []);
+
 
   const handleSelectConversation = (conversation) => {
     setSelectedConversation(conversation);
@@ -82,6 +115,13 @@ const MessagesPage = () => {
 
   const toggleChatsVisibility = () => {
     setIsChatsVisible((prevState) => !prevState);
+  };
+
+  const handleConvoClick = (conversation) => {
+    handleSelectConversation(conversation);
+    if(isSmallScreen){
+      setIsChatsVisible(false);
+    }
   };
 
   return (
@@ -93,30 +133,40 @@ const MessagesPage = () => {
           <h2>Chats</h2>
         </div>
         <div className='chats-list'>
-          {conversations.map((conversation, index) => {
-            const otherParticipant = 
-              conversation.participants[0]._id === loggedInUserId
-                ? conversation.participants[1]
-                : conversation.participants[0];
+          {loadingConvos ? (
+            <div className='spinner-box'>
+              <div className='spinner'></div>
+            </div>
+          ) : conversations.length === 0 ? (
+            <div className='spinner-box'>
+              <p>No conversations yet</p>
+            </div>
+          ) : (
+            conversations.map((conversation, index) => {
+              const otherParticipant = 
+                conversation.participants[0]._id === loggedInUserId
+                  ? conversation.participants[1]
+                  : conversation.participants[0];
 
-            const lastMessageText = conversation.lastMessage
-              ? (conversation.lastMessage.senderId === loggedInUserId
-                  ? "You: " + conversation.lastMessage.content
-                  : otherParticipant.firstName + ": " + conversation.lastMessage.content)
-              : "No messages yet";
+              const lastMessageText = conversation.lastMessage
+                ? (conversation.lastMessage.senderId === loggedInUserId
+                    ? "You: " + conversation.lastMessage.content
+                    : otherParticipant.firstName + ": " + conversation.lastMessage.content)
+                : "No messages yet";
 
-            return (
-              <React.Fragment key={conversation.id}>
-                <ConvoContainer
-                  name={otherParticipant.firstName + " " + otherParticipant.lastName}
-                  lastMessage={ lastMessageText }
-                  isSelected={selectedConversation?._id === conversation._id}
-                  onClick={() => handleSelectConversation(conversation)}
-                />
-                {index < conversations.length - 1 && <div className="chats-divider" />}
-              </React.Fragment>
-            );
-          })}
+              return (
+                <React.Fragment key={conversation._id}>
+                  <ConvoContainer
+                    name={otherParticipant.firstName + " " + otherParticipant.lastName}
+                    lastMessage={lastMessageText}
+                    isSelected={selectedConversation?._id === conversation._id}
+                    onClick={() => handleConvoClick(conversation)}
+                  />
+                  {index < conversations.length - 1 && <div className="chats-divider" />}
+                </React.Fragment>
+              );
+            })
+          )}
         </div>
       </div>
       <div className='chat'>

@@ -25,6 +25,7 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/listingDetails/:listingId" element={<ListingDetailsPage/>} />
         <Route path="/listings" element={<ListingsPage />} />
+        <Route path="/listings/search/:searchQuery" element={<ListingsPage />} />
         <Route path="/sell" element={ <ProtectedRouteLoggedOut> <SellPage/> </ProtectedRouteLoggedOut>} />
         <Route path="/messages" element={ <ProtectedRouteLoggedOut> <MessagesPage/> </ProtectedRouteLoggedOut>} />
         <Route path="/messages/:conversationId" element={ <ProtectedRouteLoggedOut> <MessagesPage/> </ProtectedRouteLoggedOut>} />

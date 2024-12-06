@@ -1,10 +1,11 @@
 const { Server } = require('socket.io');
+const axios = require('axios');
 
 const initSocket = (server) => {
 
   const io = new Server(server, {
     cors: {
-      origin: "http://192.168.0.104:3000", // Frontend URL
+      origin: "http://192.168.0.103:3000", // Frontend URL
       methods: ["GET", "POST"],
     },
   });
@@ -18,11 +19,15 @@ const initSocket = (server) => {
     });
 
     // Handle events
-    socket.on('sendMessage', (message) => {
+    socket.on('sendMessage', async (message) => {
       console.log('Message received:', message);
 
       // Broadcast the message to all connected clients
       io.emit('message', message);
+
+      // Emit updated conversation to all connected clients
+      // const updatedConversation = await axios.get(`http://192.168.0.101:5000/api/messaging/getConversationById/${message.conversationId}`);
+      // io.emit('conversationUpdated', updatedConversation);
     });
 
     socket.on("disconnect", () => {

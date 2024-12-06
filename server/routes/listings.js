@@ -56,12 +56,11 @@ router.post('/deleteListing/:listingId', async (req, res) => {
     // Delete associated images
     if (listing.imagesKey && listing.imagesKey.length > 0) {
       try {
-        const response = await axios.post('http://192.168.0.104:5000/api/images/deleteImages', {
+        const response = await axios.post('http://192.168.0.103:5000/api/images/deleteImages', {
           imagesKey: listing.imagesKey
         });
       } catch (imageError) {
         console.error('Error deleting images:', imageError.response ? imageError.response.data : imageError.message);
-        // Optionally, you can handle the deletion failure without stopping the listing deletion process
       }
     }
 

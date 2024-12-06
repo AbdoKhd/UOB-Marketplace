@@ -50,6 +50,7 @@ const Listing = ({listingId, image, title, price, isInFavorites, userId}) => {
     console.log("this is the user of this listing: ", userId);
     if(loggedInUserId === userId){
       console.log("You can't message yourself");
+      navigate('/listings', { state: { alert: "You can't message yourself!" } });
       return;
     }
 

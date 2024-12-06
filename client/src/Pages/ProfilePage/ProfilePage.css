@@ -119,6 +119,7 @@
   display: flex;
   align-items: center;
   flex-direction: column;
+  animation: slideUpFadeIn 0.2s ease-in-out forwards;
 }
 
 .logout-popup .buttons{
@@ -150,6 +151,27 @@
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 999; /* Ensures the overlay is above all content */
   pointer-events: auto; /* Allows the overlay to block interaction */
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUpFadeIn {
+  from {
+    transform: translate(-50%, -60%) scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
 }
 
 /* ------ media query ------ */

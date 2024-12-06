@@ -19,11 +19,13 @@ const ChatBox = (conversation) => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const messagesEndRef = useRef(null);
+  const [loadingMessages, setLoadingMessages] = useState(true);
 
   const otherParticipantId = convo.participants[0]._id === loggedInUserId ? convo.participants[1]._id : convo.participants[0]._id;
+
   const otherParticipantName = convo.participants[0]._id === loggedInUserId ? 
-      convo.participants[1].firstName + " " + convo.participants[1].lastName :
-      convo.participants[0].firstName + " " + convo.participants[0].lastName;
+    convo.participants[1].firstName + " " + convo.participants[1].lastName :
+    convo.participants[0].firstName + " " + convo.participants[0].lastName;;
 
   // Fetch messages when the conversation changes
   useEffect(() => {
@@ -35,6 +37,7 @@ const ChatBox = (conversation) => {
           const convoMessages = await fetchMessages(convo._id);
           console.log("these are the messages of this convo: ", convoMessages);
           setMessages(convoMessages);
+          setLoadingMessages(false);
         } catch (error) {
           console.error('Error fetching messages:', error);
         }
@@ -97,6 +100,61 @@ const ChatBox = (conversation) => {
 
   const goToUser = () =>{
     navigate(`/user/${otherParticipantId}`);
+  }
+
+  // Handle loading and null checks
+  if (loadingMessages) {
+    return (
+      <div className='chat-box'>
+        <div className='chat-box-top'>
+          <div className='profile-pic' style={{height: "50px", width: "50px", marginRight: "15px", cursor: "pointer"}} onClick={goToUser}>
+            <img src={profilePic} alt='Profile' />
+          </div>
+          <p>{otherParticipantName}</p>
+        </div>
+        <div className="messages-container">
+          <div className='spinner-wrapper'>
+            <div className='spinner'></div>
+          </div>
+        </div>
+        <div className="message-input-container">
+          <input
+            type="text"
+            placeholder="Type a message..."
+            value={newMessage}
+            onChange={(e) => setNewMessage(e.target.value)}
+            onKeyDown={handleKeyDown}
+          />
+          <button onClick={handleSendMessage}>Send</button>
+        </div>
+      </div>
+    )  
+  }
+
+  if (!messages || messages.length === 0) {
+    return (
+      <div className='chat-box'>
+        <div className='chat-box-top'>
+          <div className='profile-pic' style={{height: "50px", width: "50px", marginRight: "15px", cursor: "pointer"}} onClick={goToUser}>
+            <img src={profilePic} alt='Profile' />
+          </div>
+          <p>{otherParticipantName}</p>
+        </div>
+        <div className="messages-container">
+          <p>No messages yet. Send one!</p>
+        </div>
+        <div className="message-input-container">
+          <input
+            type="text"
+            placeholder="Type a message..."
+            value={newMessage}
+            onChange={(e) => setNewMessage(e.target.value)}
+            onKeyDown={handleKeyDown}
+          />
+          <button onClick={handleSendMessage}>Send</button>
+        </div>
+      </div>
+    )  
   }
   
   return (

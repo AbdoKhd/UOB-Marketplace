@@ -87,7 +87,7 @@ const OtherListingsPage = () => {
     )  
   }
 
-  if (!listings || listings.length === 0) {
+  if (listings.length === 0) {
     return (
       <div>
         <NavBar/>

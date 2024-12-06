@@ -83,6 +83,13 @@
   visibility: hidden;
 }
 
+.spinner-box{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
 /* Media query */
 @media (max-width: 600px) {
   .chats {

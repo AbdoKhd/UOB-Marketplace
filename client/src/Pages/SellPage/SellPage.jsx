@@ -7,6 +7,9 @@ import { uploadImages } from '../../Services/imageService';
 import { postListing } from '../../Services/listingService';
 import { moderateImage } from '../../Services/moderationService';
 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import ScrollToTop from '../../Components/ScrollToTop/ScrollToTop';
 
 const SellPage = () => {
@@ -159,6 +162,7 @@ const SellPage = () => {
             if (!isAppropriate) {
               setPostingInProgress(false);
               setErrorMessage("One or more images were flagged as inappropriate. Please use appropriate images.");
+              toast.warn("Inappropriate image detected");
               return; // Exit if any image fails moderation
             }
           }
@@ -192,6 +196,17 @@ const SellPage = () => {
     <div className='sell-page'>
       <ScrollToTop/>
       <NavBar/>
+      <ToastContainer
+        position="top-right"
+        autoClose={4000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        pauseOnHover
+        theme="light"
+      />
       <h2>Complete your listing</h2>
       <div className='listing-container'>
         <h3>Photos</h3>
