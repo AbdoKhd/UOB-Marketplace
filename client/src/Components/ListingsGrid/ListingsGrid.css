@@ -1,6 +1,31 @@
 .listings-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 30px; /* Add space between the listings */
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 250px)); /* Create flexible columns */
+  gap: 30px 25px; /* Add space between items */
   justify-content: center;
+}
+
+/* ------ media query ------ */
+@media (max-width: 1140px) {
+  .listings-grid {
+    grid-template-columns: repeat(auto-fit, minmax(190px, 220px));
+  }
+}
+
+@media (max-width: 770px) {
+  .listings-grid {
+    grid-template-columns: repeat(auto-fit, minmax(170px, 190px));
+  }
+}
+
+@media (max-width: 470px) {
+  .listings-grid {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 170px));
+  }
+}
+
+@media (max-width: 405px) {
+  .listings-grid {
+    grid-template-columns: repeat(auto-fit, minmax(130px, 150px));
+  }
 }

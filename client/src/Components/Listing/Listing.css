@@ -1,7 +1,7 @@
 .listing{
   display: flex;
   flex-direction: column;
-  width: 250px;
+  width: 100%;
   border-radius: 10px;
   overflow: hidden;
   transition: 0.3s ease;
@@ -73,18 +73,18 @@
 /* ------ media query ------ */
 
 @media (max-width: 1024px) {
-  .listing {
-    width: 220px; /* Adjust width for smaller screens */
-  }
+  /* .listing {
+    width: 220px;
+  } */
   .listing .image {
-    height: 220px; /* Adjust height accordingly */
+    height: 220px;
   }
 }
 
 @media (max-width: 768px) {
-  .listing {
-    width: 180px; /* Further adjustment for tablet size */
-  }
+  /* .listing {
+    width: 180px;
+  } */
   .listing .image {
     height: 180px;
   }
@@ -94,9 +94,9 @@
 }
 
 @media (max-width: 480px) {
-  .listing {
-    width: 150px; /* Adjust width for mobile devices */
-  }
+  /* .listing {
+    width: 150px;
+  } */
   .listing .image {
     height: 150px;
   }

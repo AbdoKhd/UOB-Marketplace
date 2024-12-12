@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef} from 'react';
 import './ChatBox.css'
 import socket from "../../socket";
 import profilePic from '../../Assets/default-profile-pic.png'
@@ -8,18 +8,16 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../Components/AuthContext';
 import { fetchMessages, sendMessage } from '../../Services/messagingService';
 
-const ChatBox = (conversation) => {
+const ChatBox = (conversation, messagesLoading) => {
 
   const convo = conversation.conversation;
-
-  console.log("this is the convo in chatBox: ", convo);
 
   const navigate = useNavigate();
   const { loggedInUserId } = useAuth();
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const messagesEndRef = useRef(null);
-  const [loadingMessages, setLoadingMessages] = useState(true);
+  const [loadingMessages, setLoadingMessages] = useState(messagesLoading);
 
   const otherParticipantId = convo.participants[0]._id === loggedInUserId ? convo.participants[1]._id : convo.participants[0]._id;
 
@@ -27,19 +25,23 @@ const ChatBox = (conversation) => {
     convo.participants[1].firstName + " " + convo.participants[1].lastName :
     convo.participants[0].firstName + " " + convo.participants[0].lastName;;
 
+  //console.log("chat box rendered");
+
   // Fetch messages when the conversation changes
   useEffect(() => {
     if (convo) {
       socket.connect();
 
+      //console.log("Current convo: ", convo._id);
+
       const fetchConvoMessages = async () => {
         try {
           const convoMessages = await fetchMessages(convo._id);
-          console.log("these are the messages of this convo: ", convoMessages);
           setMessages(convoMessages);
-          setLoadingMessages(false);
         } catch (error) {
           console.error('Error fetching messages:', error);
+        } finally {
+          setLoadingMessages(false);
         }
       };
       fetchConvoMessages();
@@ -131,7 +133,7 @@ const ChatBox = (conversation) => {
     )  
   }
 
-  if (!messages || messages.length === 0) {
+  if (messages.length === 0) {
     return (
       <div className='chat-box'>
         <div className='chat-box-top'>

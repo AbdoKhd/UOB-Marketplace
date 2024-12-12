@@ -10,7 +10,7 @@
 
 .filter-and-matrix{
   width: 100%;
-  padding: 50px;
+  padding: 50px 30px;
 }
 
 /* ------ media query ------ */
@@ -21,7 +21,7 @@
   }
 }
 
-@media (max-width: 360px) {
+@media (max-width: 365px) {
   .filter-and-matrix{
     padding: 50px 10px;
   }

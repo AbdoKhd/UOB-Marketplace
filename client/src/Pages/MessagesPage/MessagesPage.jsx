@@ -64,7 +64,6 @@ const MessagesPage = () => {
   useEffect(() => {
     const fetchSingleConversation = async () => {
       if (conversationId) {
-        console.log("this is convo id: ", conversationId);
         try {
           const conversation = await fetchConversationById(conversationId);
           setSelectedConversation(conversation);
@@ -78,34 +77,6 @@ const MessagesPage = () => {
 
     fetchSingleConversation();
   }, [conversationId]);
-
-  // // Real-time Conversation Updates
-  // useEffect(() => {
-  //   const handleConversationUpdate = (updatedConversation) => {
-  //     setConversations((prevConversations) => {
-  //       const existingConversationIndex = prevConversations.findIndex(
-  //         (convo) => convo._id === updatedConversation._id
-  //       );
-
-  //       if (existingConversationIndex !== -1) {
-  //         // Update the existing conversation
-  //         const updatedConversations = [...prevConversations];
-  //         updatedConversations[existingConversationIndex] = updatedConversation;
-  //         return updatedConversations;
-  //       } else {
-  //         // Add the new conversation
-  //         return [updatedConversation, ...prevConversations];
-  //       }
-  //     });
-  //   };
-
-  //   socket.on('conversationUpdated', handleConversationUpdate);
-
-  //   // Cleanup listener
-  //   return () => {
-  //     socket.off('conversationUpdated', handleConversationUpdate);
-  //   };
-  // }, []);
 
 
   const handleSelectConversation = (conversation) => {
@@ -173,12 +144,11 @@ const MessagesPage = () => {
         <button className="toggle-chats-btn" onClick={toggleChatsVisibility}>
           {isChatsVisible ? 'Close Chats' : 'Open Chats'}
         </button>
-        {selectedConversation ? 
-        <ChatBox conversation={selectedConversation}/>: 
-        <h1>
-          Select a conversation to view messages!
-        </h1>}
-        
+        {selectedConversation ? (
+          <ChatBox conversation={selectedConversation} messagesLoading={true} />
+        ) : (
+          <h1>Select a conversation to view messages!</h1>
+        )}
       </div>
     </div>
   )
