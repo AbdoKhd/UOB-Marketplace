@@ -180,7 +180,7 @@ const SellPage = () => {
 
         if(response.status === 200){
           setPostingInProgress(false);
-          navigate('/listings', { state: { notification: 'Listing posted successfully!' } });
+          navigate('/listings/All', { state: { notification: 'Listing posted successfully!' } });
         }
   
       } catch (error) {

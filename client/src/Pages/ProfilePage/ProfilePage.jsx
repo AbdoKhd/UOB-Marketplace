@@ -197,21 +197,11 @@ const ProfilePage = () => {
   };
 
   const handleSeeMyListings = () =>{
-    navigate('/otherListings', {
-      state: {
-        pageTitle: 'My Listings',
-        userId: loggedInUserId,
-      },
-    })
+    navigate(`/otherListings/My listings/${loggedInUserId}`);
   }
 
   const handleSeeMyFavorites = () =>{
-    navigate('/otherListings', {
-      state: {
-        pageTitle: 'My Favorites',
-        userId: loggedInUserId,
-      },
-    })
+    navigate(`/otherListings/My Favorites/${loggedInUserId}`);
   }
 
   useEffect(() =>{

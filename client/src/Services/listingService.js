@@ -10,6 +10,24 @@ export const fetchAllListings = async () => {
   }
 };
 
+export const fetchListings = async ({ page = 1, limit = 5, searchQuery = '', category = '' }) => {
+  try {
+    // Construct query parameters
+    const params = new URLSearchParams({
+      page: page.toString(),
+      limit: limit.toString(),
+      searchQuery,
+      category,
+    });
+
+    const response = await http.get(`/api/listings/getListings?${params.toString()}`);
+    return response.data; // Return the data containing listings, currentPage, and totalPages
+  } catch (error) {
+    console.error('Error fetching listings:', error);
+    throw error;
+  }
+};
+
 export const fetchListing = async (listingId) => {
   try {
     const response = await http.get(`/api/listings/getListing/${listingId}`);

@@ -45,7 +45,7 @@ const NavBar = () => {
         <img src={logo} className='logo-img' alt='Logo' />
       </NavLink>
       <ul style={{ right: isMenuOpen ? '0' : '-200px', transition: 'right 0.5s ease'}}>
-        <li> <NavLink to='/listings' activeClassName='active'>Listings</NavLink></li>
+        <li> <NavLink to='/listings/All' activeClassName='active'>Listings</NavLink></li>
         
         {isAuthenticated ? (
           <>

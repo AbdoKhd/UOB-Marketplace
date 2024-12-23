@@ -3,8 +3,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px 10px;
-  padding-left: 25px;
+  padding: 17px 10px;
 }
 
 .search-form-left{
@@ -24,9 +23,12 @@
   width: 70%;
   height: 40px;
   padding: 0 10px;
-  border-radius: 20px 0 0 20px;
+  font-size: 14px;
   border: none;
   outline: none;
+  appearance: none;
+  border-radius: 0%;
+  transition: 0.4s ease;
 }
 
 .search-btn{
@@ -41,6 +43,47 @@
   justify-content: center;
   cursor: pointer;
   border-radius: 0 20px 20px 0;
+  transition: 0.4s ease;
+}
+
+.dropdown-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.category-dropdown {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  overflow: hidden;
+  color: white;
+  outline: none;
+  border: none;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  height: 40px;
+  padding-left: 15px;
+  font-size: 14px;
+  border-radius: 20px 0 0 20px ;
+  background-color: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  transition: 0.4s ease;
+}
+
+.category-dropdown:hover{
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.25);
+}
+
+.dropdown-icon {
+  position: absolute;
+  right: 10px; /* Position it inside the dropdown */
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none; /* Prevent icon from blocking clicks on dropdown */
+  font-size: 16px;
+  color: white;
 }
 
 .search-btn:active {
@@ -70,18 +113,31 @@
 @media (max-width: 450px){
   .search-form-right .icon{
     margin: 0 10px;
-  }
-  .search-input {
-    height: 30px;
-  }
-  .search-btn{
-    height: 30px;
-  }
-  .search-icon{
     font-size: 17px;
   }
-  .search-form-right .icon{
-    font-size: 15px;
+  .search-form-left{
+    width: 100%;
+  }
+  .search-input {
+    height: 35px;
+  }
+  .category-dropdown {
+    height: 35px;
+  }
+  .search-btn{
+    height: 35px;
+  }
+  .search-icon{
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 400px){
+  .search-form{
+    flex-direction: column;
+  }
+  .search-form-right{
+    margin-top: 17px;
   }
 }
 

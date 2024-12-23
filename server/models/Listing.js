@@ -29,7 +29,9 @@ const ListingSchema = new mongoose.Schema({
     ref: 'User',  // This refers to the User model
     required: true
   }
-})
+}, {
+  timestamps: true
+});
 
 const Listing = mongoose.model('Listing', ListingSchema);
 

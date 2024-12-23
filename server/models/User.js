@@ -39,6 +39,8 @@ const UserSchema = new mongoose.Schema({
     type: [String], // Listings id of my favorites
     required: false,
   }
+}, {
+  timestamps: true
 });
 
 // Hash the password before saving the user

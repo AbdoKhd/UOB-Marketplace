@@ -1,6 +1,6 @@
 import {useState, useEffect} from 'react'
 import './OtherListingsPage.css'
-import { useLocation } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import NavBar from '../../Components/NavBar/NavBar';
 import ListingsGrid from '../../Components/ListingsGrid/ListingsGrid';
 import {fetchUser} from '../../Services/userService';
@@ -8,10 +8,15 @@ import { fetchListingsByIds } from '../../Services/listingService';
 import { useAuth } from '../../Components/AuthContext';
 import ScrollToTop from '../../Components/ScrollToTop/ScrollToTop';
 
+// React Toastify
+import {ToastContainer, toast} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 const OtherListingsPage = () => {
 
+  const { pageTitle, userId } = useParams();
   const location = useLocation();
-  const { pageTitle, userId } = location.state || {};
+
   const {loggedInUserId} = useAuth();
 
   const [user, setUser] = useState();
@@ -19,6 +24,15 @@ const OtherListingsPage = () => {
 
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+
+    if(location.state?.alert){
+      toast.info(location.state.alert);
+    }
+
+  }, [location.state]);
+
 
   useEffect(() => {
 
@@ -102,6 +116,17 @@ const OtherListingsPage = () => {
     <div className='other-listings-page'>
       <ScrollToTop/>
       <NavBar/>
+      <ToastContainer
+        position="top-right"
+        autoClose={4000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        pauseOnHover
+        theme="light"
+      />
       <div className='title-container'>
         <h2>{pageTitle}</h2>
       </div>

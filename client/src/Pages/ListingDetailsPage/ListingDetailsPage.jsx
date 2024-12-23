@@ -85,7 +85,7 @@ const ListingDetailsPage = () => {
     try{
       const deleteListingResponse = await deleteListing(listingId);
 
-      navigate('/listings', { state: { notification: 'Listing deleted successfully!' } });
+      navigate('/listings/All', { state: { notification: 'Listing deleted successfully!' } });
 
     }catch(error){
       console.error("Error deleting listing:", error);

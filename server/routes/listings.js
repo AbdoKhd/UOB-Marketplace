@@ -87,7 +87,72 @@ router.get('/getAllListings', async (req, res) => {
     const listings = await Listing.find().populate('user');
     res.json(listings);
   } catch (error) {
-    res.status(500).json({ message: 'Failed to retrieve listings. ' + error.message});
+    res.status(500).json({ message: 'Failed to retrieve listings.' + error.message});
+  }
+});
+
+router.get('/getListings', async (req, res) => {
+  try {
+    const { page = 1, limit = 5, searchQuery = '', category = 'All', sorting = 'Newest First', campus = 'All' } = req.query;
+
+    const query = {};
+    if (searchQuery) {
+      query.$or = [
+        { title: { $regex: searchQuery, $options: 'i' } },
+        { description: { $regex: searchQuery, $options: 'i' } },
+      ];
+    }
+    if (category && category !== 'All') {
+      query.category = category;
+    }
+
+    let sortOption = {};
+    switch (sorting) {
+      case 'Newest First':
+        sortOption = { createdAt: -1 }; // Newest first
+        break;
+      case 'Oldest First':
+        sortOption = { createdAt: 1 }; // Oldest first
+        break;
+      case 'Alphabetical Order':
+        sortOption = { title: 1 }; // Alphabetical order
+        break;
+      case 'Price: Highest First':
+        sortOption = { price: -1 }; // Price descending
+        break;
+      case 'Price: Lowest First':
+        sortOption = { price: 1 }; // Price ascending
+        break;
+      default:
+        sortOption = { createdAt: -1 }; // Default to newest first
+        break;
+    }
+
+    // Fetch listings with query, sorting, pagination
+    const listings = await Listing.find(query)
+      .sort(sortOption)
+      .skip((page - 1) * limit)
+      .limit(parseInt(limit))
+      .populate({
+        path: 'user',
+        match: campus && campus !== 'All' ? { campus } : {}, // Filter by campus if specified
+        select: 'campus', // Select only the campus field
+      });
+
+    // Filter out listings where the populated user doesn't match the campus criteria
+    const filteredListings = listings.filter(listing => listing.user);
+
+    // Count total listings for pagination
+    const totalCount = await Listing.countDocuments(query);
+
+    // Respond with data
+    res.status(200).json({
+      listings: filteredListings,
+      currentPage: parseInt(page),
+      totalPages: Math.ceil(totalCount / limit),
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to retrieve listings.', error });
   }
 });
 
@@ -105,7 +170,7 @@ router.post('/getListingsByIds', async (req, res) => {
   }
 });
 
-// Get one listing
+// Get a single listing
 router.get('/getListing/:listingId', async (req, res) => {
   const {listingId} = req.params;
   try {

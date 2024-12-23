@@ -27,12 +27,7 @@ const UserPage = () => {
   const [profilePicture, setProfilePicture] = useState();
 
   const handleSeeUserListings = () =>{
-    navigate('/otherListings', {
-      state: {
-        pageTitle: `${fetchedUser.firstName}'s listings`,
-        userId: userId,
-      },
-    })
+    navigate(`/otherListings/${fetchedUser.firstName}'s listings/${userId}`);
   }
 
   useEffect( () =>{

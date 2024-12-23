@@ -1,36 +1,46 @@
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import NavBar from '../../Components/NavBar/NavBar'
+import Pagination from '../../Components/Pagination/Pagination';
 import './ListingsPage.css'
 import SearchForm from '../../Components/SearchForm/SearchForm'
-import CategoryBar from '../../Components/CategoryBar/CategoryBar'
 import { useAuth } from '../../Components/AuthContext';
 import { fetchUser } from '../../Services/userService';
-import { fetchAllListings } from '../../Services/listingService';
+import { fetchAllListings, fetchListings } from '../../Services/listingService';
+import { IoIosArrowDown } from "react-icons/io";
+
 // React Toastify
-import { ToastContainer, toast } from 'react-toastify';
+import {ToastContainer, toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import ScrollToTop from '../../Components/ScrollToTop/ScrollToTop';
 import ListingsGrid from '../../Components/ListingsGrid/ListingsGrid';
 
 const ListingsPage = () => {
-
-  const { searchQuery } = useParams();
-  console.log("this is search query: ", searchQuery);
-
-  const { loggedInUserId } = useAuth();
-
-  const [loading, setLoading] = useState(true);
-
+  
   const location = useLocation();
   const navigate = useNavigate();
 
+  const { loggedInUserId } = useAuth();
+
+  const { category, searchQuery } = useParams();
+  console.log("this is search query in listings page: ", searchQuery);
+  console.log("selected category in listings page: ", category);
+
+  const [loading, setLoading] = useState(true);
+
   const [listings, setListings] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const [myFavorites, setMyFavorites] = useState([]);
   const [filteredListings, setFilteredListings] = useState([]);
 
+  const [selectedOrder, setSelectedOrder] = useState("Oldest First");
+  const [selectedCampus, setSelectedCampus] = useState("All");
+
+  //Notifications from other pages (sell, delete Listing ...)
   useEffect(() => {
+
     if(location.state?.alert){
       toast.info(location.state.alert);
       // Clear the state after showing the notification
@@ -48,6 +58,21 @@ const ListingsPage = () => {
 
   }, [loading, location.state]);
 
+  // Fetch all listings
+  const fetchAndSetListings = async (page = 1) =>{
+    setLoading(true);
+    try {
+      const data = await fetchListings({ page });
+      setListings(data.listings);
+      setCurrentPage(data.currentPage);
+      setTotalPages(data.totalPages);
+    } catch (err) {
+      console.error('Error fetching all listingsss');
+    } finally {
+      setLoading(false);
+    }
+  }
+
   useEffect(() => {
 
     // Fetching the logged in user to use my favorites
@@ -60,34 +85,17 @@ const ListingsPage = () => {
       }
     };
 
-    // Fetch all listings
-    const fetchListings = async() =>{
-      try {
-        const allListings = await fetchAllListings();
-        setListings(allListings);
-
-        if (searchQuery) {
-          setFilteredListings(
-            allListings.filter(
-              (listing) =>
-                listing.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                listing.description.toLowerCase().includes(searchQuery.toLowerCase())
-            )
-          );
-        } else {
-          setFilteredListings(allListings);
-        }
-
-        setLoading(false);
-
-      } catch (error) {
-        console.error('Error fetching all listings:', error);
-      }
-    }
-
     fetchLoggedInUser();
-    fetchListings();
-  }, [loggedInUserId, searchQuery]);
+    fetchAndSetListings();
+  }, [loggedInUserId, searchQuery, category]);
+
+  useEffect(() => {
+    
+  }, [selectedOrder]);
+
+  useEffect(() =>{
+    
+  }, [selectedCampus]);
 
   // Handle loading and null checks
   if (loading) {
@@ -127,16 +135,44 @@ const ListingsPage = () => {
         pauseOnHover
         theme="light"
       />
-      <SearchForm urlSearchQuery={searchQuery}/>
-      <div className='divider'/>
-      <CategoryBar/>
+      <SearchForm urlSearchQuery={searchQuery} urlCategory={category}/>
       <div className='filter-and-matrix'>
         <div className='filter-container'>
-
+          <div className='filter-wrapper'>
+            <p>Sort: </p>
+            <div className='dropdown-wrapper'>
+              <select className='filtering-dropdown' value={selectedOrder} onChange={(e) => setSelectedOrder(e.target.value)}>
+                <option value="Newest First">Newest First</option>
+                <option value="Oldest First">Oldest First</option>
+                <option value="Alphabetical Order">Alphabetical Order</option>
+                <option value="Price: Highest First">Price: Highest First</option>
+                <option value="Price: Lowest First">Price: Lowest First</option>
+              </select>
+              <IoIosArrowDown className='dropdown-icon'/>
+            </div>
+          </div>
+          <div className='filter-wrapper'>
+            <p>Campus: </p>
+            <div className='dropdown-wrapper'>
+              <select className='filtering-dropdown' value={selectedCampus} onChange={(e) => setSelectedCampus(e.target.value)}>
+                <option value="All">All</option>
+                <option value="Balamand - Al Kurah">Balamand - Al Kurah</option>
+                <option value="Souk Al Gharb - Aley">Souk Al Gharb - Aley</option>
+                <option value="Beino - Akkar">Beino - Akkar</option>
+                <option value="Dekouaneh">Dekouaneh</option>
+              </select>
+              <IoIosArrowDown className='dropdown-icon'/>
+            </div>
+          </div>
         </div>
         <div className='matrix-container'>
-          <ListingsGrid listings={filteredListings} myFavorites={myFavorites}/>
+          <ListingsGrid listings={listings} myFavorites={myFavorites}/>
         </div>
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={(page) => fetchAndSetListings(page)}
+        />
       </div>
     </div>
   )

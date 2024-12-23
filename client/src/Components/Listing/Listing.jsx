@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import './Listing.css'
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 import { useAuth } from '../../Components/AuthContext';
 
@@ -17,6 +17,7 @@ const Listing = ({listingId, image, title, price, isInFavorites, userId}) => {
   const { loggedInUserId } = useAuth();
   const [isLiked, setIsLiked] = useState(isInFavorites);
   const navigate = useNavigate();
+  const location = useLocation();
   const [editingFavorites, setEditingFavorites] = useState(false);
 
   const handleAddToFavorite = async (event) => {
@@ -50,7 +51,7 @@ const Listing = ({listingId, image, title, price, isInFavorites, userId}) => {
     console.log("this is the user of this listing: ", userId);
     if(loggedInUserId === userId){
       console.log("You can't message yourself");
-      navigate('/listings', { state: { alert: "You can't message yourself!" } });
+      navigate(location.pathname, { state: { alert: "You can't message yourself!" } });
       return;
     }
 
