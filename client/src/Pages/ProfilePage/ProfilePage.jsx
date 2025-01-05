@@ -197,11 +197,11 @@ const ProfilePage = () => {
   };
 
   const handleSeeMyListings = () =>{
-    navigate(`/otherListings/My listings/${loggedInUserId}`);
+    navigate(`/otherListings/${loggedInUserId}/Listings`);
   }
 
   const handleSeeMyFavorites = () =>{
-    navigate(`/otherListings/My Favorites/${loggedInUserId}`);
+    navigate(`/otherListings/${loggedInUserId}/Favorites`);
   }
 
   useEffect(() =>{
@@ -231,7 +231,7 @@ const ProfilePage = () => {
   // Handle loading and null checks
   if (loading) {
     return (
-      <div>
+      <div className='profile-page'>
         <NavBar/>
         <div className='spinner-wrapper'>
           <div className='spinner'></div>
@@ -242,7 +242,7 @@ const ProfilePage = () => {
 
   if (!loggedInUser) {
     return (
-      <div>
+      <div className='profile-page'>
         <NavBar/>
         <div className='spinner-wrapper'>
           <p>User not found</p>

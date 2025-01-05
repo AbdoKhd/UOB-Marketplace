@@ -1,5 +1,8 @@
 .listings{
   padding-top: 70px;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
 .divider {
@@ -11,6 +14,7 @@
 .filter-and-matrix{
   width: 100%;
   padding: 50px 30px;
+  padding-bottom: 0px;
   display: flex;
   flex-direction: column;
   gap: 50px;

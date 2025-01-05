@@ -15,10 +15,41 @@
 
 .search-form-right{
   display: flex;
-  justify-content: center;
+  justify-content: space-evenly;
   align-items: center;
   flex-basis: 20%;
 }
+
+.icon-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-left: 0%;
+}
+
+.tooltip {
+  visibility: hidden;
+  opacity: 0;
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  padding: 5px;
+  border-radius: 5px;
+  font-size: 12px;
+  position: absolute;
+  bottom: 110%; /* Position above the icon */
+  left: 50%;
+  transform: translateX(-50%);
+  transition: opacity 0.2s ease-in-out, visibility 0.2s ease-in-out;
+  max-width: 70px;
+}
+
+.icon-wrapper:hover .tooltip {
+  visibility: visible;
+  opacity: 1;
+}
+
 .search-input {
   width: 70%;
   height: 40px;
@@ -99,14 +130,14 @@
 .search-form-right .icon{
   color: white;
   font-size: 20px;
-  margin: 0 20px;
+  /* margin: 0 20px; */
   transition: transform 0.2s ease;
   cursor: pointer;
 }
 
-.search-form-right .icon:hover{
+/* .search-form-right .icon:hover{
   transform: scale(1.1);
-}
+} */
 
 /* ------ media query ------ */
 
@@ -130,6 +161,10 @@
   .search-icon{
     font-size: 20px;
   }
+
+  .tooltip {
+    transform: translateX(-60%);
+  }
 }
 
 @media (max-width: 400px){
@@ -138,6 +173,9 @@
   }
   .search-form-right{
     margin-top: 17px;
+  }
+  .tooltip {
+    transform: translateX(-50%);
   }
 }
 

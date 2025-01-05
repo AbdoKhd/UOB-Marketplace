@@ -5,36 +5,6 @@ import { getImages } from '../../Services/imageService';
 
 const ListingsGrid = ({listings, myFavorites}) => {
 
-  const [firstImages, setFirstImages] = useState([]);
-
-  useEffect(() => {
-
-    // Fetching the first image of each listing
-    const fetchFirstImages = async () => {
-      try {
-        const imagePromises = listings.map( async (listing) =>{
-          console.log("this is the user of the listing: ", listing.user);
-          console.log("this is the listing: ", listing);
-          if (listing.imagesKey && listing.imagesKey.length > 0) {
-            const firstImageResponse = await getImages(listing.imagesKey[0]);
-            return firstImageResponse.images[0];
-          } else {
-            return null; // Handle listings with no images
-          }
-        });
-
-        // Wait for all promises to resolve and set the first images
-        const resolvedImages = await Promise.all(imagePromises);
-        setFirstImages(resolvedImages);
-
-      } catch (error) {
-        console.error('Error fetching first image of the listings:', error);
-      }
-    };
-
-    fetchFirstImages();
-  }, [listings, myFavorites]);
-
   return (
     <div className='listings-grid'>
       {listings.map((listing, index) => (
@@ -43,7 +13,7 @@ const ListingsGrid = ({listings, myFavorites}) => {
           listingId={listing._id}
           title={listing.title}
           price={listing.price}
-          image={firstImages[index]}
+          imageKey={listing.imagesKey ? listing.imagesKey[0] : null}
           isInFavorites={myFavorites.includes(listing._id)}
           userId={listing.user._id}
         />

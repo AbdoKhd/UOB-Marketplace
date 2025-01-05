@@ -7,9 +7,9 @@ const axios = require('axios');
 // Post a new listing
 router.post('/postListing', async (req, res) => {
   const {title, category, price, user} = req.body;
-
+  console.log("this is price: ", price);
   // Validate required fields
-  if (!title || !category || !price || !user) {
+  if (!title || !category || price === '' || !user) {
     return res.status(400).json({ message: 'All required fields must be filled out.'});
   }
 
@@ -109,45 +109,47 @@ router.get('/getListings', async (req, res) => {
     let sortOption = {};
     switch (sorting) {
       case 'Newest First':
-        sortOption = { createdAt: -1 }; // Newest first
+        sortOption = { createdAt: -1 };
         break;
       case 'Oldest First':
-        sortOption = { createdAt: 1 }; // Oldest first
+        sortOption = { createdAt: 1 };
         break;
       case 'Alphabetical Order':
-        sortOption = { title: 1 }; // Alphabetical order
+        sortOption = { title: 1 };
         break;
       case 'Price: Highest First':
-        sortOption = { price: -1 }; // Price descending
+        sortOption = { price: -1 };
         break;
       case 'Price: Lowest First':
-        sortOption = { price: 1 }; // Price ascending
+        sortOption = { price: 1 };
         break;
       default:
-        sortOption = { createdAt: -1 }; // Default to newest first
+        sortOption = { createdAt: -1 };
         break;
     }
 
-    // Fetch listings with query, sorting, pagination
+    // First, filter listings with the query
     const listings = await Listing.find(query)
+      .collation({ locale: 'en', strength: 2 }) // Case-insensitive sorting
       .sort(sortOption)
-      .skip((page - 1) * limit)
-      .limit(parseInt(limit))
       .populate({
         path: 'user',
         match: campus && campus !== 'All' ? { campus } : {}, // Filter by campus if specified
-        select: 'campus', // Select only the campus field
+        select: 'campus',
       });
 
-    // Filter out listings where the populated user doesn't match the campus criteria
+    // Filter listings where user matches campus criteria
     const filteredListings = listings.filter(listing => listing.user);
 
-    // Count total listings for pagination
-    const totalCount = await Listing.countDocuments(query);
+    // Total count after filtering
+    const totalCount = filteredListings.length;
 
-    // Respond with data
+    // Apply pagination AFTER filtering
+    const paginatedListings = filteredListings.slice((page - 1) * limit, page * limit);
+
+    // Respond with the data
     res.status(200).json({
-      listings: filteredListings,
+      listings: paginatedListings,
       currentPage: parseInt(page),
       totalPages: Math.ceil(totalCount / limit),
     });

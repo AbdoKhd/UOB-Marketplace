@@ -4,68 +4,63 @@ import { FaHeart } from "react-icons/fa";
 import { GrLanguage } from "react-icons/gr";
 import { IoIosSearch, IoIosArrowDown } from "react-icons/io";
 
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import { useAuth } from '../../Components/AuthContext';
 
-const SearchForm = ({urlSearchQuery, urlCategory}) => {
+const SearchForm = ({urlSearchQuery, urlCategory, urlOrder, urlCampus}) => {
   const navigate = useNavigate();
   const location = useLocation();
   const {loggedInUserId} = useAuth();
 
   const [searchQuery, setSearchQuery] = useState(urlSearchQuery || "");
 
-  const [selectedCategory, setSelectedCategory] = useState(urlCategory || "All");
-  const [dropdownWidth, setDropdownWidth] = useState("auto");
-  const selectRef = useRef(null);
+  const [selectedCategory, setSelectedCategory] = useState(urlCategory);
 
-  // Update selectedCategory and searchQuery when the URL changes
+  // Helper function to calculate width based on text
+  const calculateWidth = (text) => {
+    const tempSpan = document.createElement("span");
+    tempSpan.style.font = "16px Arial"; // Match the font style used in the dropdown
+    tempSpan.style.visibility = "hidden";
+    tempSpan.style.whiteSpace = "nowrap";
+    tempSpan.innerText = text || "All";
+    document.body.appendChild(tempSpan);
+    const width = tempSpan.offsetWidth + 50; // Add padding and arrow space
+    document.body.removeChild(tempSpan);
+    return width;
+  };
+
+  const [dropdownWidth, setDropdownWidth] = useState(
+    calculateWidth(urlCategory)
+  );
+
   useEffect(() => {
-    const pathParts = location.pathname.split('/');
-    const newCategory = decodeURIComponent(pathParts[2] || "All");
-    const newSearchQuery = pathParts[4] ? decodeURIComponent(pathParts[4]) : "";
-
-    if (newCategory !== selectedCategory) {
-      setSelectedCategory(newCategory);
-    }
-    if (newSearchQuery !== searchQuery) {
-      setSearchQuery(newSearchQuery);
-    }
-  }, [location]);
-
-  useEffect(() => {
-    // Adjusting dropdown width based on the selected option's text
-    if (selectRef.current) {
-      const tempSpan = document.createElement("span");
-      tempSpan.style.font = getComputedStyle(selectRef.current).font;
-      tempSpan.style.visibility = "hidden";
-      tempSpan.style.whiteSpace = "nowrap";
-      tempSpan.innerText = selectedCategory || "All";
-      document.body.appendChild(tempSpan);
-      setDropdownWidth(tempSpan.offsetWidth + 50 + "px"); // Add extra space for padding and arrow
-      document.body.removeChild(tempSpan);
-    }
-
+    setDropdownWidth(calculateWidth(selectedCategory));
   }, [selectedCategory]);
 
 
   const handleSearch = () => {
     if(searchQuery === ""){
-      navigate(`/listings/${selectedCategory}`);
+      navigate(`/listings/category/${selectedCategory}/order/${urlOrder}/campus/${urlCampus}/pgn/1`);
     }
     if (searchQuery.trim()) {
-      navigate(`/listings/${selectedCategory}/search/${encodeURIComponent(searchQuery)}`);
+      navigate(`/listings/category/${selectedCategory}/order/${urlOrder}/campus/${urlCampus}/search/${encodeURIComponent(searchQuery)}/pgn/1`);
     }
   };
 
   const handleGoToFavorites = () =>{
-    navigate(`/otherListings/My Favorites/${loggedInUserId}`);
+    if(loggedInUserId){
+      navigate(`/otherListings/${loggedInUserId}/Favorites`);
+    }
+    else{
+      navigate(`/login`);
+    }
   }
 
   return (
     <div className='search-form'>
       <div className='search-form-left'>
         <div className='dropdown-wrapper' >
-          <select className='category-dropdown' style={{ width: dropdownWidth }} value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)} ref={selectRef}>
+          <select className='category-dropdown' style={{ width: dropdownWidth }} value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)}>
             <option value="All">All</option>
             <option value="University tools">University Tools</option>
             <option value="Tutoring">Tutoring</option>
@@ -91,8 +86,14 @@ const SearchForm = ({urlSearchQuery, urlCategory}) => {
         
       </div>
       <div className='search-form-right'>
-        <FaHeart className='icon' onClick={handleGoToFavorites}/>
-        <GrLanguage className='icon'/>
+        <div className="icon-wrapper">
+          <FaHeart className='icon' onClick={handleGoToFavorites} />
+          <span className="tooltip">Favorites</span>
+        </div>
+        <div className="icon-wrapper">
+          <GrLanguage className='icon' />
+          <span className="tooltip">Language</span>
+        </div>
       </div>
     </div>
   )

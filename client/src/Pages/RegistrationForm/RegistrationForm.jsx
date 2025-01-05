@@ -41,7 +41,7 @@ const RegistrationForm = () => {
       if(response.status === 200){
         const loggedInUserId = response.data.loggedInUserId;
         login(loggedInUserId);
-        navigate('/listings/All');
+        navigate('/listings/category/All/order/Newest First/campus/All/pgn/1');
       }
 
 

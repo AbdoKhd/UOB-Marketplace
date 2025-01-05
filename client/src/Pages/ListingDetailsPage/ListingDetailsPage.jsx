@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './ListingDetailsPage.css'
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import NavBar from '../../Components/NavBar/NavBar'
 import { useAuth } from '../../Components/AuthContext';
@@ -11,6 +11,10 @@ import { getImages } from '../../Services/imageService';
 import { createConversation } from '../../Services/messagingService';
 
 import profilePic from '../../Assets/default-profile-pic.png'
+
+// React Toastify
+import {ToastContainer, toast} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 // Spinner
 import {FaSpinner} from "react-icons/fa";
@@ -27,6 +31,7 @@ const ListingDetailsPage = () => {
 
   const { loggedInUserId } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const {listingId}  = useParams();
   const [listing, setListing] = useState(null);
   const [images, setImages] = useState([]);
@@ -58,6 +63,7 @@ const ListingDetailsPage = () => {
 
   const handleBtnFavorite = async (event) =>{
     if(!loggedInUserId){
+      navigate(location.pathname, {replace: true, state: { alert: "You must login!" } });
       return null;
     }
     try{
@@ -85,7 +91,7 @@ const ListingDetailsPage = () => {
     try{
       const deleteListingResponse = await deleteListing(listingId);
 
-      navigate('/listings/All', { state: { notification: 'Listing deleted successfully!' } });
+      navigate('/listings/category/All/order/Newest First/campus/All/pgn/1', { state: { notification: 'Listing deleted successfully!' } });
 
     }catch(error){
       console.error("Error deleting listing:", error);
@@ -103,6 +109,18 @@ const ListingDetailsPage = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
   // -----------------------------
+
+  //For notifications/alerts
+  useEffect(() => {
+
+    if(location.state?.alert){
+      toast.info(location.state.alert);
+      // Clear the state after showing the notification
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+
+  }, [location.state]);
+
 
   useEffect(() => {
 
@@ -164,6 +182,11 @@ const ListingDetailsPage = () => {
 
   const handleMessageSeller = async () => {
 
+    if(!loggedInUserId){
+      navigate(location.pathname, {replace: true, state: { alert: "You must login!" } });
+      return null;
+    }
+
     console.log("this is the user of this listing: ", listingUserId);
 
     try{
@@ -179,7 +202,7 @@ const ListingDetailsPage = () => {
   // Handle loading and null checks
   if (loading) {
     return (
-      <div>
+      <div className='listing-details-page'>
         <NavBar/>
         <div className='spinner-wrapper'>
           <div className='spinner'></div>
@@ -190,7 +213,7 @@ const ListingDetailsPage = () => {
 
   if (!listing) {
     return (
-      <div>
+      <div className='listing-details-page'>
         <NavBar/>
         <div className='spinner-wrapper'>
           <p>Listing not found</p>;
@@ -220,6 +243,17 @@ const ListingDetailsPage = () => {
     <div className='listing-details-page'>
       <ScrollToTop/>
       <NavBar/>
+      <ToastContainer
+        position="top-right"
+        autoClose={4000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        pauseOnHover
+        theme="light"
+      />
       <div className='top'>
         <div className='slider-container'>
           {images && images.length > 0 ? (
@@ -248,7 +282,13 @@ const ListingDetailsPage = () => {
           <div className='divider'></div>
           <p><strong>Description:</strong> {listing.description}</p>
           <div className='divider'></div>
-          <p><strong>Price:</strong> ${listing.price}</p>
+          
+          {listing.price === 0 ? (
+            <div className='free-wrapper'>
+              <strong>Price:</strong>
+              <p className='free-price'>Free</p>
+            </div>
+          ): (<p><strong>Price:</strong> ${listing.price}</p>)}
         </div>
       </div>
       <div className='other'>

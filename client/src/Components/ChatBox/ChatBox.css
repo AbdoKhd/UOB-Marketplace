@@ -15,6 +15,12 @@
   background-color: #beccffaf;
   border-bottom: 2px solid #dbe3ffaf;
 }
+
+.pp-and-name{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
   
 .messages-container {
   flex: 1;

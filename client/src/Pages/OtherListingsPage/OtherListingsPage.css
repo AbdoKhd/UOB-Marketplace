@@ -1,7 +1,8 @@
 .other-listings-page{
   display: flex;
   flex-direction: column;
-  padding: 100px 50px;
+  padding: 100px 30px;
+  min-height: 100vh;
 }
 
 .title-container{
@@ -16,5 +17,17 @@
 @media (max-width: 600px) {
   .other-listings-page{
     padding: 100px 20px;
+  }
+}
+
+@media (max-width: 450px) {
+  .filter-and-matrix{
+    padding: 100px 20px;
+  }
+}
+
+@media (max-width: 365px) {
+  .filter-and-matrix{
+    padding: 100px 10px;
   }
 }

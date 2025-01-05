@@ -69,7 +69,7 @@ router.post('/getConversations/:userId', async (req, res) => {
 
   try {
     const conversations = await Conversation.find({ participants: userId })
-      .populate('participants', 'firstName lastName')
+      .populate('participants', 'firstName lastName profilePictureKey')
       .populate('lastMessage')
       .sort({ lastUpdated: -1 });
 
@@ -86,7 +86,7 @@ router.get('/getConversationById/:conversationId', async (req, res) => {
   try {
     // Find the specific conversation by its ID
     const conversation = await Conversation.findById(conversationId)
-      .populate('participants', 'firstName lastName')
+      .populate('participants', 'firstName lastName profilePictureKey')
       .populate('lastMessage');
 
     if (!conversation) {

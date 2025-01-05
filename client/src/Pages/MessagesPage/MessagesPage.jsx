@@ -3,7 +3,6 @@ import {useState, useEffect} from 'react'
 import { useParams, useNavigate } from 'react-router-dom';
 import './MessagesPage.css'
 import { useAuth } from '../../Components/AuthContext';
-import socket from "../../socket";
 
 import { fetchConversations, fetchConversationById } from '../../Services/messagingService';
 
@@ -129,6 +128,7 @@ const MessagesPage = () => {
                 <React.Fragment key={conversation._id}>
                   <ConvoContainer
                     name={otherParticipant.firstName + " " + otherParticipant.lastName}
+                    ppKey={otherParticipant.profilePictureKey}
                     lastMessage={lastMessageText}
                     isSelected={selectedConversation?._id === conversation._id}
                     onClick={() => handleConvoClick(conversation)}
@@ -145,7 +145,8 @@ const MessagesPage = () => {
           {isChatsVisible ? 'Close Chats' : 'Open Chats'}
         </button>
         {selectedConversation ? (
-          <ChatBox conversation={selectedConversation} messagesLoading={true} />
+          <ChatBox key={selectedConversation._id} conversation={selectedConversation} />
+          // Key here recreates a new ChatBox component everytime conversation changes.
         ) : (
           <h1>Select a conversation to view messages!</h1>
         )}

@@ -10,7 +10,7 @@ export const fetchAllListings = async () => {
   }
 };
 
-export const fetchListings = async ({ page = 1, limit = 5, searchQuery = '', category = '' }) => {
+export const fetchListings = async ({ page = 1, limit = 5, searchQuery = '', category = 'All', sorting = 'Newest First', campus = 'All' }) => {
   try {
     // Construct query parameters
     const params = new URLSearchParams({
@@ -18,6 +18,8 @@ export const fetchListings = async ({ page = 1, limit = 5, searchQuery = '', cat
       limit: limit.toString(),
       searchQuery,
       category,
+      sorting,
+      campus
     });
 
     const response = await http.get(`/api/listings/getListings?${params.toString()}`);
@@ -52,6 +54,7 @@ export const fetchListingsByIds = async (listingsId) => {
 
 export const postListing = async (imagesKey, title, category, description, price, userId) => {
   try {
+    console.log("price in service: ", price);
     const response = await http.post('/api/listings/postListing', {
       imagesKey: imagesKey,
       title: title,
@@ -62,7 +65,7 @@ export const postListing = async (imagesKey, title, category, description, price
     });
     return response;
   } catch (error) {
-    console.error('Error fetching all listings:', error);
+    console.error('Error posting the listing:', error);
     throw error;
   }
 };

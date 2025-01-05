@@ -23,20 +23,16 @@ const ListingsPage = () => {
 
   const { loggedInUserId } = useAuth();
 
-  const { category, searchQuery } = useParams();
-  console.log("this is search query in listings page: ", searchQuery);
-  console.log("selected category in listings page: ", category);
+  const { category, order, campus, pgn, searchQuery } = useParams();
 
   const [loading, setLoading] = useState(true);
 
   const [listings, setListings] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [myFavorites, setMyFavorites] = useState([]);
-  const [filteredListings, setFilteredListings] = useState([]);
 
-  const [selectedOrder, setSelectedOrder] = useState("Oldest First");
-  const [selectedCampus, setSelectedCampus] = useState("All");
+  const [selectedOrder, setSelectedOrder] = useState(order);
+  const [selectedCampus, setSelectedCampus] = useState(campus);
 
   //Notifications from other pages (sell, delete Listing ...)
   useEffect(() => {
@@ -45,6 +41,7 @@ const ListingsPage = () => {
       toast.info(location.state.alert);
       // Clear the state after showing the notification
       navigate(location.pathname, { replace: true, state: {} });
+      //The replace option ensures that the current history entry is replaced with the new state, rather than adding a new entry to the backstack.
     }
 
     if (!loading && location.state?.notification) {
@@ -53,55 +50,83 @@ const ListingsPage = () => {
         toast.success(location.state.notification);
         // Clear the state after showing the notification
         navigate(location.pathname, { replace: true, state: {} });
+        //The replace option ensures that the current history entry is replaced with the new state, rather than adding a new entry to the backstack.
       }, 100);
     }
 
   }, [loading, location.state]);
 
-  // Fetch all listings
-  const fetchAndSetListings = async (page = 1) =>{
-    setLoading(true);
-    try {
-      const data = await fetchListings({ page });
-      setListings(data.listings);
-      setCurrentPage(data.currentPage);
-      setTotalPages(data.totalPages);
-    } catch (err) {
-      console.error('Error fetching all listingsss');
-    } finally {
-      setLoading(false);
-    }
-  }
-
   useEffect(() => {
+
+    setSelectedOrder(order);
+    setSelectedCampus(campus);
+
+    // Fetch all listings
+    const fetchAndSetListings = async (page) => {
+      setLoading(true);
+      try {
+        const data = await fetchListings({ page: page, limit: 50, searchQuery: searchQuery, category: category, sorting: order, campus: campus});
+        setListings(data.listings);
+        setTotalPages(data.totalPages);
+      } catch (err) {
+        console.error('Error fetching all listingsss');
+      } finally {
+        setLoading(false);
+      }
+    }
 
     // Fetching the logged in user to use my favorites
     const fetchLoggedInUser = async () => {
-      try {
-        const userData = await fetchUser(loggedInUserId);
-        setMyFavorites(userData.myFavorites);
-      } catch (error) {
-        console.error('Error fetching user data:', error);
+      if(loggedInUserId){
+        try {
+          const userData = await fetchUser(loggedInUserId);
+          setMyFavorites(userData.myFavorites);
+        } catch (error) {
+          console.error('Error fetching user data:', error);
+        }
       }
     };
 
     fetchLoggedInUser();
-    fetchAndSetListings();
-  }, [loggedInUserId, searchQuery, category]);
-
-  useEffect(() => {
-    
-  }, [selectedOrder]);
-
-  useEffect(() =>{
-    
-  }, [selectedCampus]);
+    fetchAndSetListings(pgn);
+  }, [loggedInUserId, searchQuery, category, campus, order, location.pathname]);
 
   // Handle loading and null checks
   if (loading) {
     return (
       <div className='listings'>
         <NavBar/>
+        <SearchForm urlSearchQuery={searchQuery} urlCategory={category} urlOrder={order} urlCampus={campus}/>
+        <div className='filter-and-matrix'>
+          <div className='filter-container'>
+            <div className='filter-wrapper'>
+              <p>Sort: </p>
+              <div className='dropdown-wrapper'>
+                <select className='filtering-dropdown' value={selectedOrder} onChange={(e) => setSelectedOrder(e.target.value)}>
+                  <option value="Newest First">Newest First</option>
+                  <option value="Oldest First">Oldest First</option>
+                  <option value="Alphabetical Order">Alphabetical Order</option>
+                  <option value="Price: Highest First">Price: Highest First</option>
+                  <option value="Price: Lowest First">Price: Lowest First</option>
+                </select>
+                <IoIosArrowDown className='dropdown-icon'/>
+              </div>
+            </div>
+            <div className='filter-wrapper'>
+              <p>Campus: </p>
+              <div className='dropdown-wrapper'>
+                <select className='filtering-dropdown' value={selectedCampus} onChange={(e) => setSelectedCampus(e.target.value)}>
+                  <option value="All">All</option>
+                  <option value="Balamand - Al Kurah">Balamand - Al Kurah</option>
+                  <option value="Souk Al Gharb - Aley">Souk Al Gharb - Aley</option>
+                  <option value="Beino - Akkar">Beino - Akkar</option>
+                  <option value="Dekouaneh">Dekouaneh</option>
+                </select>
+                <IoIosArrowDown className='dropdown-icon'/>
+              </div>
+            </div>
+          </div>
+        </div>
         <div className='spinner-wrapper'>
           <div className='spinner'></div>
         </div>
@@ -111,10 +136,48 @@ const ListingsPage = () => {
 
   if (listings.length === 0 || !listings) {
     return (
-      <div>
+      <div className='listings'>
         <NavBar/>
+        <SearchForm urlSearchQuery={searchQuery} urlCategory={category} urlOrder={order} urlCampus={campus}/>
+        <div className='filter-and-matrix'>
+          <div className='filter-container'>
+            <div className='filter-wrapper'>
+              <p>Sort: </p>
+              <div className='dropdown-wrapper'>
+                <select className='filtering-dropdown' value={selectedOrder} onChange={(e) => { if(!searchQuery){ navigate(`/listings/category/${category}/order/${e.target.value}/campus/${campus}/pgn/1`) }
+                                                                                              else{navigate(`/listings/category/${category}/order/${e.target.value}/campus/${campus}/search/${searchQuery}/pgn/1`)}
+                                                                                              }}>
+                  <option value="Newest First">Newest First</option>
+                  <option value="Oldest First">Oldest First</option>
+                  <option value="Alphabetical Order">Alphabetical Order</option>
+                  <option value="Price: Highest First">Price: Highest First</option>
+                  <option value="Price: Lowest First">Price: Lowest First</option>
+                </select>
+                <IoIosArrowDown className='dropdown-icon'/>
+              </div>
+            </div>
+            <div className='filter-wrapper'>
+              <p>Campus: </p>
+              <div className='dropdown-wrapper'>
+                <select className='filtering-dropdown' value={selectedCampus} onChange={(e) => { if(!searchQuery){ navigate(`/listings/category/${category}/order/${order}/campus/${e.target.value}/pgn/1`) }
+                                                                                               else{navigate(`/listings/category/${category}/order/${order}/campus/${e.target.value}/search/${searchQuery}/pgn/1`)}
+                                                                                              }}>
+                  <option value="All">All</option>
+                  <option value="Balamand - Al Kurah">Balamand - Al Kurah</option>
+                  <option value="Souk Al Gharb - Aley">Souk Al Gharb - Aley</option>
+                  <option value="Beino - Akkar">Beino - Akkar</option>
+                  <option value="Dekouaneh">Dekouaneh</option>
+                </select>
+                <IoIosArrowDown className='dropdown-icon'/>
+              </div>
+            </div>
+          </div>
+        </div>
         <div className='spinner-wrapper'>
-          <p>No listings found!</p>
+          <h3 style={{marginBottom: "10px"}}> No Results found for:</h3>
+          <p>{category !== "All" && ` Category: ${category}`}</p>
+          <p>{searchQuery && ` Search: "${searchQuery}"`}</p>
+          <p>{campus !== "All" && ` Campus: ${campus}`}</p>
         </div>
       </div>
     )
@@ -135,13 +198,15 @@ const ListingsPage = () => {
         pauseOnHover
         theme="light"
       />
-      <SearchForm urlSearchQuery={searchQuery} urlCategory={category}/>
+      <SearchForm urlSearchQuery={searchQuery} urlCategory={category} urlOrder={order} urlCampus={campus}/>
       <div className='filter-and-matrix'>
         <div className='filter-container'>
           <div className='filter-wrapper'>
             <p>Sort: </p>
             <div className='dropdown-wrapper'>
-              <select className='filtering-dropdown' value={selectedOrder} onChange={(e) => setSelectedOrder(e.target.value)}>
+              <select className='filtering-dropdown' value={selectedOrder} onChange={(e) => { if(!searchQuery){ navigate(`/listings/category/${category}/order/${e.target.value}/campus/${campus}/pgn/1`) }
+                                                                                              else{navigate(`/listings/category/${category}/order/${e.target.value}/campus/${campus}/search/${searchQuery}/pgn/1`)}
+                                                                                              }}>
                 <option value="Newest First">Newest First</option>
                 <option value="Oldest First">Oldest First</option>
                 <option value="Alphabetical Order">Alphabetical Order</option>
@@ -154,7 +219,9 @@ const ListingsPage = () => {
           <div className='filter-wrapper'>
             <p>Campus: </p>
             <div className='dropdown-wrapper'>
-              <select className='filtering-dropdown' value={selectedCampus} onChange={(e) => setSelectedCampus(e.target.value)}>
+              <select className='filtering-dropdown' value={selectedCampus} onChange={(e) => { if(!searchQuery){ navigate(`/listings/category/${category}/order/${order}/campus/${e.target.value}/pgn/1`) }
+                                                                                               else{navigate(`/listings/category/${category}/order/${order}/campus/${e.target.value}/search/${searchQuery}/pgn/1`)}
+                                                                                              }}>
                 <option value="All">All</option>
                 <option value="Balamand - Al Kurah">Balamand - Al Kurah</option>
                 <option value="Souk Al Gharb - Aley">Souk Al Gharb - Aley</option>
@@ -169,9 +236,11 @@ const ListingsPage = () => {
           <ListingsGrid listings={listings} myFavorites={myFavorites}/>
         </div>
         <Pagination
-          currentPage={currentPage}
+          currentPage={Number(pgn)}
           totalPages={totalPages}
-          onPageChange={(page) => fetchAndSetListings(page)}
+          onPageChange={(page) => { if(!searchQuery){ navigate(`/listings/category/${category}/order/${order}/campus/${campus}/pgn/${page}`) }
+                                    else{navigate(`/listings/category/${category}/order/${order}/campus/${campus}/search/${searchQuery}/pgn/${page}`)}
+                                  }}
         />
       </div>
     </div>

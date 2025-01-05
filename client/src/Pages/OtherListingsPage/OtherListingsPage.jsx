@@ -1,6 +1,6 @@
 import {useState, useEffect} from 'react'
 import './OtherListingsPage.css'
-import { useLocation, useParams } from 'react-router-dom';
+import { useLocation, useParams, useNavigate } from 'react-router-dom';
 import NavBar from '../../Components/NavBar/NavBar';
 import ListingsGrid from '../../Components/ListingsGrid/ListingsGrid';
 import {fetchUser} from '../../Services/userService';
@@ -14,11 +14,13 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const OtherListingsPage = () => {
 
-  const { pageTitle, userId } = useParams();
+  const { userId, type } = useParams();
   const location = useLocation();
+  const navigate = useNavigate();
 
   const {loggedInUserId} = useAuth();
 
+  const [title, setTitle] = useState("");
   const [user, setUser] = useState();
   const [myFavorites, setMyFavorites] = useState([]);
 
@@ -29,6 +31,8 @@ const OtherListingsPage = () => {
 
     if(location.state?.alert){
       toast.info(location.state.alert);
+      // Clear the state after showing the notification
+      navigate(location.pathname, { replace: true, state: {} });
     }
 
   }, [location.state]);
@@ -66,12 +70,27 @@ const OtherListingsPage = () => {
   }, [userId, loggedInUserId]);
 
   useEffect(() => {
-    if (user && user.myListings) {
-      // Determine which list of IDs to use based on `pageTitle`. if the title ends with favorites then the listings should be user.myFavorites
-      const isFavorites = pageTitle && pageTitle.trim().split(' ').pop().toLowerCase() === 'favorites';
-      const listingsId = isFavorites ? myFavorites : user.myListings;
+    if (user) {
 
-      // Fetch listings only if `user` and `user.myListings` are available
+      let listingsId;
+
+      //If it is not the loggedInUser, always display Listings of the user (Never Favorites)
+      if(userId !== loggedInUserId){
+        setTitle(user.firstName + "'s listings");
+        listingsId = user.myListings;
+      }
+      //If it IS the loggedInUser, then check the type to know whether to display listings or favorites.
+      else{
+        if(type === "Favorites"){
+          setTitle("My Favorites");
+          listingsId = user.myFavorites;
+        }
+        else if(type === "Listings"){
+          setTitle("My Listings");
+          listingsId = user.myListings;
+        }
+      }
+      
       const fetchListings = async () => {
         try {
           const listingsResponse = await fetchListingsByIds(listingsId);
@@ -92,8 +111,11 @@ const OtherListingsPage = () => {
   // Handle loading and null checks
   if (loading) {
     return (
-      <div>
+      <div className='other-listings-page'>
         <NavBar/>
+        <div className='title-container'>
+          <h2>{title}</h2>
+        </div>
         <div className='spinner-wrapper'>
           <div className='spinner'></div>
         </div>
@@ -103,8 +125,11 @@ const OtherListingsPage = () => {
 
   if (listings.length === 0) {
     return (
-      <div>
+      <div className='other-listings-page'>
         <NavBar/>
+        <div className='title-container'>
+          <h2>{title}</h2>
+        </div>
         <div className='spinner-wrapper'>
           <p>No listings found!</p>
         </div>
@@ -128,7 +153,7 @@ const OtherListingsPage = () => {
         theme="light"
       />
       <div className='title-container'>
-        <h2>{pageTitle}</h2>
+        <h2>{title}</h2>
       </div>
       <ListingsGrid listings={listings} myFavorites={myFavorites}/>
     </div>

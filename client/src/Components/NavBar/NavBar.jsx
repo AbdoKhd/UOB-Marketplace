@@ -8,9 +8,9 @@ import { HiOutlineMenuAlt2 } from "react-icons/hi";
 
 
 const NavBar = () => {
-
-  const [darkNavbar, setDarkNavBar] = useState(false)
   const location = useLocation();
+
+  const [darkNavbar, setDarkNavBar] = useState(location.pathname !== '/' && location.pathname !== '/login' && location.pathname !== '/register')
 
   const { isAuthenticated } = useAuth();
 
@@ -21,7 +21,7 @@ const NavBar = () => {
   };
 
   useEffect(() => {
-    // If we're on the homepage, add scroll event listener
+    // If we're on the homepage, add scroll event listener to change the navBar's backround color
     if (location.pathname === '/' || location.pathname === '/login' || location.pathname === '/register') {
       const handleScroll = () => {
         window.scrollY > 30 ? setDarkNavBar(true) : setDarkNavBar(false);
@@ -45,18 +45,18 @@ const NavBar = () => {
         <img src={logo} className='logo-img' alt='Logo' />
       </NavLink>
       <ul style={{ right: isMenuOpen ? '0' : '-200px', transition: 'right 0.5s ease'}}>
-        <li> <NavLink to='/listings/All' activeClassName='active'>Listings</NavLink></li>
+        <li> <NavLink to='/listings/category/All/order/Newest First/campus/All/pgn/1' className={({ isActive }) => isActive || location.pathname.startsWith('/listings') ? 'active' : undefined}>Browse</NavLink></li>
         
         {isAuthenticated ? (
           <>
-            <li> <NavLink to='/sell' activeClassName='active'>Sell</NavLink></li>
-            <li> <NavLink to="/messages/" activeClassName='active'>Messages</NavLink></li>
-            <li> <NavLink to='/profile' activeClassName='active'>Profile</NavLink></li>
+            <li> <NavLink to='/sell' className={({ isActive }) => (isActive ? "active" : undefined)}>Sell</NavLink></li>
+            <li> <NavLink to="/messages/" className={({ isActive }) => (isActive ? "active" : undefined)}>Messages</NavLink></li>
+            <li> <NavLink to='/profile' className={({ isActive }) => (isActive ? "active" : undefined)}>Profile</NavLink></li>
           </>
         ) : (
           <>
-            <li> <NavLink to='/login' activeClassName='active'>Login</NavLink></li>
-            <li> <NavLink to='/register' activeClassName='active'>Sign up</NavLink></li>
+            <li> <NavLink to='/login' className={({ isActive }) => (isActive ? "active" : undefined)}>Login</NavLink></li>
+            <li> <NavLink to='/register' className={({ isActive }) => (isActive ? "active" : undefined)}>Sign up</NavLink></li>
           </>
         )}
       </ul>

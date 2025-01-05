@@ -1,7 +1,7 @@
 .pagination {
   display: flex;
   justify-content: center;
-  margin: 20px 0;
+  margin-bottom: 50px;
 }
 
 .page-button {
@@ -13,7 +13,7 @@
 }
 
 .page-button.active {
-  background-color: #007bff;
+  background-color: rgb(43, 89, 227);
   color: #fff;
-  border-color: #007bff;
+  border-color: rgb(43, 89, 227);
 }

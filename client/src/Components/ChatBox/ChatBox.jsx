@@ -4,28 +4,54 @@ import socket from "../../socket";
 import profilePic from '../../Assets/default-profile-pic.png'
 import { useNavigate } from 'react-router-dom';
 
+import { getImages } from '../../Services/imageService';
 
 import { useAuth } from '../../Components/AuthContext';
 import { fetchMessages, sendMessage } from '../../Services/messagingService';
 
-const ChatBox = (conversation, messagesLoading) => {
+const ChatBox = (conversation, key) => {
+  // Key here recreates a new ChatBox component everytime conversation changes.
 
   const convo = conversation.conversation;
 
   const navigate = useNavigate();
   const { loggedInUserId } = useAuth();
+  const [profilePicture, setProfilePicture] = useState("");
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const messagesEndRef = useRef(null);
-  const [loadingMessages, setLoadingMessages] = useState(messagesLoading);
+  const [loadingMessages, setLoadingMessages] = useState(true);
 
   const otherParticipantId = convo.participants[0]._id === loggedInUserId ? convo.participants[1]._id : convo.participants[0]._id;
+
+  const otherParticipant = convo.participants[0]._id === loggedInUserId
+                  ? convo.participants[1]
+                  : convo.participants[0];
 
   const otherParticipantName = convo.participants[0]._id === loggedInUserId ? 
     convo.participants[1].firstName + " " + convo.participants[1].lastName :
     convo.participants[0].firstName + " " + convo.participants[0].lastName;;
 
   //console.log("chat box rendered");
+
+  useEffect(() =>{
+    const fetchProfilePic = async () => {
+      try{
+        const ppKey = otherParticipant.profilePictureKey;
+        console.log("other participant", otherParticipant)
+        if(ppKey && ppKey !== ""){
+          const resolvedImages = await getImages(ppKey);
+          setProfilePicture(resolvedImages.images[0]);
+          console.log("profilePicture in chatBox: ", resolvedImages.images[0]);
+        }
+
+      }catch(error){
+        console.error('Error fetching profile pic in convo container:', error);
+      }
+    }
+
+    fetchProfilePic();
+  }, [convo]);
 
   // Fetch messages when the conversation changes
   useEffect(() => {
@@ -60,7 +86,7 @@ const ChatBox = (conversation, messagesLoading) => {
         socket.off('message', handleMessage);
       };
     }
-  }, [convo]);
+  }, [conversation]);
 
   // Scroll to the bottom of the messages
   useEffect(() => {
@@ -109,10 +135,12 @@ const ChatBox = (conversation, messagesLoading) => {
     return (
       <div className='chat-box'>
         <div className='chat-box-top'>
-          <div className='profile-pic' style={{height: "50px", width: "50px", marginRight: "15px", cursor: "pointer"}} onClick={goToUser}>
-            <img src={profilePic} alt='Profile' />
+          <div className='pp-and-name' style={{cursor: "pointer"}} onClick={goToUser}>        
+            <div className='profile-pic' style={{height: "50px", width: "50px", marginRight: "15px"}}>
+              <img src={profilePicture.content || profilePic} alt='Profile' />
+            </div>
+            <p>{otherParticipantName}</p>
           </div>
-          <p>{otherParticipantName}</p>
         </div>
         <div className="messages-container">
           <div className='spinner-wrapper'>
@@ -137,10 +165,12 @@ const ChatBox = (conversation, messagesLoading) => {
     return (
       <div className='chat-box'>
         <div className='chat-box-top'>
-          <div className='profile-pic' style={{height: "50px", width: "50px", marginRight: "15px", cursor: "pointer"}} onClick={goToUser}>
-            <img src={profilePic} alt='Profile' />
+          <div className='pp-and-name' style={{cursor: "pointer"}} onClick={goToUser}>        
+            <div className='profile-pic' style={{height: "50px", width: "50px", marginRight: "15px"}}>
+              <img src={profilePicture.content || profilePic} alt='Profile' />
+            </div>
+            <p>{otherParticipantName}</p>
           </div>
-          <p>{otherParticipantName}</p>
         </div>
         <div className="messages-container">
           <p>No messages yet. Send one!</p>
@@ -162,10 +192,12 @@ const ChatBox = (conversation, messagesLoading) => {
   return (
     <div className='chat-box'>
       <div className='chat-box-top'>
-        <div className='profile-pic' style={{height: "50px", width: "50px", marginRight: "15px", cursor: "pointer"}} onClick={goToUser}>
-          <img src={profilePic} alt='Profile' />
+        <div className='pp-and-name' style={{cursor: "pointer"}} onClick={goToUser}>        
+          <div className='profile-pic' style={{height: "50px", width: "50px", marginRight: "15px"}}>
+            <img src={profilePicture.content || profilePic} alt='Profile' />
+          </div>
+          <p>{otherParticipantName}</p>
         </div>
-        <p>{otherParticipantName}</p>
       </div>
       <div className="messages-container">
         {messages.map((message, index) => (

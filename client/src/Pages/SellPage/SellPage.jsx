@@ -116,31 +116,33 @@ const SellPage = () => {
 
   function handlePriceChange(event) {
     const value = event.target.value;
-    if (!isNaN(value) && value >= 0) {
-      setPrice(value);
+    setPrice(value);
+    if (value !== "") {
       setPriceError(false);
+      console.log("this is the price: ", value);
     }
   }
 
   function handleFreeChange() {
     setIsFree((prevIsFree) => !prevIsFree);
     if (!isFree) {
-      setPrice("");
+      setPrice(0);
       setPriceError(false);
     }
   }
 
   //Post button
   const handleButtonClick = async (e) => {
-    if(!title || !category || (!price && !isFree)){
+    if(!title || !category || (price === "" && !isFree)){
       setErrorMessage("Check required fields");
 
       if (!title) setTitleError(true);
       if (!category) setCategoryError(true);
-      if (!price && !isFree) setPriceError(true);
+      if (price === "" && !isFree) setPriceError(true);
     }
     else{
       // Post Listing
+      console.log("this is price: ", price);
       try {
         setPostingInProgress(true);
         setErrorMessage("");
@@ -180,7 +182,7 @@ const SellPage = () => {
 
         if(response.status === 200){
           setPostingInProgress(false);
-          navigate('/listings/All', { state: { notification: 'Listing posted successfully!' } });
+          navigate('/listings/category/All/order/Newest First/campus/All/pgn/1', { state: { notification: 'Listing posted successfully!' } });
         }
   
       } catch (error) {
@@ -245,11 +247,12 @@ const SellPage = () => {
         <h4>Choose the category that your item belongs to</h4>
         <select className={`category-select ${categoryError ? 'error' : ''}`} value={category} onChange={handleCategoryChange}>
           <option value="">Select a category</option>
-          <option value="Electronics">Electronics</option>
           <option value="University tools">University tools</option>
+          <option value="Tutoring">Tutoring</option>
+          <option value="Electronics">Electronics</option>
+          <option value="Dorm Utilities">Dorm Utilities</option>
           <option value="Clothes">Clothes</option>
           <option value="Directions">Directions</option>
-          <option value="Tutoring">Tutoring</option>
           <option value="Events">Events</option>
         </select>
       </div>
@@ -275,6 +278,7 @@ const SellPage = () => {
               value={price} 
               onChange={handlePriceChange} 
               disabled={isFree} 
+              min="0"
             />
           </div>
           <label>
