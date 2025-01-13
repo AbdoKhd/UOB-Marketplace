@@ -22,23 +22,20 @@ const ChatBox = (conversation, key) => {
   const messagesEndRef = useRef(null);
   const [loadingMessages, setLoadingMessages] = useState(true);
 
-  const otherParticipantId = convo.participants[0]._id === loggedInUserId ? convo.participants[1]._id : convo.participants[0]._id;
-
   const otherParticipant = convo.participants[0]._id === loggedInUserId
                   ? convo.participants[1]
                   : convo.participants[0];
+  
+  const ppKey = otherParticipant.profilePictureKey;
 
-  const otherParticipantName = convo.participants[0]._id === loggedInUserId ? 
-    convo.participants[1].firstName + " " + convo.participants[1].lastName :
-    convo.participants[0].firstName + " " + convo.participants[0].lastName;;
+  const otherParticipantId = otherParticipant._id;
 
-  //console.log("chat box rendered");
+  const otherParticipantName = otherParticipant.firstName + " " + otherParticipant.lastName;
 
   useEffect(() =>{
     const fetchProfilePic = async () => {
       try{
-        const ppKey = otherParticipant.profilePictureKey;
-        console.log("other participant", otherParticipant)
+        
         if(ppKey && ppKey !== ""){
           const resolvedImages = await getImages(ppKey);
           setProfilePicture(resolvedImages.images[0]);
@@ -137,7 +134,7 @@ const ChatBox = (conversation, key) => {
         <div className='chat-box-top'>
           <div className='pp-and-name' style={{cursor: "pointer"}} onClick={goToUser}>        
             <div className='profile-pic' style={{height: "50px", width: "50px", marginRight: "15px"}}>
-              <img src={profilePicture.content || profilePic} alt='Profile' />
+              <img src={(ppKey && ppKey !== "") ? profilePicture.content : profilePic} alt='Profile' />
             </div>
             <p>{otherParticipantName}</p>
           </div>
@@ -167,7 +164,7 @@ const ChatBox = (conversation, key) => {
         <div className='chat-box-top'>
           <div className='pp-and-name' style={{cursor: "pointer"}} onClick={goToUser}>        
             <div className='profile-pic' style={{height: "50px", width: "50px", marginRight: "15px"}}>
-              <img src={profilePicture.content || profilePic} alt='Profile' />
+              <img src={(ppKey && ppKey !== "") ? profilePicture.content : profilePic} alt='Profile' />
             </div>
             <p>{otherParticipantName}</p>
           </div>
@@ -194,7 +191,7 @@ const ChatBox = (conversation, key) => {
       <div className='chat-box-top'>
         <div className='pp-and-name' style={{cursor: "pointer"}} onClick={goToUser}>        
           <div className='profile-pic' style={{height: "50px", width: "50px", marginRight: "15px"}}>
-            <img src={profilePicture.content || profilePic} alt='Profile' />
+            <img src={(ppKey && ppKey !== "") ? profilePicture.content : profilePic} alt='Profile' />
           </div>
           <p>{otherParticipantName}</p>
         </div>

@@ -1,11 +1,13 @@
 .pagination {
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
   margin-bottom: 50px;
 }
 
 .page-button {
-  margin: 0 5px;
+  width: 40px;
+  margin: 5px;
   padding: 10px 15px;
   border: 1px solid #ccc;
   background-color: #fff;

@@ -26,3 +26,21 @@ export const uploadImages = async (formData) => {
     throw error;
   }
 };
+
+export const deleteImages = async (imagesKey) => {
+  try {
+    // Ensure imagesKey is an array
+    const formattedImagesKey = Array.isArray(imagesKey) ? imagesKey : [imagesKey].filter(Boolean);
+
+    console.log("imageskey in imageService", formattedImagesKey);
+
+    const response = await http.post('/api/images/deleteImages', {
+      imagesKey: formattedImagesKey,
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting the images:', error);
+    throw error;
+  }
+};

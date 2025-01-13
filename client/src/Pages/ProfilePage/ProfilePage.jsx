@@ -3,9 +3,10 @@ import {useState, useEffect} from 'react'
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../Components/AuthContext';
 import { fetchUser, editUserAbout, editUser } from '../../Services/userService';
-import { getImages, uploadImages } from '../../Services/imageService';
+import { getImages, uploadImages, deleteImages } from '../../Services/imageService';
 
 import { FaArrowRightLong, FaPen } from "react-icons/fa6";
+import { FaTrash } from "react-icons/fa";
 import NavBar from '../../Components/NavBar/NavBar';
 import profilePic from '../../Assets/default-profile-pic.png'
 
@@ -49,6 +50,7 @@ const ProfilePage = () => {
     setNewFirstName(loggedInUser.firstName);
     setNewLastName(loggedInUser.lastName);
     setNewCampus(loggedInUser.campus);
+    setNewProfilePicture(profilePicture);
   };
 
   const confirmEditUser = async () => {
@@ -64,31 +66,55 @@ const ProfilePage = () => {
 
 
       try {
+
+        console.log("this is new pp: ", newProfilePicture);
+
         setEditingUserLoading(true);
 
-        let imageKey = "";
-        if(newProfilePicture){
-        
-          // Prepare FormData
-          const formData = new FormData();
-          formData.append('images', newProfilePicture);
+        let newImageKey = loggedInUser.profilePictureKey || "";
 
-          // Send POST request with FormData
-          const imageResponse = await uploadImages(formData);
-          
-          imageKey = imageResponse.imageKeys[0];
+        if(newProfilePicture !== profilePicture){
+          // pp has changed so old pp needs to be deleted from the S3 bucket and new one needs to be uploaded
+
+          if(newProfilePicture){
+
+            // UPLOADING NEW PP TO S3---------
+            // Prepare FormData
+            const formData = new FormData();
+            formData.append('images', newProfilePicture.file);
+
+            // Send POST request to upload to S3 with FormData
+            const imageResponse = await uploadImages(formData);
+            
+            newImageKey = imageResponse.imageKeys[0];
+            //---------------------------------
+
+          }
+          else{
+            newImageKey = "";
+          }
+
+
+          // DELETING OLD PP FROM S3--------
+          if(loggedInUser.profilePictureKey && loggedInUser.profilePictureKey !== ""){
+
+            const deleteImageResponse = await deleteImages(loggedInUser.profilePictureKey);
+          }
+          // -------------------------------
 
         }
-
-        console.log("this is the key of the image: ", imageKey);
+        // pp hasn't been changed so no need to upload anything to the S3 bucket
 
         // Make a POST request to edit user
-        const response = await editUser(loggedInUserId, imageKey, newFirstName, newLastName, newCampus);
+        const response = await editUser(loggedInUserId, newImageKey, newFirstName, newLastName, newCampus);
 
         if(response.status === 200){
           setEditingUserLoading(false);
           setShowUserPopup(false);
         }
+
+        // Refresh the entire page
+        window.location.reload();
   
       } catch (error) {
         // Handle any errors
@@ -101,12 +127,20 @@ const ProfilePage = () => {
   };
 
   const cancelEditUser = () => {
-    setShowUserPopup(false);
-    setNewFirstName("");
-    setNewLastName("");
-    setNewCampus("");
-    setNewProfilePicture();
+    if(!editingUserLoading){
+      setShowUserPopup(false);
+      setNewFirstName("");
+      setNewLastName("");
+      setNewCampus("");
+      setNewProfilePicture();
+      setFirstNameError(false);
+      setLastNameError(false);
+    }
   };
+
+  const emptyNewPp = () =>{
+    setNewProfilePicture();
+  }
 
   function handleFirstNameChange(event){
     const value = event.target.value;
@@ -133,11 +167,13 @@ const ProfilePage = () => {
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
     if (file) {
-      setNewProfilePicture(file);
+      const imageUrl = URL.createObjectURL(file); // Create a URL for the image
+      setNewProfilePicture({ file, content: imageUrl }); // Store both the file and its URL
     }
   };
 
   //-----------
+
   // Edit About popup
 
   const handleEditAboutButton = () => {
@@ -165,6 +201,9 @@ const ProfilePage = () => {
         setShowAboutPopup(false);
       }
 
+      // Refresh the entire page
+      window.location.reload();
+
     } catch (error) {
       // Handle any errors
       setEditingAboutLoading(false);
@@ -176,11 +215,14 @@ const ProfilePage = () => {
   };
 
   const cancelEditAbout = () => {
-    setNewAbout("");
-    setShowAboutPopup(false);
+    if(!editingAboutLoading){
+      setNewAbout("");
+      setShowAboutPopup(false);
+    }
   };
 
   //-----------
+
   // Logout popup
 
   const handleLogoutButton = () => {
@@ -227,6 +269,21 @@ const ProfilePage = () => {
 
     fetchLoggedInUser();
   }, [loggedInUserId]);
+
+  // Disable scrolling when a popup is visible.
+  useEffect(() => {
+    const isPopupVisible = showLogoutPopup || showUserPopup || showAboutPopup;
+    if (isPopupVisible) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+
+    // Cleanup on component unmount
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, [showLogoutPopup, showUserPopup, showAboutPopup]);
 
   // Handle loading and null checks
   if (loading) {
@@ -301,15 +358,18 @@ const ProfilePage = () => {
       <>
         <div className='overlay' onClick={cancelEditUser}></div>
         <div className='logout-popup' style={{width: "80%"}}>
-          <div className='profile-pic' style={{cursor: "pointer"}} onClick={() => document.getElementById('fileInput').click()}>
-            <img src={newProfilePicture ? URL.createObjectURL(newProfilePicture) : profilePicture.content || profilePic}  alt=''/>
-            <input
-              type="file"
-              id="fileInput"
-              style={{ display: 'none' }}
-              accept="image/*"
-              onChange={handleImageUpload}
-            />
+          <div className='pp-and-trash'>
+            <div className='profile-pic' style={{cursor: "pointer"}} onClick={() => document.getElementById('fileInput').click()}>
+              <img src={newProfilePicture && newProfilePicture.content || profilePic}  alt=''/>
+              <input
+                type="file"
+                id="fileInput"
+                style={{ display: 'none' }}
+                accept=".png, .jpeg, .jpg"
+                onChange={handleImageUpload}
+              />
+            </div>
+            <FaTrash style={{cursor:"pointer", fontSize:"20px", color:"#D62828"}} onClick={emptyNewPp}/>
           </div>
           <input style={{marginTop: "20px"}} type="text" placeholder="First name" value={newFirstName} onChange={handleFirstNameChange} className={`title-input ${firstNameError ? 'error' : ''}`} maxLength={50}></input>
           <input style={{marginTop: "20px"}} type="text" placeholder="Last name" value={newLastName} onChange={handleLastNameChange} className={`title-input ${lastNameError ? 'error' : ''}`} maxLength={50}></input>
@@ -321,12 +381,16 @@ const ProfilePage = () => {
             <option value="Dekouaneh">Dekouaneh</option>
           </select>
 
-          {editingAboutErrorMessage && <p style={{marginTop: "20px"}} className="error-message">{editingAboutErrorMessage}</p>}
+          {editingUserErrorMessage && <p style={{marginTop: "20px"}} className="error-message">{editingUserErrorMessage}</p>}
 
+          {editingUserLoading ? (
+            <div className='spinner' style={{marginBottom:"0px", marginTop:"30px"}}></div>
+          ) : (
           <div className='buttons'>
             <button style={{marginRight: "auto"}} onClick={cancelEditUser}>Cancel</button>
             <button onClick={confirmEditUser}>Done</button>
           </div>
+          )}
         </div>
       </>
       )}
@@ -342,10 +406,17 @@ const ProfilePage = () => {
             onChange={handleAboutChange} 
             rows="5"
           ></textarea>
+
+          {editingAboutErrorMessage && <p style={{marginTop: "20px"}} className="error-message">{editingAboutErrorMessage}</p>}
+
+          {editingAboutLoading ? (
+            <div className='spinner' style={{marginBottom:"0px", marginTop:"30px"}}></div>
+          ) : (
           <div className='buttons'>
             <button style={{marginRight: "auto"}} onClick={cancelEditAbout}>Cancel</button>
             <button onClick={confirmEditAbout}>Done</button>
           </div>
+          )}
         </div>
       </>
       )}

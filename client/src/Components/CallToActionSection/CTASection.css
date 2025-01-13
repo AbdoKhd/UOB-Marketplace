@@ -36,6 +36,7 @@
     opacity: 0;
     padding-top: 50%;
     transition: 0.4s;
+    cursor: pointer;
 }
 
 .actionContainer:hover .caption{

@@ -81,7 +81,7 @@
   justify-content: center;
   width: 100%;
   margin-bottom: 50px;
-  padding: 20px;
+  padding: 10px 20px;
   box-shadow: 0 0 5px rgb(210, 210, 210);
   border-radius: 10px;
   transition: 0.4s ease;
@@ -156,6 +156,13 @@
   animation: fadeIn 0.2s ease-in-out;
 }
 
+.pp-and-trash{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -206,8 +213,8 @@
   }
 
   .profile-pic{
-    width: 60px;
-    height: 60px;
+    width: 75px;
+    height: 75px;
   }
 }
 
@@ -221,6 +228,6 @@
   }
 
   .about-container{
-    padding: 30px 10px;
+    padding: 10px 10px;
   }
 }

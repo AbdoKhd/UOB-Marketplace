@@ -76,11 +76,13 @@
 @media (max-width: 450px) {
   .filter-and-matrix{
     padding: 50px 20px;
+    padding-bottom: 0px;
   }
 }
 
 @media (max-width: 365px) {
   .filter-and-matrix{
     padding: 50px 10px;
+    padding-bottom: 0px;
   }
 }
