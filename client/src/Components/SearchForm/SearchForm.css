@@ -77,6 +77,11 @@
   transition: 0.4s ease;
 }
 
+.search-btn:active {
+  transform: scale(0.92); /* Shrinks the button to 95% of its size */
+  transition: transform 0.05s ease; /* Adds a smooth transition effect */
+}
+
 .dropdown-wrapper {
   position: relative;
   display: inline-block;
@@ -115,11 +120,6 @@
   pointer-events: none; /* Prevent icon from blocking clicks on dropdown */
   font-size: 16px;
   color: white;
-}
-
-.search-btn:active {
-  transform: scale(0.92); /* Shrinks the button to 95% of its size */
-  transition: transform 0.05s ease; /* Adds a smooth transition effect */
 }
 
 .search-icon{

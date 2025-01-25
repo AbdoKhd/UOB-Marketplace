@@ -369,7 +369,7 @@ const ProfilePage = () => {
                 onChange={handleImageUpload}
               />
             </div>
-            <FaTrash style={{cursor:"pointer", fontSize:"20px", color:"#D62828"}} onClick={emptyNewPp}/>
+            <FaTrash className='trash-icon' style={{cursor:"pointer", fontSize:"20px", color:"#D62828"}} onClick={emptyNewPp}/>
           </div>
           <input style={{marginTop: "20px"}} type="text" placeholder="First name" value={newFirstName} onChange={handleFirstNameChange} className={`title-input ${firstNameError ? 'error' : ''}`} maxLength={50}></input>
           <input style={{marginTop: "20px"}} type="text" placeholder="Last name" value={newLastName} onChange={handleLastNameChange} className={`title-input ${lastNameError ? 'error' : ''}`} maxLength={50}></input>

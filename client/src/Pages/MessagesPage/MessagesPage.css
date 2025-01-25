@@ -70,7 +70,7 @@
 
 .toggle-chats-btn{
   position: absolute;
-  top: 77px;
+  top: 84px;
   left: 50%; /* Center horizontally */
   transform: translateX(-50%);
   background-color: #00000067;
