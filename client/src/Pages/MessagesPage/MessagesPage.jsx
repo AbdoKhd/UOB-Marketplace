@@ -1,8 +1,9 @@
 import React from 'react'
-import {useState, useEffect} from 'react'
+import {useState, useEffect, useRef} from 'react'
 import { useParams, useNavigate } from 'react-router-dom';
 import './MessagesPage.css'
 import { useAuth } from '../../Components/AuthContext';
+import { useSocket } from '../../socketContext'
 
 import { fetchConversations, fetchConversationById } from '../../Services/messagingService';
 
@@ -14,7 +15,10 @@ import ChatBox from '../../Components/ChatBox/ChatBox';
 
 const MessagesPage = () => {
   const { conversationId } = useParams();
+  const convoIdRef = useRef(conversationId);
   const navigate = useNavigate();
+
+  const socket = useSocket();
 
   const {loggedInUserId} = useAuth();
 
@@ -44,6 +48,108 @@ const MessagesPage = () => {
   }, []);
   // -----------------------------
 
+  useEffect(() => {
+    if (!socket) return;
+
+    // Preserve existing queries and add loggedInUserId
+    socket.io.opts.query = { ...socket.io.opts.query, loggedInUserId };
+    socket.connect();
+
+    socket.emit("joinPersonalRoom", loggedInUserId); //the personal room id will be the user's id
+    console.log("joined personal room");
+
+    socket.on("directMessage", (message) => {
+      console.log("New message in MessagesPage:", message);
+
+      setConversations((prevConversations) => {
+        const existingIndex = prevConversations.findIndex(
+          (conv) => conv._id === message.conversationId
+        );
+  
+        if (existingIndex !== -1) {
+          // Move the conversation to the top
+          const updatedConvos = [...prevConversations];
+          const [movedConvo] = updatedConvos.splice(existingIndex, 1); // Remove the existing convo
+          movedConvo.lastMessage = message; // Update the last message
+          if(message.senderId !== loggedInUserId && message.status !== 'seen'){
+            movedConvo.unreadCount = movedConvo.unreadCount + 1;
+          }
+          updatedConvos.unshift(movedConvo); // Add it to the top
+  
+          return [...updatedConvos];
+        } else {
+          // If conversation doesn't exist, fetch it and update the lastMessage
+          fetchConversations(loggedInUserId).then((newConvos) => {
+            //console.log("Convo does not exist, fetching conversations:", newConvos);
+
+            // Find the conversation and update lastMessage before setting state
+            const updatedConvos = newConvos.map((conv) => 
+              conv._id === message.conversationId ? { ...conv, lastMessage: message } : conv
+            );
+
+            setConversations(updatedConvos);
+          });
+
+          return prevConversations;
+        }
+      });
+    });
+
+    const handleConvoLastMessageStatusUpdate = ({ conversationId, status }) => {
+      // console.log("in handleConvoLastMessageStatusUpdate status: ", status);
+      // console.log("in handleConvoLastMessageStatusUpdate conversationId: ", conversationId);
+      setConversations((prevConversations) => 
+        prevConversations.map((conversation) =>
+          conversation._id === conversationId
+            ? {
+                ...conversation,
+                lastMessage: {
+                  ...conversation.lastMessage,
+                  status: status, // Update the status
+                },
+                unreadCount: 0,
+              }
+            : conversation
+        )
+      );
+    };
+    socket.on("convoLastMessageStatusUpdate", handleConvoLastMessageStatusUpdate);
+
+    const handleFetchConvosAgain = async () => {
+      console.log("fetching convos again");
+      try{
+        const convosResponse = await fetchConversations(loggedInUserId);
+        setConversations(convosResponse);
+        setLoadingConvos(false);
+        console.log("this is convos again response: ", convosResponse);
+      }catch(error){
+        console.error('Error fetching the conversations again:', error);
+      }
+    };
+    socket.on("fetchConvosAgain", handleFetchConvosAgain);
+
+    return () => {
+      if(socket){
+        socket.off("directMessage");
+        socket.off("fetchConvosAgain", handleFetchConvosAgain);
+
+        if(convoIdRef.current){
+          socket.emit("leaveRoom", { roomId: convoIdRef.current, userId: loggedInUserId });
+          console.log("left convo room!");
+        }
+
+        socket.emit("leavePersonalRoom", loggedInUserId);
+        console.log("left personal room");
+        
+
+        // socket.once("leavePersonalRoom", () => {
+        //   socket.disconnect();
+        // });
+        
+      }
+    };
+  }, [socket, loggedInUserId]);
+
   useEffect(() =>{
     const fetchConvos = async () =>{
       try{
@@ -61,11 +167,26 @@ const MessagesPage = () => {
 
   // Fetch conversation by ID if conversationId is present
   useEffect(() => {
+    convoIdRef.current = conversationId;
     const fetchSingleConversation = async () => {
+      if(!conversationId && selectedConversation){
+        console.log("left convo room!");
+        socket.emit('leaveRoom', {roomId: selectedConversation._id, userId: loggedInUserId}); // leave room
+      }
       if (conversationId) {
         try {
+
+          // selectedConversation here is the previously selected convo not the one just clicked
+          if(selectedConversation){
+            console.log("left convo room!");
+            socket.emit('leaveRoom', {roomId: selectedConversation._id, userId: loggedInUserId}); // leave room
+          }
+
           const conversation = await fetchConversationById(conversationId);
           setSelectedConversation(conversation);
+
+          const roomId = conversationId;
+
         } catch (error) {
           console.error('Error fetching the conversation:', error);
         }
@@ -74,13 +195,14 @@ const MessagesPage = () => {
       }
     };
 
-    fetchSingleConversation();
+    fetchSingleConversation();  
   }, [conversationId]);
 
 
-  const handleSelectConversation = (conversation) => {
-    setSelectedConversation(conversation);
-    navigate(`/messages/${conversation._id}`);
+   const handleSelectConversation = (conversation) => {
+    if(conversationId !== conversation._id){
+      navigate(`/messages/${conversation._id}`);
+    }
   };
 
   const toggleChatsVisibility = () => {
@@ -130,6 +252,8 @@ const MessagesPage = () => {
                     name={otherParticipant.firstName + " " + otherParticipant.lastName}
                     ppKey={otherParticipant.profilePictureKey}
                     lastMessage={lastMessageText}
+                    lastMessageObj={conversation.lastMessage}
+                    unreadCount={conversation.unreadCount}
                     isSelected={selectedConversation?._id === conversation._id}
                     onClick={() => handleConvoClick(conversation)}
                   />

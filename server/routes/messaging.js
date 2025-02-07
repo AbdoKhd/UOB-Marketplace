@@ -19,12 +19,12 @@ router.post('/getMessages/:conversationId', async (req, res) => {
 
 // Send a message
 router.post('/sendMessage/:conversationId', async (req, res) => {
-  const { senderId, receiverId, content } = req.body;
+  const { senderId, receiverId, content, status } = req.body;
   const { conversationId } = req.params;
 
-  console.log("this is sender id: ", senderId);
-  console.log("this is receiver id: ", receiverId);
-  console.log("this is the content: ", content);
+  // console.log("this is sender id: ", senderId);
+  // console.log("this is receiver id: ", receiverId);
+  // console.log("this is the content: ", content);
 
   try {
     // Create a new message
@@ -33,11 +33,11 @@ router.post('/sendMessage/:conversationId', async (req, res) => {
       receiverId,
       conversationId,
       content,
-      status: 'sent',
+      status,
     });
 
     const savedMessage = await newMessage.save();
-    console.log("New message added");
+    //console.log("New message added");
 
     // Update the conversation
     // IMPORTANT: if the convo does not exist than the message should not be sent
@@ -54,7 +54,6 @@ router.post('/sendMessage/:conversationId', async (req, res) => {
       return res.status(404).json({ message: 'Conversation not found' });
     }
 
-    console.log("Conversation updated");
     res.status(201).json(savedMessage);
   } catch (error) {
     console.error("Error sending message:", error);
@@ -63,7 +62,7 @@ router.post('/sendMessage/:conversationId', async (req, res) => {
 });
 
 
-// Fetch all conversations for a user
+// Fetch all conversations for a user with unread messages count
 router.post('/getConversations/:userId', async (req, res) => {
   const { userId } = req.params;
 
@@ -71,9 +70,21 @@ router.post('/getConversations/:userId', async (req, res) => {
     const conversations = await Conversation.find({ participants: userId })
       .populate('participants', 'firstName lastName profilePictureKey')
       .populate('lastMessage')
-      .sort({ lastUpdated: -1 });
+      .sort({ lastUpdated: -1 })
+      .lean();
 
-    res.status(200).json(conversations);
+    // Fetch unread counts for each conversation
+    const conversationsWithUnread = await Promise.all(conversations.map(async (convo) => {
+      const unreadCount = await Message.countDocuments({
+        conversationId: convo._id,
+        receiverId: userId,
+        status: { $ne: 'seen' }
+      });
+
+      return { ...convo, unreadCount };
+    }));
+
+    res.status(200).json(conversationsWithUnread);
   } catch (error) {
     res.status(500).json({ message: 'Error fetching conversations', error: error.message });
   }

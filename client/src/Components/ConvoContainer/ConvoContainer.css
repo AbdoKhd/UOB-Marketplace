@@ -8,7 +8,7 @@
 
 .convo-container .info{
   width: 100%;
-  margin-left: 20px;
+  margin: 0 20px;
   display: flex;
   justify-content: center;
   flex-direction: column;
@@ -18,6 +18,8 @@
 .info h3 {
   margin: 0;
   font-size: 1.2rem;
+  font-weight: 550;
+  color: rgb(45, 45, 45);
   white-space: nowrap; /* Prevent text wrapping */
   overflow: hidden; /* Hide overflowing text */
   text-overflow: ellipsis; /* Add ellipsis to the end of overflowing text */
@@ -32,10 +34,37 @@
   text-overflow: ellipsis; /* Add ellipsis to the end of overflowing text */
 }
 
+.unread h3{
+  font-weight: 850;
+  color: black;
+}
+
+.unread p{
+  font-weight: bold;
+  color: black;
+}
+
 .convo-container:hover {
   background-color: #dbe3ffaf;
 }
 
 .convo-container.selected {
   background-color: #beccffaf; /* Highlight selected conversation */
+}
+
+.unread-count-badge {
+  margin-left: auto;
+  background-color: rgb(81, 183, 71);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 28px;
+  min-width: 28px;
+  border-radius: 50%;
+}
+
+.unread-count-badge p{
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
 }
