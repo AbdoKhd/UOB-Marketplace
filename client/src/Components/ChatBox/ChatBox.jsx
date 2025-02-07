@@ -170,6 +170,7 @@ const ChatBox = (conversation, key) => {
         event.preventDefault(); // Prevent default form submission behavior
         setNewMessage((prev) => prev + "\n");
       } else {
+        event.preventDefault();
         handleSendMessage(); // Send the message on desktop
       }
     }

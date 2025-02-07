@@ -254,7 +254,7 @@ const MessagesPage = () => {
                     lastMessage={lastMessageText}
                     lastMessageObj={conversation.lastMessage}
                     unreadCount={conversation.unreadCount}
-                    isSelected={selectedConversation?._id === conversation._id}
+                    isSelected={conversationId === conversation._id}
                     onClick={() => handleConvoClick(conversation)}
                   />
                   {index < conversations.length - 1 && <div className="chats-divider" />}
