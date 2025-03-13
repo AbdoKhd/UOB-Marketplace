@@ -2,11 +2,12 @@ import http from '../http-common';
 
 export const signIn = async (email, password) => {
   try {
-    // Make a POST request to the backend's register route
+    // Make a POST request to the backend's login route
     const response = await http.post('/api/users/login', {
       email,
       password
     });
+    localStorage.setItem("token", response.data.token);
     return response;
   } catch (error) {
     console.error('Error loggin in:', error);
@@ -23,6 +24,7 @@ export const signUp = async (firstName, lastName, email, password) => {
       email,
       password
     });
+    localStorage.setItem("token", response.data.token);
     return response;
   } catch (error) {
     console.error('Error signing up:', error);
@@ -37,6 +39,16 @@ export const fetchUser = async (userId) => {
   } catch (error) {
     console.error('Error fetching the user:', error);
     throw error;
+  }
+};
+
+export const fetchUserByEmail = async (email) => {
+  try {
+    const response = await http.get(`/api/users/getUserByEmail/${email}`);
+    return response;
+  } catch (error) {
+    // console.error('Error fetching the user by email:', error);
+    return error.response;
   }
 };
 

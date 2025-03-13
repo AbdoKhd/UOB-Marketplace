@@ -79,7 +79,7 @@ textarea:-webkit-autofill{
 .login-register-container .remember-forget{
     width: 100%;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     font-size: 14.5px;
     margin-bottom: 30px;
 }

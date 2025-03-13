@@ -30,6 +30,10 @@ app.use('/api/images', imageUploadRoutes);
 const messagingRoutes = require('./routes/messaging');
 app.use('/api/messaging', messagingRoutes);
 
+//Code to email Routes
+const codeToEmailRoutes = require('./routes/codeToEmail');
+app.use('/api/codeToEmail', codeToEmailRoutes);
+
 const server = http.createServer(app); // Create an HTTP server
 initSocket(server);
 

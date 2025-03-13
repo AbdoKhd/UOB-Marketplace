@@ -4,6 +4,7 @@ import { AuthProvider } from './Components/AuthContext' ;
 import { SocketProvider } from "./socketContext";
 import LoginForm from './Pages/LoginForm/LoginForm';
 import RegistrationForm from './Pages/RegistrationForm/RegistrationForm';
+import ForgotPasswordForm from './Pages/ForgotPasswordForm/ForgotPasswordForm';
 import {Route, Routes} from 'react-router-dom';
 import HomePage from './Pages/HomePage/HomePage';
 import ListingsPage from './Pages/ListingsPage/ListingsPage';
@@ -23,6 +24,7 @@ function App() {
         <Routes>
           <Route path="/login" element={ <ProtectedRouteLoggedIn> <LoginForm /> </ProtectedRouteLoggedIn>} />
           <Route path="/register" element={ <ProtectedRouteLoggedIn> <RegistrationForm /> </ProtectedRouteLoggedIn>} />
+          <Route path="/forgotPassword" element={ <ProtectedRouteLoggedIn> <ForgotPasswordForm /> </ProtectedRouteLoggedIn>} />
           <Route path="/" element={<HomePage />} />
           <Route path="/listingDetails/:listingId" element={<ListingDetailsPage/>} />
           <Route path="/listings/category/:category/order/:order/campus/:campus/pgn/:pgn" element={<ListingsPage />} />

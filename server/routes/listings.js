@@ -3,9 +3,10 @@ const Listing = require('../models/Listing');
 const User = require('../models/User');
 const router = express.Router();
 const axios = require('axios');
+const authMiddleware = require("../authMiddleware");
 
 // Post a new listing
-router.post('/postListing', async (req, res) => {
+router.post('/postListing', authMiddleware, async (req, res) => {
   const {title, category, price, user} = req.body;
   console.log("this is price: ", price);
   // Validate required fields
@@ -35,7 +36,7 @@ router.post('/postListing', async (req, res) => {
 });
 
 // Delete a listing
-router.post('/deleteListing/:listingId', async (req, res) => {
+router.post('/deleteListing/:listingId', authMiddleware, async (req, res) => {
   const {listingId} = req.params;
 
   try {

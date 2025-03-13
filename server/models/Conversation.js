@@ -4,6 +4,11 @@ const Schema = mongoose.Schema;
 const ConversationSchema = new mongoose.Schema({
   //Fields:
 
+  userThatStartedConvo: { 
+    type: Schema.Types.ObjectId, 
+    ref: 'User',
+    required: true 
+  },
   participants: [
     { type: Schema.Types.ObjectId, ref: 'User', required: true },
   ],

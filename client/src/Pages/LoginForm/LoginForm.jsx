@@ -4,7 +4,7 @@ import React from 'react'
 import './LoginForm.css';
 import NavBar from '../../Components/NavBar/NavBar'
 import { FaLock, FaEnvelope } from "react-icons/fa";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, NavLink } from 'react-router-dom';
 import { useAuth } from '../../Components/AuthContext';
 import { signIn } from '../../Services/userService';
 
@@ -59,11 +59,10 @@ const LoginForm = () => {
           </div>
 
           <div className='remember-forget' >
-            <label>
-              <input type="checkbox"/>
-              Remember me
-            </label>
-            <a href='#'>Forgot password</a>
+            <NavLink to='/forgotPassword'>
+              <p>Forgot password</p>
+            </NavLink>
+            {/* <a href='/forgotPassword'>Forgot password</a> */}
           </div>
 
           <button type='submit'>Login</button>

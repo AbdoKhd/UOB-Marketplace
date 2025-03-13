@@ -42,7 +42,7 @@ const ProfilePage = () => {
 
   const [loading, setLoading] = useState(true);
 
-
+  //logout();
 
   // Edit User info popup
   const handleEditUserButton = () => {
@@ -231,7 +231,6 @@ const ProfilePage = () => {
 
   const confirmLogout = () => {
     logout();
-    navigate('/');
   };
 
   const cancelLogout = () => {

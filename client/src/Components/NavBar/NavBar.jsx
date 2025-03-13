@@ -10,7 +10,7 @@ import { HiOutlineMenuAlt2 } from "react-icons/hi";
 const NavBar = () => {
   const location = useLocation();
 
-  const [darkNavbar, setDarkNavBar] = useState(location.pathname !== '/' && location.pathname !== '/login' && location.pathname !== '/register')
+  const [darkNavbar, setDarkNavBar] = useState(location.pathname !== '/' && location.pathname !== '/login' && location.pathname !== '/register' && location.pathname !== '/forgotPassword')
 
   const { isAuthenticated } = useAuth();
 
@@ -22,7 +22,7 @@ const NavBar = () => {
 
   useEffect(() => {
     // If we're on the homepage, add scroll event listener to change the navBar's backround color
-    if (location.pathname === '/' || location.pathname === '/login' || location.pathname === '/register') {
+    if (location.pathname === '/' || location.pathname === '/login' || location.pathname === '/register' || location.pathname === '/forgotPassword') {
       const handleScroll = () => {
         window.scrollY > 30 ? setDarkNavBar(true) : setDarkNavBar(false);
       };

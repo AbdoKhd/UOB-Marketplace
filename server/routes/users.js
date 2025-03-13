@@ -1,13 +1,20 @@
 const express = require('express');
 const User = require('../models/User');
 const router = express.Router();
+const jwt = require("jsonwebtoken");
+require("dotenv").config();
+const authMiddleware = require("../authMiddleware");
 
 // Create a new user
 router.post('/register', async (req, res) => {
   try {
     const newUser = new User(req.body);
     await newUser.save();
-    res.status(200).json({message: 'Registration Successful', loggedInUserId: newUser.id });
+
+    // Generate JWT token
+    const token = jwt.sign({ userId: newUser.id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN });
+    console.log("this is generated token: ", token);
+    res.status(200).json({token: token, message: 'Registration Successful', loggedInUserId: newUser.id });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
@@ -15,6 +22,7 @@ router.post('/register', async (req, res) => {
 
 // Authentication
 router.post('/login', async (req, res) => {
+  console.log("hello in login backend");
   try{
     const {email, password} = req.body;
 
@@ -28,10 +36,17 @@ router.post('/login', async (req, res) => {
       return res.status(400).json({message: 'Invalid password'})
     }
 
-    res.status(200).json({message: 'Login Successful', loggedInUserId: user.id});
+    console.log("before generating jwt");
+
+    // Generate JWT token
+    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN });
+    console.log("this is generated token: ", token);
+
+    res.status(200).json({token: token, message: 'Login Successful', loggedInUserId: user.id});
 
 
   }catch (error) {
+    console.log("this is error: ", error.message);
     res.status(500).json({ message: error.message });
   }
 });
@@ -57,8 +72,28 @@ router.get('/getUser/:userId', async (req, res) =>{
   }
 })
 
+//Route to get a user by email
+router.get('/getUserByEmail/:email', async (req, res) =>{
+
+  const {email} = req.params;
+  // console.log("this is email: ", email);
+
+  try {
+    const user = await User.findOne({email});
+
+    if (!user) {
+      return res.status(404).json({ message: `User with this email not found`});
+    }
+
+    res.status(200).json({message: `Fetched user successfully`, user: user});
+
+  } catch (error) {
+    res.status(500).json({ message: `An error occurred while fetching the user by email`, error });
+  }
+})
+
 // Route to edit a user
-router.put('/editUser/:userId', async (req, res) => {
+router.put('/editUser/:userId', authMiddleware, async (req, res) => {
   const { userId } = req.params;
   const { profilePictureKey, firstName, lastName, campus } = req.body;
 
@@ -95,7 +130,7 @@ router.put('/editUser/:userId', async (req, res) => {
 });
 
 // Route to edit the user's 'about' field
-router.put('/editUserAbout/:userId', async (req, res) => {
+router.put('/editUserAbout/:userId', authMiddleware, async (req, res) => {
   const { userId } = req.params;
   const { about } = req.body;
 
@@ -131,7 +166,7 @@ router.put('/editUserAbout/:userId', async (req, res) => {
 });
 
 //Add the listingId to the user schema (for myFavorites).
-router.post('/addListingToUser/myFavorites/:userId', async (req, res) => {
+router.post('/addListingToUser/myFavorites/:userId', authMiddleware, async (req, res) => {
   const {userId} = req.params;
   const {listingId} = req.body;
   try{
@@ -154,7 +189,7 @@ router.post('/addListingToUser/myFavorites/:userId', async (req, res) => {
 })
 
 // Route to remove a listing ID from a user's favorites
-router.post('/removeListingFromUser/myFavorites/:userId', async (req, res) => {
+router.post('/removeListingFromUser/myFavorites/:userId', authMiddleware, async (req, res) => {
   const { userId } = req.params;
   const { listingId } = req.body;
 
@@ -178,7 +213,7 @@ router.post('/removeListingFromUser/myFavorites/:userId', async (req, res) => {
 });
 
 // Get all users
-router.get('/getAllUsers', async (req, res) => {
+router.get('/getAllUsers', authMiddleware, async (req, res) => {
   try {
     const users = await User.find();
     res.json(users);

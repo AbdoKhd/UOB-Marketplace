@@ -1,8 +1,12 @@
 import { createContext, useContext, useState, useEffect } from 'react';
+import { setLogoutFunction } from "../http-common";
+import { useNavigate } from 'react-router-dom';
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
+
+  const navigate = useNavigate();
 
   const [loggedInUserId, setLoggedInUserId] = useState(() => {
     try {
@@ -56,7 +60,11 @@ export const AuthProvider = ({ children }) => {
     setLoggedInUserId(null);
     localStorage.removeItem('isAuthenticated');
     localStorage.removeItem('loggedInUserId');
+    localStorage.removeItem("token");
+    navigate(`/login`);
   };
+
+  setLogoutFunction(logout);
 
   return (
     <AuthContext.Provider value={{ isAuthenticated, loggedInUserId, login, logout }}>

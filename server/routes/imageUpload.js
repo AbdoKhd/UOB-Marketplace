@@ -5,6 +5,7 @@ const multerS3 = require('multer-s3');
 const s3Client = require('../aws-config');
 const { GetObjectCommand, PutObjectCommand, DeleteObjectCommand, DeleteObjectsCommand } = require('@aws-sdk/client-s3');
 const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
+const authMiddleware = require("../authMiddleware");
 
 const sharp = require('sharp');
 const path = require('path');
@@ -15,7 +16,7 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 // Route for handling file upload with compression
-router.post('/upload', upload.array('images', 10), async (req, res) => {
+router.post('/upload', authMiddleware, upload.array('images', 10), async (req, res) => {
   try {
 
     if (!req.files || req.files.length === 0) {
@@ -96,7 +97,7 @@ router.post('/getImages', async (req, res) => {
 
 
 // Route to delete multiple images from S3 bucket
-router.post('/deleteImages', async (req, res) => {
+router.post('/deleteImages', authMiddleware, async (req, res) => {
   try {
     let imagesKey = req.body.imagesKey; // array of keys
 

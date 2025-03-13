@@ -2,7 +2,7 @@ import {useEffect, useState} from 'react'
 import './UserPage.css'
 import profilePic from '../../Assets/default-profile-pic.png'
 import { useAuth } from '../../Components/AuthContext';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 
 import { fetchUser } from '../../Services/userService';
 import { getImages } from '../../Services/imageService';
@@ -14,6 +14,10 @@ import ScrollToTop from '../../Components/ScrollToTop/ScrollToTop';
 
 import { FaArrowRightLong} from "react-icons/fa6";
 
+// React Toastify
+import {ToastContainer, toast} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 const UserPage = () => {
 
   const {userId}  = useParams(); // The user we're viewing
@@ -21,6 +25,7 @@ const UserPage = () => {
   // If these two are the same then redirect to profile page.
 
   const navigate = useNavigate();
+  const location = useLocation();
   const [fetchedUser, setFetchedUser] = useState();
   const [loading, setLoading] = useState(true);
 
@@ -29,6 +34,17 @@ const UserPage = () => {
   const handleSeeUserListings = () =>{
     navigate(`/otherListings/${userId}/Listings`);
   }
+
+  //For notifications/alerts
+  useEffect(() => {
+
+    if(location.state?.alert){
+      toast.info(location.state.alert);
+      // Clear the state after showing the notification
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+
+  }, [location.state]);
 
   useEffect( () =>{
 
@@ -65,7 +81,10 @@ const UserPage = () => {
 
   const handleMessageSeller = async () => {
 
-    console.log("this is the user of this listing: ", userId);
+    if(!loggedInUserId){
+      navigate(location.pathname, {replace: true, state: { alert: "You must login!" } });
+      return null;
+    }
 
     try{
       // Create conversation
@@ -104,6 +123,17 @@ const UserPage = () => {
     <div className='user-page'>
       <ScrollToTop/>
       <NavBar/>
+      <ToastContainer
+        position="top-right"
+        autoClose={4000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        pauseOnHover
+        theme="light"
+      />
       <h2>{fetchedUser.firstName}'s profile</h2>
       <div className='profile-container'>
         <div className='profile-pic'>

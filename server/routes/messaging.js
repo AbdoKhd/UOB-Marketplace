@@ -2,9 +2,10 @@ const express = require('express');
 const Message = require('../models/Message');
 const Conversation = require('../models/Conversation');
 const router = express.Router();
+const authMiddleware = require("../authMiddleware");
 
 // Fetch messages between two users
-router.post('/getMessages/:conversationId', async (req, res) => {
+router.post('/getMessages/:conversationId', authMiddleware, async (req, res) => {
   const { conversationId } = req.params;
 
   try {
@@ -18,7 +19,7 @@ router.post('/getMessages/:conversationId', async (req, res) => {
 
 
 // Send a message
-router.post('/sendMessage/:conversationId', async (req, res) => {
+router.post('/sendMessage/:conversationId', authMiddleware, async (req, res) => {
   const { senderId, receiverId, content, status } = req.body;
   const { conversationId } = req.params;
 
@@ -63,11 +64,17 @@ router.post('/sendMessage/:conversationId', async (req, res) => {
 
 
 // Fetch all conversations for a user with unread messages count
-router.post('/getConversations/:userId', async (req, res) => {
+router.post('/getConversations/:userId', authMiddleware, async (req, res) => {
   const { userId } = req.params;
 
   try {
-    const conversations = await Conversation.find({ participants: userId })
+    const conversations = await Conversation.find({ 
+      participants: userId,
+      $or: [
+        { userThatStartedConvo: userId },  // Include if user started convo
+        { lastMessage: { $ne: null } }     // OR if lastMessage is not null
+      ]
+    })
       .populate('participants', 'firstName lastName profilePictureKey')
       .populate('lastMessage')
       .sort({ lastUpdated: -1 })
@@ -91,7 +98,7 @@ router.post('/getConversations/:userId', async (req, res) => {
 });
 
 // Fetch a conversation by ID
-router.get('/getConversationById/:conversationId', async (req, res) => {
+router.get('/getConversationById/:conversationId', authMiddleware, async (req, res) => {
   const { conversationId } = req.params;
 
   try {
@@ -113,7 +120,7 @@ router.get('/getConversationById/:conversationId', async (req, res) => {
 
 
 // Mark a message as seen
-router.post('/markAsSeen/:messageId', async (req, res) => {
+router.post('/markAsSeen/:messageId', authMiddleware, async (req, res) => {
   const { messageId } = req.params;
 
   try {
@@ -130,7 +137,7 @@ router.post('/markAsSeen/:messageId', async (req, res) => {
 });
 
 // Create a new conversation
-router.post('/createConversation', async (req, res) => {
+router.post('/createConversation', authMiddleware, async (req, res) => {
   const { senderId, receiverId } = req.body;
 
   try {
@@ -142,6 +149,7 @@ router.post('/createConversation', async (req, res) => {
     if (!conversation) {
       // Create a new conversation
       conversation = new Conversation({
+        userThatStartedConvo: senderId,
         participants: [senderId, receiverId],
         lastMessage: null,
         lastUpdated: Date.now(),
@@ -163,7 +171,7 @@ router.post('/createConversation', async (req, res) => {
 
 
 // Delete a conversation
-router.post('/deleteConversation/:conversationId', async (req, res) => {
+router.post('/deleteConversation/:conversationId', authMiddleware, async (req, res) => {
   const { conversationId } = req.params;
 
   try {
