@@ -36,11 +36,11 @@ router.post("/send-reset-code", async (req, res) => {
     );
 
     const mailOptions = {
-      from: `"UOB Marketplace" <${process.env.EMAIL_USER}>`, // Branded sender name
+      from: `"UOB Marketplace" <${process.env.EMAIL_USER}>`,
       to: email,
       subject: "Password Reset Code",
-      text: `Your password reset code is: ${resetCode}`,
-      replyTo: "UOB@marketplace.com",
+      text: `Your password reset code is: ${resetCode}. It expires in 5 minutes`,
+      // replyTo: "UOB@marketplace.com",
     };
     
     transporter.sendMail(mailOptions, (error, info) => {
