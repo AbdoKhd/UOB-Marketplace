@@ -31,7 +31,7 @@ router.post("/send-reset-code", async (req, res) => {
     // Store the reset code in the database with expiration
     await ResetCode.findOneAndUpdate(
       { email },
-      { email, code: resetCode, expiresAt: Date.now() + 1 * 60 * 1000 }, // Expires in 1 minutes
+      { email, code: resetCode, expiresAt: Date.now() + 5 * 60 * 1000 }, // Expires in 1 minutes
       { upsert: true, new: true }
     );
 
@@ -56,5 +56,26 @@ router.post("/send-reset-code", async (req, res) => {
     res.status(500).json({ message: "Error sending reset code" });
   }
 });
+
+router.post("/verify-reset-code", async (req, res) => {
+  const { email, code } = req.body;
+
+  try {
+    const resetCodeEntry = await ResetCode.findOne({ email, code });
+
+    if (!resetCodeEntry) {
+      return res.status(400).json({ message: "Invalid or expired reset code" });
+    }
+
+    if (resetCodeEntry.expiresAt < Date.now()) {
+      return res.status(400).json({ message: "Reset code has expired" });
+    }
+
+    res.status(200).json({ message: "Code verified successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Error verifying reset code" });
+  }
+});
+
 
 module.exports = router;

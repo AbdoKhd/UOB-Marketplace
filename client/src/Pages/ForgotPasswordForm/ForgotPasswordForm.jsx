@@ -5,7 +5,7 @@ import NavBar from '../../Components/NavBar/NavBar'
 import { FaLock, FaEnvelope } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
 import { fetchUserByEmail } from '../../Services/userService';
-import { sendResetCode } from '../../Services/codeToEmailService';
+import { sendResetCode, verifyResetCode } from '../../Services/codeToEmailService';
 
 import ScrollToTop from '../../Components/ScrollToTop/ScrollToTop';
 
@@ -13,66 +13,162 @@ const ForgotPasswordForm = () => {
 
   const[email, setEmail] = useState("");
   const[codeSent, setCodeSent] = useState(false);
-  const[password, setPassword] = useState("");
+  const [resetCode, setResetCode] = useState("");
+  const [codeVerified, setCodeVerified] = useState(false);
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if(email === ""){
-      setErrorMessage("Email required");
+    if(!codeSent){
+
+      if(email === ""){
+        setErrorMessage("Email required");
+        return;
+      }
+
+      // Check if the email is in the database
+      try {
+        const response = await fetchUserByEmail(email);
+
+        if(response.status === 404){
+          setErrorMessage('There is no user with this email');
+          return;
+        }
+        setErrorMessage("");
+
+        // Send reset code request
+        const sendCodeResponse = await sendResetCode(email);
+
+        console.log("this is response status: ", sendCodeResponse.status);
+
+        if (sendCodeResponse.status === 200) {
+          setCodeSent(true);
+          console.log("email should now be empty");
+        } else {
+          setErrorMessage("Failed to send reset code");
+        }
+        
+      } catch (error) {
+        setErrorMessage('An error occurred');
+      }
+    }
+    else if(!codeVerified){
+      try{
+        const verifyCodeResponse = await verifyResetCode(email, resetCode);
+
+        if(verifyCodeResponse.status === 200){
+          setCodeVerified(true);
+          setErrorMessage("");
+        }
+        else {
+          setErrorMessage(verifyCodeResponse.data.message);
+        }
+      }catch(error){
+        setErrorMessage(error);
+      }
+    }
+    else{
+      handlePasswordReset();
+    }
+  }
+
+  const handlePasswordReset = async () => {
+    if (password === "" || confirmPassword === "") {
+      setErrorMessage("Please fill in both password fields.");
       return;
     }
 
-    // Check if the email is in the database
-    try {
-      const response = await fetchUserByEmail(email);
-
-      if(response.status === 404){
-        setErrorMessage('There is no user with this email');
-        return;
-      }
-      setErrorMessage("");
-
-      // Send reset code request
-      const sendCodeResponse = await sendResetCode(email);
-
-      console.log("this is response status: ", sendCodeResponse.status);
-
-      if (sendCodeResponse.status === 200) {
-        setCodeSent(true);
-        setEmail("");
-      } else {
-        setErrorMessage("Failed to send reset code");
-      }
-      
-    } catch (error) {
-      setErrorMessage('An error occurred');
+    if (password !== confirmPassword) {
+      setErrorMessage("Passwords do not match.");
+      return;
     }
 
-    // Send code
+    try {
+      setErrorMessage("");
+      console.log("new password: ", password);
+      //const resetPasswordResponse = await resetPassword(email, password);
 
-    // If code is co
-
-  }
+      // if (resetPasswordResponse.status === 200) {
+      //   alert("Password reset successful! Redirecting to login...");
+      //   navigate("/login");
+      // } else {
+      //   setErrorMessage("Failed to reset password.");
+      // }
+    } catch (error) {
+      setErrorMessage("An error occurred while resetting password.");
+    }
+  };
 
   return (
     <div className='login-register-page'>
       <ScrollToTop/>
       <NavBar/>
-        <div className='login-register-container'>
+        <form className='login-register-container' onSubmit={handleSubmit}>
           <h1>Forgot your password?</h1>
 
           {errorMessage && <p className="error-message">{errorMessage}</p>}
 
-          <div className='input-box'>
-            <input type="email" placeholder="Enter your email" onChange={(e) =>{ setErrorMessage(""); setEmail(e.target.value)} }/>
-            <FaEnvelope className='icon' />
+          
+          <div className="input-box">
+            <input
+              className={codeSent ? "disabled" : ""}
+              disabled={codeSent}
+              type="email"
+              placeholder="Enter your email"
+              required
+              value={email}
+              onChange={(e) => {
+                setErrorMessage("");
+                setEmail(e.target.value);
+              }}
+            />
+            <FaEnvelope className="icon" />
           </div>
 
-          <button onClick={handleSubmit}>Send reset code</button>
-        </div>
+          {codeSent && !codeVerified &&(
+            // Show reset code input after sending the code
+            <div className="input-box">
+              <input
+                type="text"
+                placeholder="Enter reset code"
+                required
+                value={resetCode}
+                onChange={(e) => setResetCode(e.target.value)}
+              />
+            </div>
+          )}
+
+          {codeVerified && (
+          <>
+            <div className="input-box">
+              <input
+                type="password"
+                placeholder="Enter new password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
+
+            <div className="input-box">
+              <input
+                type="password"
+                placeholder="Confirm new password"
+                required
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+              />
+            </div>
+          </>
+        )}
+
+          <button type="submit">{codeSent ? "Verify Code" : "Send Reset Code"}</button>
+        </form>
     </div>
   )
 }
