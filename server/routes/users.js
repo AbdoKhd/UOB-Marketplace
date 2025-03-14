@@ -1,5 +1,6 @@
 const express = require('express');
 const User = require('../models/User');
+const bcrypt = require("bcrypt");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
@@ -20,9 +21,27 @@ router.post('/register', async (req, res) => {
   }
 });
 
+router.post('/changePassword', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    // Find user by email
+    const user = await User.findOne({email});
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    user.password = password;
+    await user.save();
+
+    res.status(200).json({ message: "Password changed successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "An error occurred" });
+  }
+});
+
 // Authentication
 router.post('/login', async (req, res) => {
-  console.log("hello in login backend");
   try{
     const {email, password} = req.body;
 
@@ -36,15 +55,10 @@ router.post('/login', async (req, res) => {
       return res.status(400).json({message: 'Invalid password'})
     }
 
-    console.log("before generating jwt");
-
     // Generate JWT token
     const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN });
-    console.log("this is generated token: ", token);
 
     res.status(200).json({token: token, message: 'Login Successful', loggedInUserId: user.id});
-
-
   }catch (error) {
     console.log("this is error: ", error.message);
     res.status(500).json({ message: error.message });

@@ -6,6 +6,7 @@ import { FaLock, FaEnvelope } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
 import { fetchUserByEmail } from '../../Services/userService';
 import { sendResetCode, verifyResetCode } from '../../Services/codeToEmailService';
+import { changePassword } from '../../Services/userService';
 
 import ScrollToTop from '../../Components/ScrollToTop/ScrollToTop';
 
@@ -90,17 +91,16 @@ const ForgotPasswordForm = () => {
 
     try {
       setErrorMessage("");
-      console.log("new password: ", password);
-      //const resetPasswordResponse = await resetPassword(email, password);
+      const changePasswordResponse = await changePassword(email, password);
 
-      // if (resetPasswordResponse.status === 200) {
-      //   alert("Password reset successful! Redirecting to login...");
-      //   navigate("/login");
-      // } else {
-      //   setErrorMessage("Failed to reset password.");
-      // }
+      if (changePasswordResponse.status === 200) {
+        alert("Password reset successful! Redirecting to login...");
+        navigate("/login");
+      } else {
+        setErrorMessage(changePasswordResponse.data.message);
+      }
     } catch (error) {
-      setErrorMessage("An error occurred while resetting password.");
+      setErrorMessage(error.message);
     }
   };
 
@@ -167,7 +167,9 @@ const ForgotPasswordForm = () => {
           </>
         )}
 
-          <button type="submit">{codeSent ? "Verify Code" : "Send Reset Code"}</button>
+          <button type="submit">
+            {codeVerified ? "Change Password" : codeSent ? "Verify Code" : "Send Reset Code"}
+          </button>
         </form>
     </div>
   )

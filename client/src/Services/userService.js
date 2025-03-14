@@ -2,7 +2,6 @@ import http from '../http-common';
 
 export const signIn = async (email, password) => {
   try {
-    // Make a POST request to the backend's login route
     const response = await http.post('/api/users/login', {
       email,
       password
@@ -10,14 +9,12 @@ export const signIn = async (email, password) => {
     localStorage.setItem("token", response.data.token);
     return response;
   } catch (error) {
-    console.error('Error loggin in:', error);
-    throw error;
+    return error.response;
   }
 };
 
 export const signUp = async (firstName, lastName, email, password) => {
   try {
-    // Make a POST request to the backend's register route
     const response = await http.post('/api/users/register', {
       firstName,
       lastName,
@@ -29,6 +26,18 @@ export const signUp = async (firstName, lastName, email, password) => {
   } catch (error) {
     console.error('Error signing up:', error);
     throw error;
+  }
+};
+
+export const changePassword = async (email, password) => {
+  try {
+    const response = await http.post('/api/users/changePassword', {
+      email,
+      password
+    });
+    return response;
+  } catch (error) {
+    return error.response;
   }
 };
 

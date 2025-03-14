@@ -31,7 +31,7 @@ router.post("/send-reset-code", async (req, res) => {
     // Store the reset code in the database with expiration
     await ResetCode.findOneAndUpdate(
       { email },
-      { email, code: resetCode, expiresAt: Date.now() + 5 * 60 * 1000 }, // Expires in 1 minutes
+      { email, code: resetCode, expiresAt: Date.now() + 5 * 60 * 1000 }, // Expires in 5 minutes
       { upsert: true, new: true }
     );
 

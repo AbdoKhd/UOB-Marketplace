@@ -21,6 +21,7 @@ const LoginForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setErrorMessage('');
 
     try {
       // Make a POST request to the backend's register route
@@ -31,11 +32,12 @@ const LoginForm = () => {
         login(loggedInUserId);
         navigate('/listings/category/All/order/Newest First/campus/All/pgn/1');
       }
+      else{
+        setErrorMessage('Incorrect Email or Password');
+      }
 
     } catch (error) {
-      // Handle any errors
-      console.error('There was an error loging in!', error);
-      setErrorMessage('Incorrect Email or Password');
+      setErrorMessage('An error occured');
     }
 
   }
