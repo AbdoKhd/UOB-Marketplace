@@ -26,13 +26,12 @@ const RegistrationForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    setErrorMessage("");
+
     if (password !== confirmPassword) {
       setErrorMessage("Passwords do not match.");
       return;
     }
-
-    // Reset error message if passwords match
-    setErrorMessage("");
 
     try {
       // Make a POST request to the backend's register route
@@ -43,11 +42,10 @@ const RegistrationForm = () => {
         login(loggedInUserId);
         navigate('/listings/category/All/order/Newest First/campus/All/pgn/1');
       }
-
-
+      else{
+        setErrorMessage(response.data.message);
+      }
     } catch (error) {
-      // Handle any errors
-      console.error('There was an error registering the user!', error);
       setErrorMessage("Registration failed. Please try again.");
     }
   }

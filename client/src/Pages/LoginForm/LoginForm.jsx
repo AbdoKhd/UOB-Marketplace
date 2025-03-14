@@ -64,7 +64,6 @@ const LoginForm = () => {
             <NavLink to='/forgotPassword'>
               <p>Forgot password</p>
             </NavLink>
-            {/* <a href='/forgotPassword'>Forgot password</a> */}
           </div>
 
           <button type='submit'>Login</button>

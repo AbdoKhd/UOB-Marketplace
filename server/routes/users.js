@@ -9,13 +9,36 @@ const authMiddleware = require("../authMiddleware");
 // Create a new user
 router.post('/register', async (req, res) => {
   try {
-    const newUser = new User(req.body);
+    const { email, password, firstName, lastName } = req.body;
+
+    // Validate email format
+    const universityEmailRegex = /^[a-zA-Z0-9._%+-]+@(balamand.edu.lb|std.balamand.edu.lb|fty.balamand.edu.lb)$/;
+    if (!universityEmailRegex.test(email)) {
+      return res.status(400).json({ message: "Invalid email. Only University of Balamand emails are allowed." });
+    }
+
+    // Validate password strength
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/;
+    if (!passwordRegex.test(password)) {
+      return res.status(400).json({ 
+        message: "Password must be at least 8 characters long, include an uppercase letter, a lowercase letter, and a number."
+      });
+    }
+
+    // Check if the email is already registered
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ message: "Email is already registered." });
+    }
+
+    // Create a new user
+    const newUser = new User({ email, password, firstName, lastName });
     await newUser.save();
 
     // Generate JWT token
     const token = jwt.sign({ userId: newUser.id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN });
-    console.log("this is generated token: ", token);
-    res.status(200).json({token: token, message: 'Registration Successful', loggedInUserId: newUser.id });
+
+    res.status(200).json({ token: token, message: "Registration Successful", loggedInUserId: newUser.id });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }

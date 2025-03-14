@@ -137,7 +137,7 @@ textarea:-webkit-autofill{
 }
 
 .error-message{
-    color: rgb(255, 0, 0);
+    color: rgb(255, 8, 8);
     margin-bottom: 30px;
     font-size: 18px;
 }
