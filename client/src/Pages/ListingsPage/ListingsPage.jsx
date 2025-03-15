@@ -68,7 +68,6 @@ const ListingsPage = () => {
         const data = await fetchListings({ page: page, limit: 50, searchQuery: searchQuery, category: category, sorting: order, campus: campus});
         setListings(data.listings);
         setTotalPages(data.totalPages);
-        console.log("total pages: ", data.totalPages);
       } catch (err) {
         console.error('Error fetching all listingsss');
       } finally {
