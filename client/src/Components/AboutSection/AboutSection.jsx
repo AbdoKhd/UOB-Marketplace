@@ -11,18 +11,13 @@ const AboutSection = () => {
       <div className='about-right'>
         <h3>About UOB Marketplace</h3>
         <h2>Connecting the UOB Community Through Commerce</h2>
-        <p>Welcome to UOB Marketplace, the ultimate online platform tailored exclusively for the University
-        of Balamand (UOB) community. Our marketplace is designed to facilitate a seamless buying, selling, 
-        and trading experience for students, faculty, and staff, all within the secure environment of our 
-        university.</p>
-        <p>At UOB Marketplace, we provide a platform where students can easily buy, sell, or rent a wide 
-        range of items and services tailored to university life. Whether you're in need of textbooks for 
-        your upcoming courses, looking to sell your old laptop, or searching for previous exams and study 
-        notes to ace your tests, you'll find it all here. Students can also sell or buy dorm essentials 
-        like furniture, kitchen utilities, or even clothing and accessories. If you're moving in or out 
-        of a dorm, finding affordable and convenient options for utilities is simple on our marketplace. 
-        Moreover, services like tutoring, offering academic help in subjects you're struggling with, or 
-        renting equipment for personal or academic use are readily available.</p>  
+        <p>
+          Welcome to UOB Marketplace, the go-to platform for buying, selling, and trading within the University of 
+          Balamand community. Whether you're a student, faculty, or staff, our secure marketplace makes it easy to 
+          find or list textbooks, electronics, dorm essentials, study materials, and more. Need tutoring or academic 
+          help? Looking to rent or sell items? UOB Marketplace connects you with trusted peers for a seamless exchange 
+          experience. Join us and make campus life more convenient!
+        </p>  
       </div>
     </div>
   )

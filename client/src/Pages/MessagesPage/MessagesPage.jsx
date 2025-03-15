@@ -182,7 +182,7 @@ const MessagesPage = () => {
             socket.emit('leaveRoom', {roomId: selectedConversation._id, userId: loggedInUserId}); // leave room
           }
 
-          const conversation = await fetchConversationById(conversationId);
+          const conversation = await fetchConversationById(conversationId, loggedInUserId);
           setSelectedConversation(conversation);
 
           const roomId = conversationId;

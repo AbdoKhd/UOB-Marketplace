@@ -10,9 +10,10 @@ export const fetchConversations = async (userId) => {
   }
 };
 
-export const fetchConversationById = async (conversationId) => {
+export const fetchConversationById = async (conversationId, userId) => {
   try {
-    const response = await http.get(`/api/messaging/getConversationById/${conversationId}`)
+    console.log("sending this userId: ", userId);
+    const response = await http.get(`/api/messaging/getConversationById/${conversationId}?userId=${userId}`);
     return response.data;
   } catch (error) {
     console.error('Error fetching conversation by ID:', error);

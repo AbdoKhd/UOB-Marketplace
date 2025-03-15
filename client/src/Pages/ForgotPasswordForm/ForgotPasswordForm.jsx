@@ -124,7 +124,7 @@ const ForgotPasswordForm = () => {
       const changePasswordResponse = await changePassword(email, password);
 
       if (changePasswordResponse.status === 200) {
-        alert("Password reset successful! Redirecting to login");
+        alert("Password changed successfully! Redirecting to login");
         navigate("/login");
       } else {
         setErrorMessage(changePasswordResponse.data.message);

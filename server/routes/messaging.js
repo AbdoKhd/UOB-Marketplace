@@ -100,15 +100,23 @@ router.post('/getConversations/:userId', authMiddleware, async (req, res) => {
 // Fetch a conversation by ID
 router.get('/getConversationById/:conversationId', authMiddleware, async (req, res) => {
   const { conversationId } = req.params;
+  const { userId } = req.query;
+
 
   try {
-    // Find the specific conversation by its ID
+    // Find the specific conversation by its Id
     const conversation = await Conversation.findById(conversationId)
       .populate('participants', 'firstName lastName profilePictureKey')
       .populate('lastMessage');
 
     if (!conversation) {
       return res.status(404).json({ message: 'Conversation not found' });
+    }
+
+    // Check if userId is part of the conversation's participants
+    const isParticipant = conversation.participants.some(participant => participant._id.toString() === userId);
+    if (!isParticipant) {
+      return res.status(400).json({ message: 'User not in this conversation' });
     }
 
     res.status(200).json(conversation);
