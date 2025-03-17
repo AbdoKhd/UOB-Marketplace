@@ -346,8 +346,8 @@ const ProfilePage = () => {
         <div className='logout-popup'>
           <p>Are you sure you want to log out?</p>
           <div className='buttons'>
-            <button onClick={confirmLogout}>Yes</button>
-            <button onClick={cancelLogout}>No</button>
+            <button className='feedback-cancel' onClick={confirmLogout}>Yes</button>
+            <button className='feedback-submit' onClick={cancelLogout}>No</button>
           </div>
         </div>
       </>
@@ -386,8 +386,8 @@ const ProfilePage = () => {
             <div className='spinner' style={{marginBottom:"0px", marginTop:"30px"}}></div>
           ) : (
           <div className='buttons'>
-            <button style={{marginRight: "auto"}} onClick={cancelEditUser}>Cancel</button>
-            <button onClick={confirmEditUser}>Done</button>
+            <button className='feedback-cancel' style={{marginRight: "auto"}} onClick={cancelEditUser}>Cancel</button>
+            <button className='feedback-submit' onClick={confirmEditUser}>Done</button>
           </div>
           )}
         </div>
@@ -404,6 +404,7 @@ const ProfilePage = () => {
             value={newAbout}
             onChange={handleAboutChange} 
             rows="5"
+            maxLength={300}
           ></textarea>
 
           {editingAboutErrorMessage && <p style={{marginTop: "20px"}} className="error-message">{editingAboutErrorMessage}</p>}
@@ -412,8 +413,8 @@ const ProfilePage = () => {
             <div className='spinner' style={{marginBottom:"0px", marginTop:"30px"}}></div>
           ) : (
           <div className='buttons'>
-            <button style={{marginRight: "auto"}} onClick={cancelEditAbout}>Cancel</button>
-            <button onClick={confirmEditAbout}>Done</button>
+            <button className='feedback-cancel' style={{marginRight: "auto"}} onClick={cancelEditAbout}>Cancel</button>
+            <button className='feedback-submit' onClick={confirmEditAbout}>Done</button>
           </div>
           )}
         </div>

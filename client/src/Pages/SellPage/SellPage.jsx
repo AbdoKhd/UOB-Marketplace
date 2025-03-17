@@ -23,7 +23,7 @@ const SellPage = () => {
   const fileInputRef = useRef(null);
 
   const [title, setTitle] = useState("");
-  const titleMaxChars = 80;
+  const titleMaxChars = 40;
   const [titleError, setTitleError] = useState(false);
 
   const [category, setCategory] = useState("");
@@ -39,6 +39,8 @@ const SellPage = () => {
 
   const [postingInProgress, setPostingInProgress] = useState(false);
 
+  const MAX_IMAGES = 10;
+
   function selectFiles(){
     fileInputRef.current.click();
   }
@@ -53,13 +55,18 @@ const SellPage = () => {
         validImages.push(files[i]);
       }
     }
+
+    // Ensure we don't exceed the max limit
+    if (images.length + validImages.length > MAX_IMAGES) {
+      validImages.splice(MAX_IMAGES - images.length); // Keep only up to the limit
+    }
   
     if (validImages.length > 0) {
       setImages((prevImages) => [...prevImages, ...validImages]);
     }
   
     // Reset the file input's value to allow re-selection of the same file
-    event.target.value = null;
+    event.target.value = '';
   }
 
   function deleteImage(index){
@@ -84,16 +91,24 @@ const SellPage = () => {
     setIsDragging(false);
     const files = event.dataTransfer.files;
 
-    for(let i = 0; i < files.length; i++){
-      if(files[i].type.split('/')[0] !== 'image') continue;
-      if(!images.some((e) => e.name === files[i].name)){
-        console.log(files[i]);
-        setImages((prevImages) => [
-          ...prevImages,
-          files[i]
-        ]);
+    const validImages = [];
+    for (let i = 0; i < files.length; i++) {
+      if (files[i].type.startsWith('image/') && !images.some((e) => e.name === files[i].name)) {
+        validImages.push(files[i]);
       }
     }
+
+    // Ensure we don't exceed the max limit
+    if (images.length + validImages.length > MAX_IMAGES) {
+      validImages.splice(MAX_IMAGES - images.length); // Keep only up to the limit
+    }
+
+    if (validImages.length > 0) {
+      setImages((prevImages) => [...prevImages, ...validImages]);
+    }
+
+    // Reset the file input's value to allow re-selection of the same file
+    event.target.value = '';
   }
 
   function handleTitleChange(event){
@@ -115,12 +130,14 @@ const SellPage = () => {
   }
 
   function handlePriceChange(event) {
-    const value = event.target.value;
-    setPrice(value);
-    if (value !== "") {
-      setPriceError(false);
-      console.log("this is the price: ", value);
+    let value = event.target.value;
+    setPriceError(false);
+
+    // Limit to 6 digits
+    if (value.length > 6) {
+      value = value.slice(0, 6);
     }
+    setPrice(value);
   }
 
   function handleFreeChange() {
@@ -211,7 +228,7 @@ const SellPage = () => {
       />
       <h2>Complete your listing</h2>
       <div className='listing-container'>
-        <h3>Photos</h3>
+        <h3>Photos {`(max: 10)`}</h3>
         <div className='drag-area' onDragOver={onDragOver} onDragLeave={onDragLeave} onDrop={onDrop}>
           {isDragging ? (
             <span className='select'>
@@ -225,7 +242,7 @@ const SellPage = () => {
             </span>
             </>
           )}
-          <input name='file' type='file' className='file' multiple ref={fileInputRef} onChange={onFileSelect} accept="image/jpeg, image/png"></input>
+          <input name='file' type='file'className='file' multiple ref={fileInputRef} onChange={onFileSelect} accept="image/jpeg, image/png"></input>
         </div>
         <div className='images-container'>
           {images.map((images, index) => (
@@ -265,6 +282,7 @@ const SellPage = () => {
           value={description} 
           onChange={handleDescriptionChange} 
           rows="5"
+          maxLength={300}
         ></textarea>
       </div>
       <div className='listing-container'>
@@ -277,8 +295,7 @@ const SellPage = () => {
               className={`price-input ${priceError ? 'error' : ''}`}
               value={price} 
               onChange={handlePriceChange} 
-              disabled={isFree} 
-              min="0"
+              disabled={isFree}
             />
           </div>
           <label>

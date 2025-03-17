@@ -122,6 +122,8 @@
   align-items: center;
   flex-direction: column;
   animation: slideUpFadeIn 0.2s ease-in-out forwards;
+  width: 400px;
+  max-width: 90%;
 }
 
 .logout-popup .buttons{
@@ -133,7 +135,7 @@
   flex-wrap: wrap;
 }
 
-.buttons button {
+/* .buttons button {
   margin: 5px;
   padding: 10px 20px;
   background-color: #2B59E3;
@@ -142,7 +144,7 @@
   border-radius: 5px;
   cursor: pointer;
   font-size: 14px;
-}
+} */
 
 .overlay {
   position: fixed;

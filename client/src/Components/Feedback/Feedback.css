@@ -80,6 +80,7 @@
 
 /* Cancel Button */
 .feedback-cancel {
+  color: black;
   border: 0;
   background-color: #ddd;
   padding: 8px 16px;
