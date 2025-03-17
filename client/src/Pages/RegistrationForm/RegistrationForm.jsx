@@ -146,7 +146,7 @@ const RegistrationForm = () => {
           <input 
             className={codeSent ? "disabled" : ""}
             disabled={codeSent} type="email" 
-            placeholder="Email" 
+            placeholder="Enter your UOB Email" 
             required 
             onChange={(e) => setEmail(e.target.value)}
           />

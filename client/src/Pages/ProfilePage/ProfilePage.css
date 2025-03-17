@@ -163,9 +163,7 @@
   gap: 20px;
 }
 
-.trash-icon{
-  
-}
+
 
 .trash-icon:active{
   transform: scale(0.9);

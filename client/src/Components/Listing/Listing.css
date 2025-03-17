@@ -4,13 +4,13 @@
   width: 100%;
   border-radius: 10px;
   overflow: hidden;
-  transition: 0.2s ease;
+  /* transition: 0.2s ease; */
   cursor: pointer;
 }
 
-.listing:hover{
+/* .listing:hover{
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
-}
+} */
 
 .image-wrapper{
   background-color: #eeeeee;
@@ -95,10 +95,10 @@
   padding: 5px;
   transition: background-color 0.3s ease;
 }
-
+/* 
 .icons .icon:hover{
   background-color: rgba(118, 118, 118, 0.16);
-}
+} */
 
 .listing-tooltip {
   visibility: hidden;
@@ -111,7 +111,7 @@
   border-radius: 5px;
   font-size: 12px;
   position: absolute;
-  bottom: 110%; /* Position above the icon */
+  bottom: 100%; /* Position above the icon */
   left: 50%;
   transform: translateX(-50%);
   transition: opacity 0.2s ease-in-out, visibility 0.2s ease-in-out;

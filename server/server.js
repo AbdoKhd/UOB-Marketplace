@@ -34,6 +34,10 @@ app.use('/api/messaging', messagingRoutes);
 const codeToEmailRoutes = require('./routes/codeToEmail');
 app.use('/api/codeToEmail', codeToEmailRoutes);
 
+//Feedback Routes
+const feedBackRoutes = require('./routes/feedback');
+app.use('/api/feedback', feedBackRoutes);
+
 const server = http.createServer(app); // Create an HTTP server
 initSocket(server);
 

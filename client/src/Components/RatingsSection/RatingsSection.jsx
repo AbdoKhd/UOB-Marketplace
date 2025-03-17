@@ -85,7 +85,7 @@ const RatingsSection = () => {
               <Rating stars={3} title='Great!' description="Really liked it!."/>
             </li>
             <li>
-              <Rating stars={3} title='Great!' description="Really liked it!."/>
+              <Rating stars={4} title='Awesome!' description="Really enjoyed using this app. Very Useful!"/>
             </li>
           </ul>
         </div>

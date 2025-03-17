@@ -36,7 +36,7 @@ const CTASection = () => {
         <img src={libraryNight} alt=''/>
         <div className="caption">
           <FaUser className='icon'/>
-          <p>Create Your Account</p>
+          <p>Register</p>
         </div>
       </div>
     </div>
