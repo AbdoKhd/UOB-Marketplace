@@ -6,7 +6,7 @@ const initSocket = (server) => {
 
   const io = new Server(server, {
     cors: {
-      origin: "http://192.168.1.144:3000", // Allow requests from your frontend
+      origin: "http://192.168.1.179:3000", // Allow requests from your frontend
       methods: ["GET", "POST"],
     },
   });
@@ -116,7 +116,7 @@ const initSocket = (server) => {
           status: messageStatus,
         });
 
-        await axios.post(`http://192.168.1.144:5000/api/messaging/sendMessage/${roomId}`, {
+        await axios.post(`http://192.168.1.179:5000/api/messaging/sendMessage/${roomId}`, {
           senderId: message.senderId,
           receiverId: message.receiverId,
           content: message.content,

@@ -10,7 +10,7 @@ export const SocketProvider = ({ children }) => {
 
   useEffect(() => {
     // Initializing a WebSocket connection to the backend server running at the below url.
-    const newSocket = io("http://192.168.1.144:5000", { autoConnect: false });
+    const newSocket = io("http://192.168.1.179:5000", { autoConnect: false });
     setSocket(newSocket);
 
     return () => {
