@@ -10,7 +10,7 @@ export const SocketProvider = ({ children }) => {
 
   useEffect(() => {
     // Initializing a WebSocket connection to the backend server running at the below url.
-    const newSocket = io("http://192.168.1.179:5001", { autoConnect: false });
+    const newSocket = io("https://uob-marketplace-api-0f05a58ba21a.herokuapp.com", { autoConnect: false });
     setSocket(newSocket);
 
     return () => {

@@ -1,7 +1,9 @@
 import axios from "axios";
 
+// http://192.168.1.179:5001
+
 const http = axios.create({
-  baseURL: "http://192.168.1.179:5001",
+  baseURL: "https://uob-marketplace-api-0f05a58ba21a.herokuapp.com",
   headers: {
     "Content-Type": "application/json",
   },
