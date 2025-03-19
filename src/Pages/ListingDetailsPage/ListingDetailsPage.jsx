@@ -338,8 +338,8 @@ const ListingDetailsPage = () => {
         <div className='logout-popup'>
           <p>Are you sure you want to delete this listing?</p>
           <div className='buttons'>
-            <button onClick={confirmDelete}>Yes</button>
-            <button onClick={cancelDelete}>No</button>
+            <button className='feedback-submit' onClick={confirmDelete}>Yes</button>
+            <button className='feedback-cancel' onClick={cancelDelete}>No</button>
           </div>
         </div>
       </>
