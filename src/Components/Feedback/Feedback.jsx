@@ -38,9 +38,9 @@ const Feedback = ({ isOpen, onClose }) => {
   };
 
   const handleSubmitFeedback = async () => {
-    console.log("stars:", stars);
-    console.log("title:", feedbackTitle);
-    console.log("Feedback:", feedback);
+    // console.log("stars:", stars);
+    // console.log("title:", feedbackTitle);
+    // console.log("Feedback:", feedback);
     setErrorMessage("");
 
     if(stars === 0){

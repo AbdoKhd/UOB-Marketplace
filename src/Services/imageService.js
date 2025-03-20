@@ -7,7 +7,7 @@ export const getImages = async (imagesKey) => {
     });
     return response.data;
   } catch (error) {
-    console.error('Error fetching the images:', error);
+    // console.error('Error fetching the images:', error);
     throw error;
   }
 };
@@ -22,7 +22,7 @@ export const uploadImages = async (formData) => {
     });
     return response.data;
   } catch (error) {
-    console.error('Error uploading the images:', error);
+    // console.error('Error uploading the images:', error);
     throw error;
   }
 };
@@ -32,7 +32,7 @@ export const deleteImages = async (imagesKey) => {
     // Ensure imagesKey is an array
     const formattedImagesKey = Array.isArray(imagesKey) ? imagesKey : [imagesKey].filter(Boolean);
 
-    console.log("imageskey in imageService", formattedImagesKey);
+    // console.log("imageskey in imageService", formattedImagesKey);
 
     const response = await http.post('/api/images/deleteImages', {
       imagesKey: formattedImagesKey,
@@ -40,7 +40,7 @@ export const deleteImages = async (imagesKey) => {
 
     return response.data;
   } catch (error) {
-    console.error('Error deleting the images:', error);
+    // console.error('Error deleting the images:', error);
     throw error;
   }
 };

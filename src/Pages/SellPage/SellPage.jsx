@@ -159,12 +159,12 @@ const SellPage = () => {
     }
     else{
       // Post Listing
-      console.log("this is price: ", price);
+      // console.log("this is price: ", price);
       try {
         setPostingInProgress(true);
         setErrorMessage("");
 
-        console.log("images before upload: ", images);
+        // console.log("images before upload: ", images);
 
         let imagesKey = []
         if(images.length !== 0){
@@ -205,7 +205,7 @@ const SellPage = () => {
       } catch (error) {
         // Handle any errors
         setPostingInProgress(false);
-        console.error('There was an error posting the listing!', error);
+        // console.error('There was an error posting the listing!', error);
         setErrorMessage("Posting the listing has failed. Please try again.");
       }
     }

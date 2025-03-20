@@ -56,10 +56,10 @@ const MessagesPage = () => {
     socket.connect();
 
     socket.emit("joinPersonalRoom", loggedInUserId); //the personal room id will be the user's id
-    console.log("joined personal room");
+    // console.log("joined personal room");
 
     socket.on("directMessage", (message) => {
-      console.log("New message in MessagesPage:", message);
+      // console.log("New message in MessagesPage:", message);
 
       setConversations((prevConversations) => {
         const existingIndex = prevConversations.findIndex(
@@ -80,7 +80,7 @@ const MessagesPage = () => {
         } else {
           // If conversation doesn't exist, fetch it and update the lastMessage
           fetchConversations(loggedInUserId).then((newConvos) => {
-            //console.log("Convo does not exist, fetching conversations:", newConvos);
+            // console.log("Convo does not exist, fetching conversations:", newConvos);
 
             // Find the conversation and update lastMessage before setting state
             const updatedConvos = newConvos.map((conv) => 
@@ -116,14 +116,14 @@ const MessagesPage = () => {
     socket.on("convoLastMessageStatusUpdate", handleConvoLastMessageStatusUpdate);
 
     const handleFetchConvosAgain = async () => {
-      console.log("fetching convos again");
+      // console.log("fetching convos again");
       try{
         const convosResponse = await fetchConversations(loggedInUserId);
         setConversations(convosResponse);
         setLoadingConvos(false);
-        console.log("this is convos again response: ", convosResponse);
+        // console.log("this is convos again response: ", convosResponse);
       }catch(error){
-        console.error('Error fetching the conversations again:', error);
+        // console.error('Error fetching the conversations again:', error);
       }
     };
     socket.on("fetchConvosAgain", handleFetchConvosAgain);
@@ -135,11 +135,11 @@ const MessagesPage = () => {
 
         if(convoIdRef.current){
           socket.emit("leaveRoom", { roomId: convoIdRef.current, userId: loggedInUserId });
-          console.log("left convo room!");
+          // console.log("left convo room!");
         }
 
         socket.emit("leavePersonalRoom", loggedInUserId);
-        console.log("left personal room");
+        // console.log("left personal room");
         
 
         // socket.once("leavePersonalRoom", () => {
@@ -156,9 +156,9 @@ const MessagesPage = () => {
         const convosResponse = await fetchConversations(loggedInUserId);
         setConversations(convosResponse);
         setLoadingConvos(false);
-        console.log("this is convos response: ", convosResponse);
+        // console.log("this is convos response: ", convosResponse);
       }catch(error){
-        console.error('Error fetching the conversations:', error);
+        // console.error('Error fetching the conversations:', error);
       }
     }
 
@@ -170,7 +170,7 @@ const MessagesPage = () => {
     convoIdRef.current = conversationId;
     const fetchSingleConversation = async () => {
       if(!conversationId && selectedConversation){
-        console.log("left convo room!");
+        // console.log("left convo room!");
         socket.emit('leaveRoom', {roomId: selectedConversation._id, userId: loggedInUserId}); // leave room
       }
       if (conversationId) {
@@ -178,7 +178,7 @@ const MessagesPage = () => {
 
           // selectedConversation here is the previously selected convo not the one just clicked
           if(selectedConversation){
-            console.log("left convo room!");
+            // console.log("left convo room!");
             socket.emit('leaveRoom', {roomId: selectedConversation._id, userId: loggedInUserId}); // leave room
           }
 
@@ -188,7 +188,7 @@ const MessagesPage = () => {
           const roomId = conversationId;
 
         } catch (error) {
-          console.error('Error fetching the conversation:', error);
+          // console.error('Error fetching the conversation:', error);
         }
       } else {
         setSelectedConversation(null); // Clear the selected conversation when no ID

@@ -71,7 +71,7 @@ const UserPage = () => {
           setLoading(false);
 
         } catch (error) {
-          console.error('Error fetching the user:', error);
+          // console.error('Error fetching the user:', error);
         }
       };
 
@@ -89,10 +89,10 @@ const UserPage = () => {
     try{
       // Create conversation
       const conversation = await createConversation(loggedInUserId, userId);
-      console.log("this is the conversation: ", conversation);
+      // console.log("this is the conversation: ", conversation);
       navigate(`/messages/${conversation._id}`);
     }catch(error){
-      console.error("Error creating conversation:", error);
+      // console.error("Error creating conversation:", error);
     }
   };
 

@@ -5,7 +5,7 @@ export const fetchAllListings = async () => {
     const response = await http.get('/api/listings/getAllListings');
     return response.data;
   } catch (error) {
-    console.error('Error fetching all listings:', error);
+    // console.error('Error fetching all listings:', error);
     throw error;
   }
 };
@@ -25,7 +25,7 @@ export const fetchListings = async ({ page = 1, limit = 5, searchQuery = '', cat
     const response = await http.get(`/api/listings/getListings?${params.toString()}`);
     return response.data; // Return the data containing listings, currentPage, and totalPages
   } catch (error) {
-    console.error('Error fetching listings:', error);
+    // console.error('Error fetching listings:', error);
     throw error;
   }
 };
@@ -35,7 +35,7 @@ export const fetchListing = async (listingId) => {
     const response = await http.get(`/api/listings/getListing/${listingId}`);
     return response.data;
   } catch (error) {
-    console.error('Error fetching all listings:', error);
+    // console.error('Error fetching all listings:', error);
     throw error;
   }
 };
@@ -47,14 +47,14 @@ export const fetchListingsByIds = async (listingsId) => {
     });
     return response.data;
   } catch (error) {
-    console.error('Error fetching these listings:', error);
+    // console.error('Error fetching these listings:', error);
     throw error;
   }
 };
 
 export const postListing = async (imagesKey, title, category, description, price, userId) => {
   try {
-    console.log("price in service: ", price);
+    // console.log("price in service: ", price);
     const response = await http.post('/api/listings/postListing', {
       imagesKey: imagesKey,
       title: title,
@@ -65,7 +65,7 @@ export const postListing = async (imagesKey, title, category, description, price
     });
     return response;
   } catch (error) {
-    console.error('Error posting the listing:', error);
+    // console.error('Error posting the listing:', error);
     throw error;
   }
 };
@@ -75,7 +75,7 @@ export const deleteListing = async (listingId) => {
     const response = await http.post(`/api/listings/deleteListing/${listingId}`);
     return response;
   } catch (error) {
-    console.error('Error fetching all listings:', error);
+    // console.error('Error fetching all listings:', error);
     throw error;
   }
 };

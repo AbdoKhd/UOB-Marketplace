@@ -14,24 +14,24 @@ export const moderateImage = async (image) => {
 
     const response = await axios.post(SIGHTENGINE_API_URL, formData);
 
-    console.log("this is response from sightEngine: ", response.data);
+    // console.log("this is response from sightEngine: ", response.data);
 
     const {alcohol, gore, medical, nudity, offensive, recreational_drug, tobacco, violence, weapon, error } = response.data;
 
     if (error) {
-      console.error('SightEngine API error:', error);
+      // console.error('SightEngine API error:', error);
       return false;
     }
     // Log the probabilities and other relevant information
-    console.log("Alcohol Probability:", alcohol.prob);
-    console.log("Gore Probability:", gore.prob);
-    console.log("Medical Probability:", medical.prob);
-    console.log("Nudity None Probability:", nudity.none);
-    console.log("Offensive Probability:", offensive.prob);
-    console.log("Recreational Drug Probability:", recreational_drug.prob);
-    console.log("Tobacco Probability:", tobacco.prob);
-    console.log("Violence Probability:", violence.prob);
-    console.log("Weapon Firearm Probability:", weapon.classes.firearm);
+    // console.log("Alcohol Probability:", alcohol.prob);
+    // console.log("Gore Probability:", gore.prob);
+    // console.log("Medical Probability:", medical.prob);
+    // console.log("Nudity None Probability:", nudity.none);
+    // console.log("Offensive Probability:", offensive.prob);
+    // console.log("Recreational Drug Probability:", recreational_drug.prob);
+    // console.log("Tobacco Probability:", tobacco.prob);
+    // console.log("Violence Probability:", violence.prob);
+    // console.log("Weapon Firearm Probability:", weapon.classes.firearm);
 
     // Calculate isAppropriate after logging
     const isAppropriate =
@@ -47,7 +47,7 @@ export const moderateImage = async (image) => {
       
     return isAppropriate;
   } catch (error) {
-    console.error('Error moderating the image:', error);
+    // console.error('Error moderating the image:', error);
     return false;
   }
 };

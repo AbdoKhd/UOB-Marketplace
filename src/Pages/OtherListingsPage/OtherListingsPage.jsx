@@ -47,7 +47,7 @@ const OtherListingsPage = () => {
         setUser(userResponse);
 
       }catch(error){
-        console.error('Error fetching the user:', error);
+        // console.error('Error fetching the user:', error);
       }
     }
 
@@ -61,7 +61,7 @@ const OtherListingsPage = () => {
         setMyFavorites(userResponse.myFavorites);
 
       }catch(error){
-        console.error('Error fetching the logged in user:', error);
+        // console.error('Error fetching the logged in user:', error);
       }
     }
 
@@ -96,7 +96,7 @@ const OtherListingsPage = () => {
           const listingsResponse = await fetchListingsByIds(listingsId);
           setListings(listingsResponse.listings);
         } catch (error) {
-          console.error('Error fetching the listings:', error);
+          // console.error('Error fetching the listings:', error);
         } finally{
           setLoading(false);
         }

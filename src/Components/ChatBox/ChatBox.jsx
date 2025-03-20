@@ -45,7 +45,7 @@ const ChatBox = (conversation, key) => {
         }
 
       }catch(error){
-        console.error('Error fetching profile pic in convo container:', error);
+        // console.error('Error fetching profile pic in convo container:', error);
       }
     }
 
@@ -72,14 +72,14 @@ const ChatBox = (conversation, key) => {
             socket.io.opts.query = { ...socket.io.opts.query, roomId };
 
             socket.emit('joinRoom', {roomId: roomId, userId: loggedInUserId});
-            console.log("joined convo room!");
+            // console.log("joined convo room!");
             
             // Emitting markAsSeen after fetching the messages
             if (convoMessages.length > 0) {
               socket.emit("markAsSeen", { userSeingId: loggedInUserId, otherUserId: otherParticipantId ,conversationId: convo._id });
             }
           } catch (error) {
-            console.error('Error fetching messages:', error);
+            // console.error('Error fetching messages:', error);
           } finally {
             setLoadingMessages(false);
           }
@@ -90,7 +90,7 @@ const ChatBox = (conversation, key) => {
       // 'fetchMessages' will be emitted from the backend when a user rejoins the convo room
       const handleFetchMessagesAgain = (userId) => {
         if(userId.userId === loggedInUserId){
-          console.log("fetching messages again after rejoining");
+          // console.log("fetching messages again after rejoining");
           fetchConvoMessages();
         }
       };
@@ -98,7 +98,7 @@ const ChatBox = (conversation, key) => {
 
       // Listen for new messages within the room
       const handleMessage = (message) => {
-        console.log("new message in chatBox: ", message);
+        // console.log("new message in chatBox: ", message);
         if (message.conversationId === roomId) {
           setMessages((prevMessages) => [...prevMessages, message]);
         }
@@ -158,7 +158,7 @@ const ChatBox = (conversation, key) => {
       setNewMessage('');
 
     } catch (error) {
-      console.error('Error sending message:', error);
+      // console.error('Error sending message:', error);
     }
   };
 

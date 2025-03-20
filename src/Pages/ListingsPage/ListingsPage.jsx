@@ -69,7 +69,7 @@ const ListingsPage = () => {
         setListings(data.listings);
         setTotalPages(data.totalPages);
       } catch (err) {
-        console.error('Error fetching all listingsss');
+        // console.error('Error fetching all listingsss');
       } finally {
         setLoading(false);
       }
@@ -82,7 +82,7 @@ const ListingsPage = () => {
           const userData = await fetchUser(loggedInUserId);
           setMyFavorites(userData.myFavorites);
         } catch (error) {
-          console.error('Error fetching user data:', error);
+          // console.error('Error fetching user data:', error);
         }
       }
     };

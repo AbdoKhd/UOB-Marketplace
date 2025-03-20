@@ -82,7 +82,7 @@ const ListingDetailsPage = () => {
         setIsLiked(false);
       }
     }catch(error){
-      console.error("Error updating favorites:", error);
+      // console.error("Error updating favorites:", error);
     }
   }
 
@@ -94,7 +94,7 @@ const ListingDetailsPage = () => {
       navigate('/listings/category/All/order/Newest First/campus/All/pgn/1', { state: { notification: 'Listing deleted successfully!' } });
 
     }catch(error){
-      console.error("Error deleting listing:", error);
+      // console.error("Error deleting listing:", error);
     }
   }
 
@@ -137,7 +137,7 @@ const ListingDetailsPage = () => {
         }
 
       } catch (error) {
-        console.error('Error fetching the user favorites:', error);
+        // console.error('Error fetching the user favorites:', error);
       }
     };
   
@@ -171,7 +171,7 @@ const ListingDetailsPage = () => {
         setLoading(false);
 
       } catch (error) {
-        console.error('Error fetching listing or images:', error);
+        // console.error('Error fetching listing or images:', error);
         setLoading(false);
       }
     };
@@ -187,15 +187,15 @@ const ListingDetailsPage = () => {
       return null;
     }
 
-    console.log("this is the user of this listing: ", listingUserId);
+    // console.log("this is the user of this listing: ", listingUserId);
 
     try{
       // Create conversation
       const conversation = await createConversation(loggedInUserId, listingUserId);
-      console.log("this is the conversation: ", conversation);
+      // console.log("this is the conversation: ", conversation);
       navigate(`/messages/${conversation._id}`);
     }catch(error){
-      console.error("Error creating conversation:", error);
+      // console.error("Error creating conversation:", error);
     }
   };
 

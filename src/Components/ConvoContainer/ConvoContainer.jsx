@@ -19,8 +19,8 @@ const ConvoContainer = ({name, ppKey, lastMessage, lastMessageObj, unreadCount, 
 
 
   useEffect(() =>{
-    console.log("in convo container this is lastMessageObj: ", lastMessageObj);
-    console.log("in convo container this is unreadCount: ", unreadCount);
+    // console.log("in convo container this is lastMessageObj: ", lastMessageObj);
+    // console.log("in convo container this is unreadCount: ", unreadCount);
     const fetchProfilePic = async () => {
       try{
 
@@ -30,7 +30,7 @@ const ConvoContainer = ({name, ppKey, lastMessage, lastMessageObj, unreadCount, 
         }
 
       }catch(error){
-        console.error('Error fetching profile pic in convo container:', error);
+        // console.error('Error fetching profile pic in convo container:', error);
       }
     }
 
@@ -48,13 +48,13 @@ const ConvoContainer = ({name, ppKey, lastMessage, lastMessageObj, unreadCount, 
     }
   
     if (isSelectedConvo) {
-      //console.log("Marking message as read since conversation is selected.");
+      // console.log("Marking message as read since conversation is selected.");
       setIsLastMessageRead(true);
     } else if (lastMessageObj.senderId !== loggedInUserId && lastMessageObj.status !== "seen") {
-      //console.log("Marking message as unread.");
+      // console.log("Marking message as unread.");
       setIsLastMessageRead(false);
     } else {
-      //console.log("Marking message as read.");
+      // console.log("Marking message as read.");
       setIsLastMessageRead(true);
     }
   }, [isSelectedConvo, lastMessageObj]);

@@ -32,7 +32,7 @@ http.interceptors.response.use(
     (response) => response, // Return response normally if successful
     (error) => {
         if (error.response?.status === 401) {
-        console.log("Token expired. Logging out...");
+        // console.log("Token expired. Logging out...");
         if (logoutFunction) {
             logoutFunction(); // Call the logout function from context
         }

@@ -30,7 +30,7 @@ const Listing = ({listingId, imageKey, title, price, isInFavorites, userId}) => 
           const response = await getImages(imageKey);
           setImage(response.images[0]);
         } catch (error) {
-          console.error("Error fetching image:", error);
+          // console.error("Error fetching image:", error);
         }
       }
       else{
@@ -63,7 +63,7 @@ const Listing = ({listingId, imageKey, title, price, isInFavorites, userId}) => 
         setIsLiked(false);
       }
     }catch(error){
-      console.error("Error updating favorites:", error);
+      // console.error("Error updating favorites:", error);
     }
   };
 
@@ -75,9 +75,9 @@ const Listing = ({listingId, imageKey, title, price, isInFavorites, userId}) => 
       return null;
     }
 
-    console.log("this is the user of this listing: ", userId);
+    // console.log("this is the user of this listing: ", userId);
     if(loggedInUserId === userId){
-      console.log("You can't message yourself");
+      // console.log("You can't message yourself");
       navigate(location.pathname, {replace: true, state: { alert: "You can't message yourself!" } });
       //The replace option ensures that the current history entry is replaced with the new state, rather than adding a new entry to the backstack.
       return;
@@ -86,10 +86,10 @@ const Listing = ({listingId, imageKey, title, price, isInFavorites, userId}) => 
     try{
       // Create conversation
       const conversation = await createConversation(loggedInUserId, userId);
-      console.log("this is the conversation: ", conversation);
+      // console.log("this is the conversation: ", conversation);
       navigate(`/messages/${conversation._id}`);
     }catch(error){
-      console.error("Error creating conversation:", error);
+      // console.error("Error creating conversation:", error);
     }
   };
 

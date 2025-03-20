@@ -59,15 +59,15 @@ const ProfilePage = () => {
       if (!newLastName) setLastNameError(true);
     }
     else{
-      console.log("new first name: ", newFirstName);
-      console.log("new last name: ", newLastName);
-      console.log("new campus: ", newCampus);
-      console.log("profile pic before upload: ", newProfilePicture);
+      // console.log("new first name: ", newFirstName);
+      // console.log("new last name: ", newLastName);
+      // console.log("new campus: ", newCampus);
+      // console.log("profile pic before upload: ", newProfilePicture);
 
 
       try {
 
-        console.log("this is new pp: ", newProfilePicture);
+        // console.log("this is new pp: ", newProfilePicture);
 
         setEditingUserLoading(true);
 
@@ -119,7 +119,7 @@ const ProfilePage = () => {
       } catch (error) {
         // Handle any errors
         setEditingUserLoading(false);
-        console.error('There was an error editing the user!', error);
+        // console.error('There was an error editing the user!', error);
         setEditingAboutErrorMessage("Editing the user has failed. Please try again.");
       }
 
@@ -207,7 +207,7 @@ const ProfilePage = () => {
     } catch (error) {
       // Handle any errors
       setEditingAboutLoading(false);
-      console.error(`There was an error editing the user's about!`, error);
+      // console.error(`There was an error editing the user's about!`, error);
       setEditingAboutErrorMessage("Editing the user's about has failed. Please try again.");
     }
 
@@ -261,7 +261,7 @@ const ProfilePage = () => {
         setLoading(false);
 
       }catch(error){
-        console.error('Error fetching logged in user:', error);
+        // console.error('Error fetching logged in user:', error);
         setLoading(false);
       }
     }

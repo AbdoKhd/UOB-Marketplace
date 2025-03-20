@@ -13,7 +13,7 @@ export const AuthProvider = ({ children }) => {
       const storedUser = localStorage.getItem('loggedInUserId');
       return storedUser ? JSON.parse(storedUser) : null;
     } catch (error) {
-      console.error('Error parsing user data from localStorage:', error);
+      // console.error('Error parsing user data from localStorage:', error);
       return null;
     }
   });
@@ -23,7 +23,7 @@ export const AuthProvider = ({ children }) => {
       const storedStatus = localStorage.getItem('isAuthenticated');
       return storedStatus ? JSON.parse(storedStatus) : false;
     } catch (error) {
-      console.error('Error parsing authentication status from localStorage:', error);
+      // console.error('Error parsing authentication status from localStorage:', error);
       return false;
     }
   });

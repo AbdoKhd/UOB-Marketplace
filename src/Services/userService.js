@@ -45,7 +45,7 @@ export const fetchUser = async (userId) => {
     const response = await http.get(`/api/users/getUser/${userId}`);
     return response.data.user;
   } catch (error) {
-    console.error('Error fetching the user:', error);
+    // console.error('Error fetching the user:', error);
     throw error;
   }
 };
@@ -71,7 +71,7 @@ export const editUser = async (userId, imageKey, newFirstName, newLastName, newC
     });
     return response;
   } catch (error) {
-    console.error("Error editing the user: ", error);
+    // console.error("Error editing the user: ", error);
     throw error;
   }
 };
@@ -83,7 +83,7 @@ export const editUserAbout = async (userId, newAbout) => {
     });
     return response;
   } catch (error) {
-    console.error("Error editing the user's about: ", error);
+    // console.error("Error editing the user's about: ", error);
     throw error;
   }
 };
@@ -95,7 +95,7 @@ export const addToFavorites = async (userId, listingId) => {
     });
     return addListingToUserFavorites;
   } catch (error) {
-    console.error("Error adding listing to favorites: ", error);
+    // console.error("Error adding listing to favorites: ", error);
     throw error;
   }
 };
@@ -107,7 +107,7 @@ export const removeFromFavorites = async (userId, listingId) => {
     });
     return removeListingFromUserFavorites;
   } catch (error) {
-    console.error("Error removing listing from favorites: ", error);
+    // console.error("Error removing listing from favorites: ", error);
     throw error;
   }
 };
