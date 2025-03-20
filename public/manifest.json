@@ -1,21 +1,22 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "UOB Market",
+  "name": "UOB Marketplace",
+  "description": "A marketplace for University of Balamand students to buy, sell, and rent items.",
   "icons": [
     {
-      "src": "favicon.ico",
-      "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/x-icon"
+      "src": "UOB M 32 X 32 PX.png",
+      "type": "image/png",
+      "sizes": "32x32"
     },
     {
-      "src": "logo192.png",
+      "src": "UOB M 64 X 64 PX.png",
       "type": "image/png",
-      "sizes": "192x192"
+      "sizes": "64x64"
     },
     {
-      "src": "logo512.png",
+      "src": "UOB M 128 X 128 PX.png",
       "type": "image/png",
-      "sizes": "512x512"
+      "sizes": "128x128"
     }
   ],
   "start_url": ".",
