@@ -6,6 +6,7 @@
   overflow: hidden;
   /* transition: 0.2s ease; */
   cursor: pointer;
+  border: 1px solid #ddd;
 }
 
 /* .listing:hover{
