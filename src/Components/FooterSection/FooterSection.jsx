@@ -72,8 +72,6 @@ const FooterSection = () => {
         <div className='col'>
           <h2>Social Media</h2>
           <p>Instagram</p>
-          <p>TikTok</p>
-          <p>Facebook</p>
           <p>LinkedIn</p>
         </div>
         <div className='col'>
