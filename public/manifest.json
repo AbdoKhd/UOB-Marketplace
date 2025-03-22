@@ -4,6 +4,11 @@
   "description": "A marketplace for University of Balamand students to buy, sell, and rent items.",
   "icons": [
     {
+      "src": "favicon.ico",
+      "sizes": "128x128 64x64",
+      "type": "image/x-icon"
+    },
+    {
       "src": "UOB M 32 X 32 PX.png",
       "type": "image/png",
       "sizes": "32x32"
@@ -12,11 +17,6 @@
       "src": "UOB M 64 X 64 PX.png",
       "type": "image/png",
       "sizes": "64x64"
-    },
-    {
-      "src": "UOB M 128 X 128 PX.png",
-      "type": "image/png",
-      "sizes": "128x128"
     }
   ],
   "start_url": ".",
