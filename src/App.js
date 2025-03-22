@@ -2,6 +2,7 @@
 import './App.css';
 import { AuthProvider } from './Components/AuthContext' ;
 import { SocketProvider } from "./socketContext";
+import { Analytics } from "@vercel/analytics/react";
 import LoginForm from './Pages/LoginForm/LoginForm';
 import RegistrationForm from './Pages/RegistrationForm/RegistrationForm';
 import ForgotPasswordForm from './Pages/ForgotPasswordForm/ForgotPasswordForm';
@@ -37,6 +38,7 @@ function App() {
           <Route path="/otherListings/:userId/:type" element={ <OtherListingsPage/>} /> 
           {/* 'type' in the path above refers to either favorites or listings */}
         </Routes>
+        <Analytics /> 
       </AuthProvider>
     </SocketProvider>
   )
