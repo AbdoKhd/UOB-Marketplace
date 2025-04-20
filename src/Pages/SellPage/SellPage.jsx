@@ -10,7 +10,11 @@ import { moderateImage } from '../../Services/moderationService';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+// React dropdown/select
+import Select from 'react-select';
+
 import ScrollToTop from '../../Components/ScrollToTop/ScrollToTop';
+import { BsBorderWidth } from 'react-icons/bs';
 
 const SellPage = () => {
 
@@ -120,8 +124,8 @@ const SellPage = () => {
     }
   }
 
-  function handleCategoryChange(event){
-    setCategory(event.target.value);
+  function handleCategoryChange(value){
+    setCategory(value);
     setCategoryError(false);
   }
 
@@ -159,7 +163,10 @@ const SellPage = () => {
     }
     else{
       // Post Listing
+
       // console.log("this is price: ", price);
+      // console.log("this is title: ", title);
+      // console.log("this is category: ", category);
       try {
         setPostingInProgress(true);
         setErrorMessage("");
@@ -210,6 +217,55 @@ const SellPage = () => {
       }
     }
   }
+
+  // React-select styling
+  const customStyles = {
+    control: (base, state) => ({
+      ...base,
+      borderWidth: '2px',
+      borderStyle: 'solid',
+      borderColor: state.isFocused ? '#51B747' : categoryError ? '#ff0000b5' : '#9b9b9b',
+      boxShadow: 'none',
+      transition: 'all 0.4s ease',
+      '&:hover': {
+        borderColor: state.isFocused ? '#51B747' : categoryError ? '#ff0000b5' : '#9b9b9b',
+      },
+      borderRadius: '10px',
+      padding: '2px',
+    }),
+    placeholder: (base) => ({
+      ...base,
+      color: '#888',
+    }),
+    option: (base, state) => ({
+      ...base,
+      backgroundColor: state.isSelected
+        ? '#51B747'
+        : state.isFocused
+          ? '#f0f0f0'
+          : 'white',
+      color: state.isSelected ? 'white' : 'black',
+      cursor: 'pointer',
+      ':active': {
+        backgroundColor: state.isSelected ? '#51B747' : '#f0f0f0', // prevent blue flash
+      },
+    }),
+    singleValue: (base) => ({
+      ...base,
+      color: 'black',
+    }),
+  }
+
+  const categoryOptions = [
+    { value: '', label: 'Select a Category' },
+    { value: 'University tools', label: 'University tools' },
+    { value: 'Tutoring', label: 'Tutoring' },
+    { value: 'Electronics', label: 'Electronics' },
+    { value: 'Dorm Utilities', label: 'Dorm Utilities' },
+    { value: 'Clothes', label: 'Clothes' },
+    { value: 'Directions', label: 'Directions' },
+    { value: 'Events', label: 'Events' },
+  ]
 
   return (
     <div className='sell-page'>
@@ -262,16 +318,14 @@ const SellPage = () => {
       <div className='listing-container'>
         <h3>Category *</h3>
         <h4>Choose the category that your item belongs to</h4>
-        <select className={`category-select ${categoryError ? 'error' : ''}`} value={category} onChange={handleCategoryChange}>
-          <option value="">Select a category</option>
-          <option value="University tools">University tools</option>
-          <option value="Tutoring">Tutoring</option>
-          <option value="Electronics">Electronics</option>
-          <option value="Dorm Utilities">Dorm Utilities</option>
-          <option value="Clothes">Clothes</option>
-          <option value="Directions">Directions</option>
-          <option value="Events">Events</option>
-        </select>
+        <Select
+          className={`react-select-container`}
+          options={categoryOptions}
+          value={categoryOptions.find(option => option.value === category)}
+          onChange={(selectedOption) => handleCategoryChange(selectedOption?.value)}
+          placeholder="Select a category"
+          styles={customStyles}
+        />
       </div>
       <div className='listing-container'>
         <h3>Description</h3>

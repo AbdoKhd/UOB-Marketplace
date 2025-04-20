@@ -145,7 +145,7 @@
   text-align: right;
 }
 
-.category-select {
+/* .category-select {
   outline: none;
   width: 100%;
   padding: 8px;
@@ -155,10 +155,11 @@
   border-radius: 10px;
   background-color: white;
   transition: 0.4s;
-}
+} */
 
-.category-select:focus {
-  border-color:#51B747;
+.react-select-container {
+  width: 100%;
+  margin-top: 8px;
 }
 
 .description-textarea{
@@ -244,5 +245,5 @@
 }
 
 .error {
-  border: 2px solid rgba(255, 0, 0, 0.709);
+  border: 2px solid #ff0000b5;
 }
