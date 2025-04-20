@@ -319,6 +319,7 @@ const SellPage = () => {
         <h3>Category *</h3>
         <h4>Choose the category that your item belongs to</h4>
         <Select
+          isSearchable={false}
           className={`react-select-container`}
           options={categoryOptions}
           value={categoryOptions.find(option => option.value === category)}
