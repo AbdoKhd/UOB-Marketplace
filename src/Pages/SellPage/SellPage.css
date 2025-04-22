@@ -145,7 +145,7 @@
   text-align: right;
 }
 
-/* .category-select {
+.category-select {
   outline: none;
   width: 100%;
   padding: 8px;
@@ -155,7 +155,7 @@
   border-radius: 10px;
   background-color: white;
   transition: 0.4s;
-} */
+}
 
 .react-select-container {
   width: 100%;
